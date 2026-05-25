@@ -1,0 +1,84 @@
+# =========================
+# OS
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# IDE
+# =========================
+.vscode/
+.idea/
+
+# =========================
+# ENV
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# FRONTEND (Next.js)
+# =========================
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/build/
+
+# Logs
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/pnpm-debug.log*
+
+# =========================
+# BACKEND (Django)
+# =========================
+backend/__pycache__/
+backend/*.py[cod]
+backend/*$py.class
+
+# Virtual Environment
+backend/venv/
+backend/.venv/
+
+# Django stuff
+backend/db.sqlite3
+backend/media/
+backend/staticfiles/
+
+# Migrations (optional)
+# backend/**/migrations/*.py
+# !backend/**/migrations/__init__.py
+
+# =========================
+# PYTHON
+# =========================
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+
+# =========================
+# TESTS & COVERAGE
+# =========================
+.coverage
+htmlcov/
+.pytest_cache/
+
+# =========================
+# Docker
+# =========================
+*.log
+docker-data/
+
+# =========================
+# TYPESCRIPT
+# =========================
+*.tsbuildinfo
+
+# =========================
+# CACHE
+# =========================
+.cache/
