@@ -21,7 +21,6 @@ import { userInfoActions } from "../slices/userInformationsSlice";
 export interface formDataType {
     phone: string;
     username: string;
-    email: string;
     password: string;
 }
 
@@ -30,7 +29,6 @@ const Signup = () => {
     const [formData, setFormData] = useState<formDataType>({
         phone: "",
         username: "",
-        email: "",
         password: "",
     });
 
@@ -39,13 +37,11 @@ const Signup = () => {
     const [errors, setErrors] = useState({
         phone: false,
         username: false,
-        email: false,
         password: false,
     });
     const [errorsMessages, setErrorsMessages] = useState({
         phone: "",
         username: "",
-        email: "",
         password: "",
     });
 
@@ -67,10 +63,9 @@ const Signup = () => {
         const value = e.target.value;
 
         const validationResult = signupFormSchema.shape[name].safeParse(value);
-        console.log(validationResult.error);
         setErrors((prev) => ({
             ...prev,
-            [name]: validationResult.success,
+            [name]: !validationResult.success,
         }));
         setErrorsMessages((prev) => ({
             ...prev,
@@ -79,12 +74,14 @@ const Signup = () => {
                 : validationResult.error.flatten().formErrors[0] || "",
         }));
 
-        console.log(errorsMessages);
+        const isValidForm = signupFormSchema.safeParse(formData);
+
+        setCanSubmit(isValidForm.success);
     };
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-    const handleMouseDownPassword = (event) => {
+    const handleMouseDownPassword = (event: any) => {
         event.preventDefault(); // جلوگیری از دیفالت براوزر موقع کلیک
     };
 
@@ -138,12 +135,6 @@ const Signup = () => {
                 );
                 dispatch(
                     userInfoActions.updateForm({
-                        field: "email",
-                        value: formData.email,
-                    }),
-                );
-                dispatch(
-                    userInfoActions.updateForm({
                         field: "password",
                         value: formData.password,
                     }),
@@ -170,21 +161,20 @@ const Signup = () => {
                     inputProps={{
                         inputMode: "numeric", // فعال‌سازی صفحه‌کلید عددی در موبایل
                         pattern: "[0-9]*", // فقط عدد قبول کنه
-                        maxLength: 11, // مثلا برای شماره‌های ایران
+                        maxLength: 15, // مثلا برای شماره‌های ایران
                     }}
                     name="phone"
                     value={formData.phone}
                     onChange={(e) => {
                         handleValueChange(e);
                     }}
+                    error={errors.phone}
+                    helperText={
+                        errors.phone
+                            ? errorsMessages.phone
+                            : "شمازه موبایل که قبلا باهش ثبت نام نکردید رو وارد کنید"
+                    }
                 />
-                {
-                    errors.phone && (
-                        <Typography variant="caption" color="error">
-                            {errorsMessages.phone}
-                        </Typography>
-                    )
-                }
                 <TextField
                     label="نام کاربری"
                     size="small"
@@ -194,16 +184,12 @@ const Signup = () => {
                     onChange={(e) => {
                         handleValueChange(e);
                     }}
-                />
-                <TextField
-                    label="ایمیل"
-                    size="small"
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={(e) => {
-                        handleValueChange(e);
-                    }}
+                    error={errors.username}
+                    helperText={
+                        errors.username
+                            ? errorsMessages.username
+                            : "نام و نام خانوادگی خودت رو وارد کن"
+                    }
                 />
                 <TextField
                     label="گذرواژه"
@@ -234,6 +220,12 @@ const Signup = () => {
                     onChange={(e) => {
                         handleValueChange(e);
                     }}
+                    error={errors.password}
+                    helperText={
+                        errors.password
+                            ? errorsMessages.password
+                            : "گذرواژه خودت رو وارد کن"
+                    }
                 />
                 <Button
                     variant="contained"

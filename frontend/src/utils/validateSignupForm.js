@@ -8,7 +8,6 @@ export const signupFormSchema = z.object({
         .max(11, "شماره موبایل باید حداکثر 11 رقم باشد")
         .regex(/^(\+98|09)/, "شماره موبایل معتبر نیست."),
     username: z.string().min(5, "نام کاربری باید حداقل 5 کاراکتر باشد."),
-    email: z.string().email("ایمیل نامعتبر است").optional(),
     password: z.string().min(5, "رمز عبور باید حداقل 5 کاراکتر باشد."),
 });
 
