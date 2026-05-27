@@ -1,7 +1,9 @@
 "use client";
 
 import { useAppDispatch } from "@/lib/redux/hooks";
-import validateSignupForm, { ErrorState } from "@/utils/validateSignupForm";
+import validateSignupForm, {
+    signupFormSchema,
+} from "@/utils/validateSignupForm";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
     Button,
@@ -32,11 +34,19 @@ const Signup = () => {
         password: "",
     });
 
-    const [errors, setErrors] = useState<ErrorState>({
+    const [canSubmit, setCanSubmit] = useState<boolean>(false);
+
+    const [errors, setErrors] = useState({
         phone: false,
         username: false,
         email: false,
         password: false,
+    });
+    const [errorsMessages, setErrorsMessages] = useState({
+        phone: "",
+        username: "",
+        email: "",
+        password: "",
     });
 
     const [loading, setLoading] = useState<boolean>(false);
@@ -52,6 +62,24 @@ const Signup = () => {
             ...prev,
             [e.target.name]: e.target.value,
         }));
+
+        const name = e.target.name as keyof formDataType;
+        const value = e.target.value;
+
+        const validationResult = signupFormSchema.shape[name].safeParse(value);
+        console.log(validationResult.error);
+        setErrors((prev) => ({
+            ...prev,
+            [name]: validationResult.success,
+        }));
+        setErrorsMessages((prev) => ({
+            ...prev,
+            [name]: validationResult.success
+                ? ""
+                : validationResult.error.flatten().formErrors[0] || "",
+        }));
+
+        console.log(errorsMessages);
     };
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -61,9 +89,9 @@ const Signup = () => {
     };
 
     const handleSubmin = async () => {
-        const isValidForm = validateSignupForm(formData);
-        if (!isValidForm.isValid) {
-            setErrors(isValidForm.errors);
+        const result = signupFormSchema.safeParse(formData);
+
+        if (!result.success) {
             return;
         }
 
@@ -149,13 +177,14 @@ const Signup = () => {
                     onChange={(e) => {
                         handleValueChange(e);
                     }}
-                    error={Boolean(errors.phone)}
-                    helperText={
-                        Boolean(errors.phone)
-                            ? errors.phone
-                            : "از شماره ای استفاده کن که قبلا باهاش ثبت نام نکردی"
-                    }
                 />
+                {
+                    errors.phone && (
+                        <Typography variant="caption" color="error">
+                            {errorsMessages.phone}
+                        </Typography>
+                    )
+                }
                 <TextField
                     label="نام کاربری"
                     size="small"
@@ -165,12 +194,6 @@ const Signup = () => {
                     onChange={(e) => {
                         handleValueChange(e);
                     }}
-                    error={Boolean(errors.username)}
-                    helperText={
-                        Boolean(errors.username)
-                            ? errors.username
-                            : "اسم خودت یا مغازت"
-                    }
                 />
                 <TextField
                     label="ایمیل"
@@ -181,12 +204,6 @@ const Signup = () => {
                     onChange={(e) => {
                         handleValueChange(e);
                     }}
-                    error={Boolean(errors.email)}
-                    helperText={
-                        Boolean(errors.email)
-                            ? errors.email
-                            : "ایمیلت رو وارد کن ( اختیاری )"
-                    }
                 />
                 <TextField
                     label="گذرواژه"
@@ -217,14 +234,12 @@ const Signup = () => {
                     onChange={(e) => {
                         handleValueChange(e);
                     }}
-                    error={Boolean(errors.password)}
-                    helperText={
-                        Boolean(errors.password)
-                            ? errors.password
-                            : "یه رمز انتخاب کن که یادت نر ( بعدا میتونی عوض کنی )"
-                    }
                 />
-                <Button variant="contained" onClick={handleSubmin}>
+                <Button
+                    variant="contained"
+                    onClick={handleSubmin}
+                    disabled={!canSubmit || loading}
+                >
                     ثبت نام
                 </Button>
             </div>
