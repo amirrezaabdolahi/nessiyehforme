@@ -1,33 +1,38 @@
+import { env } from "@/utils/env/env";
 import { NextResponse } from "next/server";
 
-
-const otpStore = new Map<string, number>()
 export async function POST(req: Request) {
     try {
+        const body = await req.json();
 
-        const body = await req.json()
-        const { username } = body
+        const res = await fetch(
+            `${env.API_BASE_URL}accounts/register/`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(body),
+            }
+        );
 
-        const otp = Math.floor(100000 + Math.random() * 900000)
+        const data = await res.json();
 
-        otpStore.set(username, otp)
-
-        console.log(" new sigup: ", body);
-        console.log('otp for ', username, "is", otp);
-
-        return NextResponse.json({
-            ok: true,
-            message: "OTP generated",
-            body,
-            otp, // training only
+        return NextResponse.json(data, {
+            status: res.status,
         });
 
     } catch (error) {
+        console.error(error);
+
         return NextResponse.json(
-            { ok: false, message: "Invalid request" },
-            { status: 400 }
+            {
+                ok: false,
+                message: "Invalid request",
+            },
+            {
+                status: 400,
+            }
         );
     }
 }
-
-export { otpStore }

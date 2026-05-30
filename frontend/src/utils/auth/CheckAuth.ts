@@ -19,7 +19,7 @@ import { redirect } from "next/navigation"
 export const CheckAuthServer = async () => {
     const cookieStore = await cookies()
 
-    const Token = cookieStore.get("Token")
+    const Token = cookieStore.get("access")
 
     console.log("cheking");
 
@@ -34,7 +34,7 @@ export const CheckAuthServer = async () => {
 export const SignoutAuth = async () => {
     const cookieStore = await cookies()
 
-    cookieStore.delete("Token")
+    cookieStore.delete("access")
 
     console.log('object');
 

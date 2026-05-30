@@ -56,11 +56,14 @@ const Code = () => {
 
         try {
             setLoading(true);
-            const res = await fetch("api/auth/verify-otp", {
+            const res = await fetch("/api/auth/verify-otp", {
                 method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
                 body: JSON.stringify({
-                    username: user?.username,
-                    otp: code,
+                    phone_number: user.phone_number,
+                    code,
                 }),
             });
 
@@ -68,18 +71,10 @@ const Code = () => {
 
             if (data.ok) {
                 toast.success("ثبت نام با موفقیت کامل شد");
-                dispatch(
-                    userInfoActions.updateForm({
-                        field: "isAuthenticated",
-                        value: true,
-                    }),
-                );
-                await setCookie("Token", user.phone);
                 router.replace("/dashboard");
                 return;
             }
-
-            toast.error(data.message , {draggable : true , closeOnClick : true});
+            toast.error(data.error, { draggable: true, closeOnClick: true });
         } catch (error) {
             toast.error("ارور");
             console.log(error);
@@ -115,7 +110,7 @@ const Code = () => {
                                 style: {
                                     textAlign: "center",
                                 },
-                                className : " p-2! md:p-4! max-w-[45px] "
+                                className: " p-2! md:p-4! max-w-[45px] ",
                             }}
                             className="w-full!"
                         />

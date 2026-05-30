@@ -19,29 +19,29 @@ import { toast } from "react-toastify";
 import { userInfoActions } from "../slices/userInformationsSlice";
 
 export interface formDataType {
-    phone: string;
-    username: string;
+    phone_number: string;
+    full_name: string;
     password: string;
 }
 
 const Signup = () => {
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [formData, setFormData] = useState<formDataType>({
-        phone: "",
-        username: "",
+        phone_number: "",
+        full_name: "",
         password: "",
     });
 
     const [canSubmit, setCanSubmit] = useState<boolean>(false);
 
     const [errors, setErrors] = useState({
-        phone: false,
-        username: false,
+        phone_number: false,
+        full_name: false,
         password: false,
     });
     const [errorsMessages, setErrorsMessages] = useState({
-        phone: "",
-        username: "",
+        phone_number: "",
+        full_name: "",
         password: "",
     });
 
@@ -120,17 +120,16 @@ const Signup = () => {
             if (data.ok) {
                 router.push("?mode=code");
                 toast.success("کد ارسال شد");
-                toast.info(data.otp, { autoClose: 10000 });
                 dispatch(
                     userInfoActions.updateForm({
-                        field: "phone",
-                        value: formData.phone,
+                        field: "phone_number",
+                        value: formData.phone_number,
                     }),
                 );
                 dispatch(
                     userInfoActions.updateForm({
-                        field: "username",
-                        value: formData.username,
+                        field: "full_name",
+                        value: formData.full_name,
                     }),
                 );
                 dispatch(
@@ -140,6 +139,8 @@ const Signup = () => {
                     }),
                 );
             }
+
+            toast.error(data.error)
 
             console.log(data);
         } catch (error) {
@@ -163,15 +164,15 @@ const Signup = () => {
                         pattern: "[0-9]*", // فقط عدد قبول کنه
                         maxLength: 15, // مثلا برای شماره‌های ایران
                     }}
-                    name="phone"
-                    value={formData.phone}
+                    name="phone_number"
+                    value={formData.phone_number}
                     onChange={(e) => {
                         handleValueChange(e);
                     }}
-                    error={errors.phone}
+                    error={errors.phone_number}
                     helperText={
-                        errors.phone
-                            ? errorsMessages.phone
+                        errors.phone_number
+                            ? errorsMessages.phone_number
                             : "شمازه موبایل که قبلا باهش ثبت نام نکردید رو وارد کنید"
                     }
                 />
@@ -179,15 +180,15 @@ const Signup = () => {
                     label="نام کاربری"
                     size="small"
                     required
-                    name="username"
-                    value={formData.username}
+                    name="full_name"
+                    value={formData.full_name}
                     onChange={(e) => {
                         handleValueChange(e);
                     }}
-                    error={errors.username}
+                    error={errors.full_name}
                     helperText={
-                        errors.username
-                            ? errorsMessages.username
+                        errors.full_name
+                            ? errorsMessages.full_name
                             : "نام و نام خانوادگی خودت رو وارد کن"
                     }
                 />
