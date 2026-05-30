@@ -1,40 +1,19 @@
 from django.contrib.auth import authenticate
-
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-
 from rest_framework_simplejwt.tokens import RefreshToken
+import random
+from utils import send_otp_code
 
-from .models import User
+from .models import User, OtpCode
 from .serializers import (
     RegisterSerializer,
+    RegisterVerifyCodeSerializer,
     LoginSerializer,
     SendOTPSerializer,
     OTPLoginSerializer
 )
-
-
-class SendOTPView(APIView):
-
-    def post(self, request):
-
-        serializer = SendOTPSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        phone_number = serializer.validated_data["phone_number"]
-
-        if not User.objects.filter(phone_number=phone_number).exists():
-            return Response(
-                {"error": "کاربر یافت نشد"},
-                status=status.HTTP_404_NOT_FOUND
-            )
-
-        return Response({
-            "message": "OTP ارسال شد",
-            "otp": "111111"
-        })
-
 
 class RegisterView(APIView):
 
@@ -42,7 +21,6 @@ class RegisterView(APIView):
 
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-
         phone_number = serializer.validated_data["phone_number"]
 
         if User.objects.filter(phone_number=phone_number).exists():
@@ -50,20 +28,55 @@ class RegisterView(APIView):
                 {"error": "این شماره قبلاً ثبت شده است"},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        
-        if User.objects.filter(email=serializer.validated_data.get("email")).exists():
-            return Response(
-                {"error": "این ایمیل قبلاً ثبت شده است"},
-                status=status.HTTP_400_BAD_REQUEST
+
+        if serializer.is_valid():
+            random_code = random.randint(100000, 999999)
+            # send_otp_code(phone_number, random_code)
+            OtpCode.objects.create(
+                phone_number=phone_number,
+                code=random_code,
+                full_name=serializer.validated_data["full_name"],
+                password=serializer.validated_data["password"]
             )
         
+            return Response({
+                "message": "کد تایید به شماره شما ارسال شد"
+            })
+    
+class RegisterVerifyCodeView(APIView):
+
+    def post(self, request):
+
+        serializer = RegisterVerifyCodeSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        phone_number = serializer.validated_data["phone_number"]
+        code = serializer.validated_data["code"]
+
+        try:
+            otp_code = OtpCode.objects.get(
+                phone_number=phone_number,
+                code=code
+            )
+        except OtpCode.DoesNotExist:
+            return Response(
+                {"error": "کد تایید اشتباه است"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if not otp_code.is_valid():
+            return Response(
+                {"error": "کد تایید منقضی شده است"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         user = User.objects.create_user(
-            email=serializer.validated_data.get("email"),
             phone_number=phone_number,
-            full_name=serializer.validated_data["full_name"],
-            password=serializer.validated_data["password"]
+            full_name=otp_code.full_name,
+            password=otp_code.password
         )
+
+        otp_code.delete()
 
         refresh = RefreshToken.for_user(user)
 
@@ -104,36 +117,80 @@ class LoginView(APIView):
         })
     
 
+class SendOTPView(APIView):
+
+    def post(self, request):
+        serializer = SendOTPSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        phone_number = serializer.validated_data["phone_number"]
+
+        if not User.objects.filter(phone_number=phone_number).exists():
+            return Response(
+                {"error": "کاربر یافت نشد"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        code = random.randint(100000, 999999)
+
+        OtpCode.objects.create(
+            phone_number=phone_number,
+            code=str(code)
+        )
+
+        # send_otp_code(phone_number, code)
+
+        return Response(
+            {"message": "کد تایید ارسال شد"},
+            status=status.HTTP_200_OK
+        )
+
 
 class OTPLoginView(APIView):
 
     def post(self, request):
-
         serializer = OTPLoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         phone_number = serializer.validated_data["phone_number"]
         code = serializer.validated_data["code"]
 
-        if code != "111111":
+        if not User.objects.filter(phone_number=phone_number).exists():
+            return Response(
+                {"error": "کاربر یافت نشد"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        try:
+            otp_code = OtpCode.objects.get(
+                phone_number=phone_number,
+                code=code
+            )
+        except OtpCode.DoesNotExist:
             return Response(
                 {"error": "کد تایید اشتباه است"},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        try:
-            user = User.objects.get(
-                phone_number=phone_number
-            )
-        except User.DoesNotExist:
+        if not otp_code.is_valid():
+            otp_code.delete()
+
             return Response(
-                {"error": "کاربر پیدا نشد"},
-                status=status.HTTP_404_NOT_FOUND
+                {"error": "کد تایید منقضی شده است"},
+                status=status.HTTP_400_BAD_REQUEST
             )
+
+        user = User.objects.get(phone_number=phone_number)
+
+        otp_code.delete()
 
         refresh = RefreshToken.for_user(user)
 
-        return Response({
-            "refresh": str(refresh),
-            "access": str(refresh.access_token)
-        })
+        return Response(
+            {
+                "message": "ورود موفق",
+                "refresh": str(refresh),
+                "access": str(refresh.access_token)
+            },
+            status=status.HTTP_200_OK
+        )

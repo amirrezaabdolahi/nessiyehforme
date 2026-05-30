@@ -4,7 +4,6 @@ from .managers import UserManager
 from django.utils import timezone
 
 class User(AbstractBaseUser):
-    email = models.EmailField(unique=True, blank=True, null=True)
     phone_number = models.CharField(max_length=11, unique=True)
     full_name = models.CharField(max_length=255, blank=True, null=True)
     is_shop = models.BooleanField(default=False)
@@ -16,7 +15,7 @@ class User(AbstractBaseUser):
     objects = UserManager()
 
     USERNAME_FIELD = 'phone_number'
-    REQUIRED_FIELDS = ['email', 'full_name']
+    REQUIRED_FIELDS = ['full_name']
 
     def __str__(self):
         return self.phone_number
@@ -35,11 +34,13 @@ class User(AbstractBaseUser):
 class OtpCode(models.Model):
     phone_number = models.CharField(max_length=11)
     code = models.CharField(max_length=6)
-    # created_at = models.DateTimeField(default=timezone.now)
+    full_name = models.CharField(max_length=255, blank=True, null=True)
+    password = models.CharField(max_length=255, blank=True, null=True)
+    created_at = models.DateTimeField(default=timezone.now)
 
-    @staticmethod
-    def generate_otp():
-        return "111111"
+    def is_valid(self):
+        now = timezone.now()
+        return (now - self.created_at).total_seconds() < 120
 
     def __str__(self):
         return f"{self.phone_number} - {self.code}"

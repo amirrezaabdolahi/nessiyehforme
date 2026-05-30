@@ -8,7 +8,7 @@ class UserCreationForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['email', 'phone_number', 'full_name', 'is_shop', 'shop_name', 'shop_address']
+        fields = ['phone_number', 'full_name', 'is_shop', 'shop_name', 'shop_address']
 
     def clean_password2(self):
         password1 = self.cleaned_data.get('password1')
@@ -31,7 +31,7 @@ class UserChangeForm(forms.ModelForm):
     password = ReadOnlyPasswordHashField(help_text="You can change the password using <a href=\"../password/\">this form</a>.")
     class Meta:
         model = User
-        fields = ['email', 'phone_number', 'full_name', 'password', 'is_active', 'is_admin', 'is_shop', 'shop_name', 'shop_address']
+        fields = ['phone_number', 'full_name', 'password', 'is_active', 'is_admin', 'is_shop', 'shop_name', 'shop_address']
 
     def clean_password(self):
         return self.initial['password']
