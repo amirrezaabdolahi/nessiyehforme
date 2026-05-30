@@ -31,54 +31,122 @@ frontend/yarn-debug.log*
 frontend/yarn-error.log*
 frontend/pnpm-debug.log*
 
-# =========================
-# BACKEND (Django)
-# =========================
-backend/__pycache__/
-backend/*.py[cod]
-backend/*$py.class
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
 
-# Virtual Environment
-backend/venv/
-backend/.venv/
-
-# Django stuff
-backend/db.sqlite3
-backend/media/
-backend/staticfiles/
-
-# Migrations (optional)
-# backend/**/migrations/*.py
-# !backend/**/migrations/__init__.py
-
-# =========================
-# PYTHON
-# =========================
+# C extensions
 *.so
-*.egg
-*.egg-info/
-dist/
-build/
 
-# =========================
-# TESTS & COVERAGE
-# =========================
-.coverage
-htmlcov/
-.pytest_cache/
-
-# =========================
-# Docker
-# =========================
+# Django
 *.log
-docker-data/
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
 
-# =========================
-# TYPESCRIPT
-# =========================
-*.tsbuildinfo
+# Media files
+media/
 
-# =========================
-# CACHE
-# =========================
-.cache/
+# Static files collected by collectstatic
+staticfiles/
+static/
+
+# Environment variables
+.env
+.env.*
+
+# Virtual Environments
+env/
+venv/
+ENV/
+.venv/
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# MacOS
+.DS_Store
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# Python packaging
+build/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Testing
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+htmlcov/
+
+# Type checkers
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Ruff
+.ruff_cache/
+
+# Pyre
+.pyre/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# Sentry
+.sentry-native/
+
+# Logs
+logs/
+*.log
+
+# Uploaded files
+uploads/
+
+# Backup files
+*.bak
+*.swp
+
+# Docker
+docker-compose.override.yml
+
+# Secrets
+secret.key
+secrets.json
+credentials.json
+
+# Node
+node_modules/
+
+# npm
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
