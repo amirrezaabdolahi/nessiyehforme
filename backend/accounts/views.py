@@ -25,7 +25,9 @@ class RegisterView(APIView):
 
         if User.objects.filter(phone_number=phone_number).exists():
             return Response(
-                {"error": "این شماره قبلاً ثبت شده است"},
+                {   "ok": "false",
+                    "error": "این شماره قبلاً ثبت شده است"
+                },
                 status=status.HTTP_400_BAD_REQUEST
             )
 
@@ -40,6 +42,7 @@ class RegisterView(APIView):
             )
         
             return Response({
+                "ok": "true",
                 "message": "کد تایید به شماره شما ارسال شد"
             })
     
@@ -60,13 +63,19 @@ class RegisterVerifyCodeView(APIView):
             )
         except OtpCode.DoesNotExist:
             return Response(
-                {"error": "کد تایید اشتباه است"},
+                {
+                    "ok": "false",
+                    "error": "کد تایید اشتباه است"
+                },
                 status=status.HTTP_400_BAD_REQUEST
             )
 
         if not otp_code.is_valid():
             return Response(
-                {"error": "کد تایید منقضی شده است"},
+                {
+                    "ok": "false",
+                    "error": "کد تایید منقضی شده است"
+                },
                 status=status.HTTP_400_BAD_REQUEST
             )
 
@@ -81,6 +90,7 @@ class RegisterVerifyCodeView(APIView):
         refresh = RefreshToken.for_user(user)
 
         return Response({
+            "ok": "true",
             "message": "ثبت نام موفق",
             "refresh": str(refresh),
             "access": str(refresh.access_token)
@@ -105,13 +115,18 @@ class LoginView(APIView):
 
         if user is None:
             return Response(
-                {"error": "شماره یا رمز عبور اشتباه است"},
+                {
+                    "ok": "false",
+                    "error": "شماره یا رمز عبور اشتباه است"
+                },
                 status=status.HTTP_400_BAD_REQUEST
             )
 
         refresh = RefreshToken.for_user(user)
 
         return Response({
+            "ok": "true",
+            "message": "ورود موفق",
             "refresh": str(refresh),
             "access": str(refresh.access_token)
         })
@@ -127,7 +142,10 @@ class SendOTPView(APIView):
 
         if not User.objects.filter(phone_number=phone_number).exists():
             return Response(
-                {"error": "کاربر یافت نشد"},
+                {
+                    "ok": "false",
+                    "error": "کاربر یافت نشد"
+                 },
                 status=status.HTTP_404_NOT_FOUND
             )
 
@@ -141,7 +159,10 @@ class SendOTPView(APIView):
         # send_otp_code(phone_number, code)
 
         return Response(
-            {"message": "کد تایید ارسال شد"},
+            {
+                "ok": "true",
+                "message": "کد تایید ارسال شد"
+             },
             status=status.HTTP_200_OK
         )
 
@@ -157,7 +178,10 @@ class OTPLoginView(APIView):
 
         if not User.objects.filter(phone_number=phone_number).exists():
             return Response(
-                {"error": "کاربر یافت نشد"},
+                {
+                    "ok": "false",
+                    "error": "کاربر یافت نشد"
+                 },
                 status=status.HTTP_404_NOT_FOUND
             )
 
@@ -168,7 +192,10 @@ class OTPLoginView(APIView):
             )
         except OtpCode.DoesNotExist:
             return Response(
-                {"error": "کد تایید اشتباه است"},
+                {
+                    "ok": "false",
+                    "error": "کد تایید اشتباه است"
+                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
 
@@ -176,7 +203,10 @@ class OTPLoginView(APIView):
             otp_code.delete()
 
             return Response(
-                {"error": "کد تایید منقضی شده است"},
+                {
+                    "ok": "false",
+                    "error": "کد تایید منقضی شده است"
+                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
 
@@ -188,6 +218,7 @@ class OTPLoginView(APIView):
 
         return Response(
             {
+                "ok": "true",
                 "message": "ورود موفق",
                 "refresh": str(refresh),
                 "access": str(refresh.access_token)
