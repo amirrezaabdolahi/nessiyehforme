@@ -25,7 +25,7 @@ class RegisterView(APIView):
 
         if User.objects.filter(phone_number=phone_number).exists():
             return Response(
-                {   "ok": "false",
+                {   "ok": False,
                     "error": "این شماره قبلاً ثبت شده است"
                 },
                 status=status.HTTP_400_BAD_REQUEST
@@ -42,7 +42,7 @@ class RegisterView(APIView):
             )
         
             return Response({
-                "ok": "true",
+                "ok": True,
                 "message": "کد تایید به شماره شما ارسال شد"
             })
     
@@ -64,7 +64,7 @@ class RegisterVerifyCodeView(APIView):
         except OtpCode.DoesNotExist:
             return Response(
                 {
-                    "ok": "false",
+                    "ok": False,
                     "error": "کد تایید اشتباه است"
                 },
                 status=status.HTTP_400_BAD_REQUEST
@@ -73,7 +73,7 @@ class RegisterVerifyCodeView(APIView):
         if not otp_code.is_valid():
             return Response(
                 {
-                    "ok": "false",
+                    "ok": False,
                     "error": "کد تایید منقضی شده است"
                 },
                 status=status.HTTP_400_BAD_REQUEST
@@ -90,7 +90,7 @@ class RegisterVerifyCodeView(APIView):
         refresh = RefreshToken.for_user(user)
 
         return Response({
-            "ok": "true",
+            "ok": True,
             "message": "ثبت نام موفق",
             "refresh": str(refresh),
             "access": str(refresh.access_token)
@@ -116,7 +116,7 @@ class LoginView(APIView):
         if user is None:
             return Response(
                 {
-                    "ok": "false",
+                    "ok": False,
                     "error": "شماره یا رمز عبور اشتباه است"
                 },
                 status=status.HTTP_400_BAD_REQUEST
@@ -125,7 +125,7 @@ class LoginView(APIView):
         refresh = RefreshToken.for_user(user)
 
         return Response({
-            "ok": "true",
+            "ok": True,
             "message": "ورود موفق",
             "refresh": str(refresh),
             "access": str(refresh.access_token)
@@ -143,7 +143,7 @@ class SendOTPView(APIView):
         if not User.objects.filter(phone_number=phone_number).exists():
             return Response(
                 {
-                    "ok": "false",
+                    "ok": False,
                     "error": "کاربر یافت نشد"
                  },
                 status=status.HTTP_404_NOT_FOUND
@@ -160,7 +160,7 @@ class SendOTPView(APIView):
 
         return Response(
             {
-                "ok": "true",
+                "ok": True,
                 "message": "کد تایید ارسال شد"
              },
             status=status.HTTP_200_OK
@@ -179,7 +179,7 @@ class OTPLoginView(APIView):
         if not User.objects.filter(phone_number=phone_number).exists():
             return Response(
                 {
-                    "ok": "false",
+                    "ok": False,
                     "error": "کاربر یافت نشد"
                  },
                 status=status.HTTP_404_NOT_FOUND
@@ -193,7 +193,7 @@ class OTPLoginView(APIView):
         except OtpCode.DoesNotExist:
             return Response(
                 {
-                    "ok": "false",
+                    "ok": False,
                     "error": "کد تایید اشتباه است"
                  },
                 status=status.HTTP_400_BAD_REQUEST
@@ -204,7 +204,7 @@ class OTPLoginView(APIView):
 
             return Response(
                 {
-                    "ok": "false",
+                    "ok": False,
                     "error": "کد تایید منقضی شده است"
                  },
                 status=status.HTTP_400_BAD_REQUEST
@@ -218,7 +218,7 @@ class OTPLoginView(APIView):
 
         return Response(
             {
-                "ok": "true",
+                "ok": True,
                 "message": "ورود موفق",
                 "refresh": str(refresh),
                 "access": str(refresh.access_token)
