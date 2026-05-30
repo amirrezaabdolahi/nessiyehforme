@@ -1,0 +1,35 @@
+
+
+@baseUrl = http://127.0.0.1:8080/api/
+
+
+POST {{baseUrl}}accounts/login/
+Content-Type: application/json
+
+{
+    "phone_number" : "09225621257",
+    "password" : "amiroonreza1"
+}
+
+
+###
+
+POST {{baseUrl}}accounts/send_otp/
+Content-Type: application/json
+
+{
+    "phone_number" : "09225621257"
+}
+
+
+###
+
+
+POST {{baseUrl}}accounts/login_otp/
+Content-Type: application/json
+
+{
+    "phone_number" : "09225621257",
+    "code" : "464165"
+}
+
