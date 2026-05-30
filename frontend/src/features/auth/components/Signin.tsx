@@ -1,11 +1,17 @@
 "use client";
 
-import { validatePhone } from "@/utils/phoneValidation";
 import { Button, TextField, Typography } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { toast } from "react-toastify";
+import z from "zod";
+
+
+const validatePhone = z.string()
+    .nonempty("شماره موبایل نمی‌تواند خالی باشد.")
+    .regex(/^09\d{9}$/, "شماره موبایل باید با 09 شروع شده و 11 رقم باشد.")
+    .transform((val) => val.trim()); // Optional: Trim whitespace
 
 const Signin = () => {
     const [phone, setPhone] = useState<string>("");
@@ -17,9 +23,9 @@ const Signin = () => {
     
 
     const handleSendOtpCode = () => {
-        const validationError = validatePhone(phone);
+        const validationError = validatePhone.safeParse(phone).success;
         if (validationError) {
-            setPhoneError(validationError); // Set the specific error message
+            setPhoneError("مشکل"); // Set the specific error message
             // Optionally, you might want to clear the phone state or focus the input here
             return;
         }

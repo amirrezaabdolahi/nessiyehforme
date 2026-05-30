@@ -1,4 +1,3 @@
-import { validatePhone } from "./phoneValidation";
 import { z } from "zod";
 
 export const signupFormSchema = z.object({
@@ -10,6 +9,3 @@ export const signupFormSchema = z.object({
     username: z.string().min(5, "نام کاربری باید حداقل 5 کاراکتر باشد."),
     password: z.string().min(5, "رمز عبور باید حداقل 5 کاراکتر باشد."),
 });
-
-
-export default validateSignupForm;
