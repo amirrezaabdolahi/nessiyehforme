@@ -20,17 +20,16 @@ export async function POST(req: Request) {
 
         console.log(data);
 
-        if (!res.ok) {
+        if (!res.ok || !data.ok) {
             return NextResponse.json(
-                {
-                    ok: false,
-                    message: data.error || data.message || "Server error",
-                },
+                data,
                 {
                     status: res.status,
                 }
             );
         }
+
+
 
         return NextResponse.json(
             data,
