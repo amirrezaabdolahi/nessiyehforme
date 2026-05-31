@@ -56,7 +56,7 @@ const LoginCode = () => {
 
         try {
             setLoading(true);
-            const res = await fetch("/api/auth/verify-otp", {
+            const res = await fetch("/api/auth/verify-login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -70,7 +70,7 @@ const LoginCode = () => {
             const data = await res.json();
 
             if (data.ok) {
-                toast.success("ثبت نام با موفقیت کامل شد");
+                toast.success("ورود با موفقیت کامل شد");
                 router.replace("/dashboard");
                 return;
             }

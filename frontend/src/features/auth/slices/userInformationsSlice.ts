@@ -2,10 +2,10 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 
 export interface UserInfoType {
-    phone_number: string,
-    full_name: string,
+    phone_number?: string,
+    full_name?: string,
     email?: string,
-    password: string,
+    password?: string,
     isAuthenticated?: boolean
 }
 

@@ -1,11 +1,13 @@
 "use client";
 
+import { useAppDispatch } from "@/lib/redux/hooks";
 import { Button, TextField, Typography } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { toast } from "react-toastify";
 import z from "zod";
+import { userInfoActions } from "../slices/userInformationsSlice";
 
 const validatePhone = z
     .string()
@@ -18,6 +20,8 @@ const Signin = () => {
     const buttonRef = useRef<HTMLButtonElement>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const router = useRouter();
+
+    const dispatch = useAppDispatch();
 
     const handleValueChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -60,7 +64,6 @@ const Signin = () => {
                 }),
             });
 
-
             const data = await res.json();
 
             if (!data.ok) {
@@ -69,15 +72,20 @@ const Signin = () => {
             }
 
             console.log(data);
-
+            dispatch(
+                userInfoActions.updateForm({
+                    field: "phone_number",
+                    value: phone,
+                }),
+            );
             toast.success(data.message);
             router.push("?mode=login-code");
         } catch (error) {
             console.log(error);
             toast.error("خطا در ارسال کد");
             return;
-        }finally{
-            setLoading(false)
+        } finally {
+            setLoading(false);
         }
     };
 
