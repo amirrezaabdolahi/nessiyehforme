@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import { userInfoActions } from "../slices/userInformationsSlice";
 import { setCookie } from "@/utils/auth/SetCookie";
 
-const Code = () => {
+const RegisterCode = () => {
     const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
     const inputRef = useRef<HTMLInputElement[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
@@ -137,4 +137,4 @@ const Code = () => {
     );
 };
 
-export default Code;
+export default RegisterCode;

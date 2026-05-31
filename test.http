@@ -30,6 +30,16 @@ Content-Type: application/json
 
 {
     "phone_number" : "09225621257",
-    "code" : "464165"
+    "code" : "395491"
+}
+
+###
+
+POST {{baseUrl}}accounts/verify_register/
+Content-Type: application/json
+
+{
+    "phone_number" : "09225621257",
+    "code" : "395491"
 }
 

@@ -7,60 +7,78 @@ import { useRef, useState } from "react";
 import { toast } from "react-toastify";
 import z from "zod";
 
-
-const validatePhone = z.string()
+const validatePhone = z
+    .string()
+    .trim()
     .nonempty("شماره موبایل نمی‌تواند خالی باشد.")
-    .regex(/^09\d{9}$/, "شماره موبایل باید با 09 شروع شده و 11 رقم باشد.")
-    .transform((val) => val.trim()); // Optional: Trim whitespace
-
+    .regex(/^09\d{9}$/, "شماره موبایل باید با 09 شروع شده و 11 رقم باشد.");
 const Signin = () => {
     const [phone, setPhone] = useState<string>("");
-    const [phoneError, setPhoneError] = useState<string | null>(null); // Unified error state
-    const buttonRef = useRef<HTMLButtonElement>(null); // Type assertion for buttonRef
+    const [phoneError, setPhoneError] = useState<string | null>(null);
+    const buttonRef = useRef<HTMLButtonElement>(null);
     const [loading, setLoading] = useState<boolean>(false);
-    const router = useRouter()
+    const router = useRouter();
 
-    
+    const handleValueChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    ) => {
+        setPhone(() => e.target.value);
+        const value = e.target.value;
 
-    const handleSendOtpCode = () => {
-        const validationError = validatePhone.safeParse(phone).success;
-        if (validationError) {
-            setPhoneError("مشکل"); // Set the specific error message
-            // Optionally, you might want to clear the phone state or focus the input here
+        setPhone(value);
+
+        const validationResult = validatePhone.safeParse(value);
+
+        if (!validationResult.success) {
+            setPhoneError(validationResult.error.issues[0].message);
             return;
         }
 
-        setPhoneError(null); // Clear any previous errors if validation passes
-        setLoading(true); // Set loading state for UI feedback
+        setPhoneError(null);
+    };
+
+    const handleSendOtpCode = async () => {
+        const validationError = validatePhone.safeParse(phone);
+        if (!validationError.success) {
+            setPhoneError(validationError.error.issues[0].message);
+            return;
+        }
+
+        setPhoneError(null);
+        setLoading(true);
 
         // --- Simulate API Call ---
-        const sendCode = new Promise((resolve, reject) => {
-            setTimeout(() => {
-                // Simulate success/failure of the API call
-                const success = Math.random() > 0.3; // Simulate success ~70% of the time
-                if (success) {
-                    resolve("کد با موفقیت ارسال شد.");
-                } else {
-                    reject("خطا در ارسال کد. لطفا دوباره امتحان کنید.");
-                }
-                router.push("?mode=code")
-            }, 2000); // Simulate network latency
-        });
 
-        // --- Toast Notification ---
-        toast
-            .promise(sendCode, {
-                pending: "درحال ارسال کد...",
-                success: {
-                    render: ({ data }) => `${data}`, // Display success message from resolve
+        try {
+            const res = await fetch("/api/auth/send-code", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
                 },
-                error: {
-                    render: ({ data }) => `${data}`, // Display error message from reject
-                },
-            })
-            .finally(() => {
-                setLoading(false); // Always reset loading state after promise settles
+                body: JSON.stringify({
+                    phone_number: phone,
+                }),
             });
+
+
+            const data = await res.json();
+
+            if (!data.ok) {
+                toast.error(data.error);
+                return;
+            }
+
+            console.log(data);
+
+            toast.success(data.message);
+            router.push("?mode=login-code");
+        } catch (error) {
+            console.log(error);
+            toast.error("خطا در ارسال کد");
+            return;
+        }finally{
+            setLoading(false)
+        }
     };
 
     return (
@@ -70,19 +88,12 @@ const Signin = () => {
                 <TextField
                     label="شماره موبایل"
                     size="small"
-                    type="tel" // Use "tel" for phone numbers for better mobile keyboard experience
-                    // helperText={phoneError || "شماره ای که با آن ثبت نام کردید"} // Show error or helper text
+                    type="tel"
                     placeholder="09123456789"
                     required
                     autoComplete="off"
                     value={phone}
-                    onChange={(e) => {
-                        setPhone(e.target.value);
-                        // Optional: Clear error as user types
-                        if (phoneError) {
-                            setPhoneError(null);
-                        }
-                    }}
+                    onChange={handleValueChange}
                     onKeyDown={(e) => {
                         if (e.key === "Enter") {
                             // Trigger button click via its ref
@@ -90,25 +101,23 @@ const Signin = () => {
                         }
                     }}
                     inputProps={{
-                        inputMode: "numeric", // Activates numeric keyboard on mobile
-                        pattern: "[0-9]*", // Basic browser pattern for numeric input
-                        // maxLength: 11,     // Let the validation handle length precisely
+                        inputMode: "numeric",
+                        pattern: "[0-9]*",
+                        maxLength: 15,
                     }}
-                    error={!!phoneError} // Boolean check for error state
+                    error={!!phoneError}
                     helperText={
                         phoneError
                             ? phoneError
                             : "شماره ای که با آن ثبت نام کردید"
-                    } // Conditional helper text
+                    }
                 />
 
                 <Button
                     variant="contained"
                     onClick={handleSendOtpCode}
                     ref={buttonRef}
-                    disabled={loading || !!phoneError} // Disable if loading or if there's an error
-                    // MUI Button does not have a native 'loading' prop.
-                    // We'll show loading text conditionally.
+                    disabled={loading || !!phoneError}
                 >
                     {loading ? "درحال پردازش..." : "ارسال کد"}
                 </Button>

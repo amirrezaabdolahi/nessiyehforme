@@ -118,7 +118,7 @@ const Signup = () => {
             const data = await res.json();
 
             if (data.ok) {
-                router.push("?mode=code");
+                router.push("?mode=signup-code");
                 toast.success("کد ارسال شد");
                 dispatch(
                     userInfoActions.updateForm({

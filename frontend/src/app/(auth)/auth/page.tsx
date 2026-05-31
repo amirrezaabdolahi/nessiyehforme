@@ -1,4 +1,5 @@
-import Code from "@/features/auth/components/Code";
+import LoginCode from "@/features/auth/components/LoginCode";
+import RegisterCode from "@/features/auth/components/RegisterCode";
 import Signin from "@/features/auth/components/Signin";
 import Signout from "@/features/auth/components/Signout";
 import Signup from "@/features/auth/components/Signup";
@@ -19,9 +20,12 @@ const Authentication = async ({
             <div className="w-full sm:w-full md:w-125">
                 {mode === "signup" ? (
                     <Signup />
-                ) : mode === "code" ? (
-                    <Code />
-                ) : mode === "signout" ? (
+                ) : mode === "signup-code" ? (
+                    <RegisterCode />
+                ) : mode === "login-code" ? (
+                    <LoginCode />
+                ) :
+                mode === "signout" ? (
                     <Signout />
                 ) : (
                     <Signin />
