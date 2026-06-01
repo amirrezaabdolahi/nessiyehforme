@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate
+from django.contrib.auth.hashers import make_password
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -34,11 +35,14 @@ class RegisterView(APIView):
         if serializer.is_valid():
             random_code = random.randint(100000, 999999)
             # send_otp_code(phone_number, random_code)
-            OtpCode.objects.create(
+            OtpCode.objects.update_or_create(
                 phone_number=phone_number,
                 code=random_code,
                 full_name=serializer.validated_data["full_name"],
-                password=serializer.validated_data["password"]
+                password=make_password(serializer.validated_data["password"]),
+                is_shop=serializer.validated_data["is_shop"],
+                shop_name=serializer.validated_data["shop_name"],
+                shop_address=serializer.validated_data["shop_address"]
             )
         
             return Response({
@@ -60,7 +64,7 @@ class RegisterVerifyCodeView(APIView):
             otp_code = OtpCode.objects.get(
                 phone_number=phone_number,
                 code=code
-            )
+            ).order_by("-created_at").first()
         except OtpCode.DoesNotExist:
             return Response(
                 {
@@ -82,7 +86,10 @@ class RegisterVerifyCodeView(APIView):
         user = User.objects.create_user(
             phone_number=phone_number,
             full_name=otp_code.full_name,
-            password=otp_code.password
+            password=otp_code.password,
+            is_shop=otp_code.is_shop,
+            shop_name=otp_code.shop_name,
+            shop_address=otp_code.shop_address
         )
 
         otp_code.delete()
