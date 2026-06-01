@@ -36,6 +36,9 @@ class OtpCode(models.Model):
     code = models.CharField(max_length=6)
     full_name = models.CharField(max_length=255, blank=True, null=True)
     password = models.CharField(max_length=255, blank=True, null=True)
+    is_shop = models.BooleanField(default=False)
+    shop_name = models.CharField(max_length=255, blank=True, null=True)
+    shop_address = models.CharField(max_length=255, blank=True, null=True)
     created_at = models.DateTimeField(default=timezone.now)
 
     def is_valid(self):

@@ -1,5 +1,4 @@
 from django.contrib.auth import authenticate
-from django.contrib.auth.hashers import make_password
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -35,11 +34,11 @@ class RegisterView(APIView):
         if serializer.is_valid():
             random_code = random.randint(100000, 999999)
             # send_otp_code(phone_number, random_code)
-            OtpCode.objects.update_or_create(
+            OtpCode.objects.create(
                 phone_number=phone_number,
                 code=random_code,
                 full_name=serializer.validated_data["full_name"],
-                password=make_password(serializer.validated_data["password"]),
+                password=serializer.validated_data["password"],
                 is_shop=serializer.validated_data["is_shop"],
                 shop_name=serializer.validated_data["shop_name"],
                 shop_address=serializer.validated_data["shop_address"]
@@ -61,7 +60,7 @@ class RegisterVerifyCodeView(APIView):
         code = serializer.validated_data["code"]
 
         try:
-            otp_code = OtpCode.objects.get(
+            otp_code = OtpCode.objects.filter(
                 phone_number=phone_number,
                 code=code
             ).order_by("-created_at").first()

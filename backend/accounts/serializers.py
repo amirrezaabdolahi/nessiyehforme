@@ -17,11 +17,20 @@ class RegisterSerializer(serializers.Serializer):
     shop_address = serializers.CharField(max_length=255, required=False, allow_blank=True)
 
     def validate(self, data):
+        errors = {}
+    
         if data.get("is_shop"):
             if not data.get("shop_name"):
-                raise serializers.ValidationError("نام فروشگاه برای کاربران فروشنده الزامی است.")
+                errors["ok"] = False
+                errors["shop_name"] = "نام فروشگاه الزامی است."
+    
             if not data.get("shop_address"):
-                raise serializers.ValidationError("آدرس فروشگاه برای کاربران فروشنده الزامی است.")
+                errors["ok"] = False
+                errors["shop_address"] = "آدرس فروشگاه الزامی است."
+    
+        if errors:
+            raise serializers.ValidationError(errors)
+    
         return data
 
 class RegisterVerifyCodeSerializer(serializers.Serializer):
