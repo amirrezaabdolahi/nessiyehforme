@@ -6,8 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useRef, useState } from "react";
 import { toast } from "react-toastify";
-import { userInfoActions } from "../slices/userInformationsSlice";
-import { setCookie } from "@/utils/auth/SetCookie";
+
 
 const LoginCode = () => {
     const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
@@ -71,7 +70,7 @@ const LoginCode = () => {
 
             if (data.ok) {
                 toast.success("ورود با موفقیت کامل شد");
-                router.replace("/dashboard");
+                router.replace("/main");
                 return;
             }
             toast.error(data.error, { draggable: true, closeOnClick: true });

@@ -1,3 +1,5 @@
+import MainNavbar from "@/features/main/components/MainNavbar";
+
 export default function MainLayout({
     children,
 }: {
@@ -5,6 +7,7 @@ export default function MainLayout({
 }) {
     return (
         <div className="">
+            <MainNavbar />
             {children}
         </div>
     );

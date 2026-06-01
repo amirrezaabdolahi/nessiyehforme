@@ -71,7 +71,7 @@ const RegisterCode = () => {
 
             if (data.ok) {
                 toast.success("ثبت نام با موفقیت کامل شد");
-                router.replace("/dashboard");
+                user.is_shop ? router.replace("/dashboard") : router.replace("/main");
                 return;
             }
             toast.error(data.error, { draggable: true, closeOnClick: true });

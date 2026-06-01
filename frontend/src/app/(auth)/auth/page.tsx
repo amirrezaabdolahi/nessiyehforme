@@ -1,5 +1,6 @@
 import LoginCode from "@/features/auth/components/LoginCode";
 import RegisterCode from "@/features/auth/components/RegisterCode";
+import ShopRegister from "@/features/auth/components/ShopRegister";
 import Signin from "@/features/auth/components/Signin";
 import Signout from "@/features/auth/components/Signout";
 import Signup from "@/features/auth/components/Signup";
@@ -20,6 +21,8 @@ const Authentication = async ({
             <div className="w-full sm:w-full md:w-125">
                 {mode === "signup" ? (
                     <Signup />
+                ) : mode === "shop-register" ? (
+                    <ShopRegister />
                 ) : mode === "signup-code" ? (
                     <RegisterCode />
                 ) : mode === "login-code" ? (

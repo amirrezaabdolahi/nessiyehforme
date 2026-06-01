@@ -3,6 +3,20 @@
 @baseUrl = http://127.0.0.1:8080/api/
 
 
+POST {{baseUrl}}accounts/register/
+Content-Type: application/json
+
+{
+    "full_name" : "Amir Reza",
+    "phone_number" : "09225621257",
+    "password" : "amiroonreza1",
+    "is_shop" : true,
+    "shop_name" : "Amir Reza Shop",
+    "shop_address" : "Tehran, Iran"
+}
+
+
+###
 POST {{baseUrl}}accounts/login/
 Content-Type: application/json
 
@@ -39,7 +53,7 @@ POST {{baseUrl}}accounts/verify_register/
 Content-Type: application/json
 
 {
-    "phone_number" : "09225621257",
-    "code" : "395491"
+    "phone_number" : "09123456789",
+    "code" : "109434"
 }
 

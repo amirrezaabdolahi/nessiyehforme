@@ -6,6 +6,9 @@ export interface UserInfoType {
     full_name?: string,
     email?: string,
     password?: string,
+    is_shop?: boolean,
+    shop_name?: string,
+    shop_address?: string,
     isAuthenticated?: boolean
 }
 
@@ -15,7 +18,10 @@ const initialState: UserInfoType = {
     full_name: '',
     email: '',
     password: '',
-    isAuthenticated: false
+    isAuthenticated: false,
+    is_shop: false,
+    shop_name: '',
+    shop_address: ''
 }
 
 const userInfoSlice = createSlice({
