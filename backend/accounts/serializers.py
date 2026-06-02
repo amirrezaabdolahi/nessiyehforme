@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from .models import User, OtpCode
 import re
 
 def validate_phone_number(value):
@@ -50,3 +51,4 @@ class SendOTPSerializer(serializers.Serializer):
 class OTPLoginSerializer(serializers.Serializer):
     phone_number = serializers.CharField(max_length=11, validators=[validate_phone_number])
     code = serializers.CharField(max_length=6)
+

@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import IsAuthenticated
 import random
 from utils import send_otp_code
 
@@ -12,7 +13,8 @@ from .serializers import (
     RegisterVerifyCodeSerializer,
     LoginSerializer,
     SendOTPSerializer,
-    OTPLoginSerializer
+    OTPLoginSerializer,
+    ProfileSerializer
 )
 
 class RegisterView(APIView):
@@ -231,3 +233,19 @@ class OTPLoginView(APIView):
             },
             status=status.HTTP_200_OK
         )
+    
+
+
+class ProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        return Response({
+            "ok": True,
+            "phone_number": user.phone_number,
+            "full_name": user.full_name,
+            "is_shop": user.is_shop,
+            "shop_name": user.shop_name,
+            "shop_address": user.shop_address
+        })
