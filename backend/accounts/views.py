@@ -14,7 +14,6 @@ from .serializers import (
     LoginSerializer,
     SendOTPSerializer,
     OTPLoginSerializer,
-    ProfileSerializer
 )
 
 class RegisterView(APIView):
