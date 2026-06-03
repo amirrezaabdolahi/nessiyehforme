@@ -23,9 +23,13 @@ class ProductListCreateView(APIView):
     parsers_classes = [MultiPartParser, FormParser]
 
     def get(self, request):
-        products = Product.objects.select_related('shop', 'category').all()
+        if request.user.is_authenticated and request.user.is_shop:
+            products = Product.objects.filter(shop=request.user)
+        else:
+            products = Product.objects.all()
+
         serializer = ProductSerializer(products, many=True)
-        return Response({'ok': True, 'products': serializer.data}, status=status.HTTP_200_OK)
+        return Response({"ok": True, "products": serializer.data})
 
     def post(self, request):
         if not IsShop.check(request.user):
