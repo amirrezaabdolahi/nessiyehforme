@@ -20,7 +20,7 @@ class ProductListCreateView(APIView):
             return [AllowAny()]
         return [IsAuthenticated()]
     
-    parsers_classes = [MultiPartParser, FormParser]
+    parser_classes = [MultiPartParser, FormParser]
 
     def get(self, request):
         if request.user.is_authenticated and request.user.is_shop:
