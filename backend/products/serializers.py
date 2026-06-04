@@ -16,11 +16,12 @@ class ProductSerializer(serializers.ModelSerializer):
     )
     category_name = serializers.SerializerMethodField()
     shop_name = serializers.SerializerMethodField()
+    description = serializers.CharField(required=False, allow_blank=True)
 
     class Meta:
         model = Product
         fields = [
-            'id', 'name', 'description', 'price', 'stock', 'image',
+            'id', 'name', 'description', 'buy_price', 'sell_price', 'stock',
             'category', 'category_name', 'shop', 'shop_name', 'created_at'
         ]
         read_only_fields = ['shop', 'created_at']

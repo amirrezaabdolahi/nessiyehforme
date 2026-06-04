@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken as JWTRefreshToken
 from rest_framework.permissions import IsAuthenticated
 import random
 from utils import send_otp_code
@@ -15,6 +16,33 @@ from .serializers import (
     SendOTPSerializer,
     OTPLoginSerializer,
 )
+
+
+class RefreshTokenView(APIView):
+
+    def post(self, request):
+        refresh_token = request.data.get("refresh")
+
+        if not refresh_token:
+            return Response(
+                {"ok": False, "error": "توکن ارسال نشده است"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            refresh = JWTRefreshToken(refresh_token)
+            return Response({
+                "ok": True,
+                "access": str(refresh.access_token)
+            })
+        except Exception:
+            return Response(
+                {"ok": False, "error": "توکن نامعتبر یا منقضی شده است"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+
+
 
 class RegisterView(APIView):
 

@@ -6,7 +6,8 @@ from .views import (
     LoginView,
     SendOTPView,
     OTPLoginView,
-    ProfileView
+    ProfileView,
+    RefreshTokenView,
 )
 
 urlpatterns = [
@@ -16,4 +17,5 @@ urlpatterns = [
     path("send_otp/", SendOTPView.as_view()),
     path("login_otp/", OTPLoginView.as_view()),
     path("profile/", ProfileView.as_view()),
+    path("refresh/", RefreshTokenView.as_view()),
 ]
