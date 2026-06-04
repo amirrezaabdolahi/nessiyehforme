@@ -243,6 +243,14 @@ const Signup = () => {
                     ورود اکانت{" "}
                 </Link>
             </Typography>
+            <Typography variant="body2" className="mt-4!">
+                برای ساخت اکانت فروشگاهی اینجا کلیک کنید
+                <Link className="text-blue-500" href={"?mode=shop-register"}>
+                    {" "}
+                    ثبت نام فروشگاهی{" "}
+                </Link>
+            </Typography>
+
         </>
     );
 };

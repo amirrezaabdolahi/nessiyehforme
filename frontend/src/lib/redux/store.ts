@@ -4,6 +4,7 @@ import { paymentSliceReducer } from "@/features/dashboard/childs/payments/slices
 import { productFormReducers } from "@/features/dashboard/childs/products/slices/productFormSlice"
 import { configureStore } from "@reduxjs/toolkit"
 import { userInfoReducer } from "@/features/auth/slices/userInformationsSlice"
+import { ApiProduct } from "@/features/dashboard/childs/products/api/ApiProduct"
 
 
 
@@ -14,9 +15,10 @@ export const store = configureStore({
         paymentsForm: paymentSliceReducer,
         customersForm: customerSliceReducer,
         productsForm: productFormReducers,
+        [ApiProduct.reducerPath]: ApiProduct.reducer,
     },
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(),
+        getDefaultMiddleware().concat(ApiProduct.middleware),
 })
 
 export type RootState = ReturnType<typeof store.getState>

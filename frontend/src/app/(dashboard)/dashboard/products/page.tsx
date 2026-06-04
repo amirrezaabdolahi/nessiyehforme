@@ -5,6 +5,7 @@ import AddProductModal from "@/features/dashboard/components/AddProductModal";
 import Product from "@/features/dashboard/components/Product";
 import ProductsSearch from "@/features/dashboard/childs/products/components/ProductsSearch";
 import { Suspense } from "react";
+import GetProducts from "@/features/dashboard/childs/products/components/Products";
 
 interface Props {
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -13,7 +14,7 @@ interface Props {
 const Products = async ({ searchParams }: Props) => {
     const querys = await searchParams;
 
-    console.log(querys);
+    
 
     return (
         <Container>
@@ -25,7 +26,7 @@ const Products = async ({ searchParams }: Props) => {
                 <Suspense
                     fallback={<ProductListLoading count={8} />}
                 >
-                    {ppp()}
+                    {/* <GetProducts /> */}
                 </Suspense>
             </div>
         </Container>
@@ -58,13 +59,4 @@ const ProductListLoading = ({ count }: { count: number }) => {
     );
 };
 
-const ppp = async() => {
-    await new Promise((resolve) => setTimeout(resolve, 2000)); // 2 ثانیه تاخیر
-    return (
-        <>
-            {productsShow.map((product) => (
-                <Product key={product.id} product={product} />
-            ))}
-        </>
-    );
-};
+
