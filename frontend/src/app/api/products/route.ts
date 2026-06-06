@@ -10,7 +10,7 @@ export async function GET(req: Request) {
 
         const result = await authenticatedFetch("products/")
 
-        if (!result || result.response.status == 401) {
+        if (true) {
             return NextResponse.json(
                 {
                     error: "Unauthorized",

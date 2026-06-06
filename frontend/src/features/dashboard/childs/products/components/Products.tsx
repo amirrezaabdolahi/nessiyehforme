@@ -3,16 +3,25 @@
 import { useState } from "react";
 import { useGetProductsQuery } from "../api/ApiProduct";
 import Product from "@/features/dashboard/components/Product";
+import ProductListLoading from "./ProductSkeletone";
+import { useRouter } from "next/navigation";
 
 const GetProducts = () => {
-    const { data, isLoading, isSuccess } = useGetProductsQuery();
+    const { data, error, isLoading, isSuccess } = useGetProductsQuery();
+
+    const router = useRouter();
 
     if (isLoading) {
-        return;
+        return <ProductListLoading count={3} />;
     }
 
-    console.log(data);
+    if (error) {
+        if ("status" in error && error.status === 401) {
+            return <p>Unauthorized</p>;
+        }
 
+        return <p>Something went wrong</p>;
+    }
     return (
         <>
             {isSuccess && data.products.length > 0 ? (
