@@ -77,5 +77,15 @@ Authorization: Bearer {{access}}
 
 
 }
+###
+
+POST {{baseUrl}}products/
+Content-Type: application/json
+Authorization: Bearer {{access}}
+
+{
+
+
+}
 
 
