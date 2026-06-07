@@ -6,11 +6,10 @@ const initialState: ProductModalFormType = {
     barcode: '',
     buy_price: 0,
     sell_price: 0,
-    date: '',
     exp_date: '',
     categorie: null,
-    branch: null,
-    description: ''
+    description: '',
+    stock: 0,
 }
 
 

@@ -1,7 +1,5 @@
 "use client";
 
-import { markets } from "@/data/DashboardMarkets";
-import { ProductType } from "@/types/productTypes";
 import { branches, categories } from "@/utils/filteringData";
 import { AddRounded, CloseRounded } from "@mui/icons-material";
 import {
@@ -13,37 +11,130 @@ import {
     TextField,
     Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ModalContainer from "./ModalContainer";
 import { toast } from "react-toastify";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { productFormActions } from "../childs/products/slices/productFormSlice";
+import { ProductModalFormType } from "@/types/modalsTypes";
+import { validateAddProductForm } from "@/utils/validateAddProductForm";
+import { useAddProductMutation } from "../childs/products/api/ApiProduct";
 
 const AddProductModal = () => {
     const formData = useAppSelector((e) => e.productsForm);
     const dispatch = useAppDispatch();
 
+    const [form, setForm] = useState<ProductModalFormType>({
+        name: formData.name,
+        barcode: formData.barcode,
+        buy_price: formData.buy_price,
+        sell_price: formData.sell_price,
+        exp_date: formData.exp_date,
+        categorie: formData.categorie,
+        description: formData.description,
+        stock: formData.stock,
+    });
+
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
-    async function handleAddProduct() {
-        // Define the promise
-        const myPromise = new Promise((resolve, reject) => {
-            setTimeout(() => {
-                // Simulate success or error
-                const success = true;
-                if (success) resolve("Data sent successfully!");
-                else reject("Something went wrong!");
-            }, 2000);
-        });
+    const [addProduct, { isLoading, isSuccess, error, data }] =
+        useAddProductMutation();
 
-        // Pass the promise to toast
-        toast.promise(myPromise, {
-            pending: "درحال ثبت محصول...",
-            success: "محصول ثبت شد",
-            error: "اوهو ارور داریم !",
-        });
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let { name, value }: { name: string; value: string | number } =
+            e.target;
+        if (name === "buy_price" || name === "sell_price" || name === "stock") {
+            if (Number(value)) {
+                value = Number(value);
+            }
+        }
+        setForm((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
+
+    async function handleAddProduct() {
+        const isValid = validateAddProductForm.safeParse(form);
+        if (!isValid.success) {
+            toast.error(isValid.error.issues[0].message);
+            return;
+        }
+
+        dispatch(
+            productFormActions.updateForm({ field: "name", value: form.name }),
+        );
+        dispatch(
+            productFormActions.updateForm({
+                field: "barcode",
+                value: form.barcode,
+            }),
+        );
+        dispatch(
+            productFormActions.updateForm({
+                field: "buy_price",
+                value: form.buy_price,
+            }),
+        );
+        dispatch(
+            productFormActions.updateForm({
+                field: "sell_price",
+                value: form.sell_price,
+            }),
+        );
+        dispatch(
+            productFormActions.updateForm({
+                field: "exp_date",
+                value: form.exp_date,
+            }),
+        );
+        dispatch(
+            productFormActions.updateForm({
+                field: "categorie",
+                value: form.categorie,
+            }),
+        );
+        dispatch(
+            productFormActions.updateForm({
+                field: "description",
+                value: form.description || "",
+            }),
+        );
+        dispatch(
+            productFormActions.updateForm({
+                field: "stock",
+                value: form.stock || 0,
+            }),
+        );
+
+        try {
+            const result = await addProduct(form).unwrap();
+
+            console.log("Add product result:", result);
+
+            if (result.ok) {
+                toast.success("محصول با موفقیت ثبت شد");
+                dispatch(productFormActions.resetForm());
+                setForm({
+                    name: "",
+                    barcode: "",
+                    buy_price: 0,
+                    sell_price: 0,
+                    exp_date: "",
+                    categorie: null,
+                    description: "",
+                    stock: 0,
+                });
+            } else {
+                toast.error("خطا در ثبت محصول");
+            }
+        } catch (error) {
+            console.error("Error adding product:", error);
+            toast.error("خطا در ثبت محصول");
+            return;
+        }
     }
 
     return (
@@ -81,16 +172,10 @@ const AddProductModal = () => {
                                 <TextField
                                     size="small"
                                     fullWidth
-                                    placeholder="علی سعادت"
-                                    value={formData.name}
-                                    onChange={(e) => {
-                                        dispatch(
-                                            productFormActions.updateForm({
-                                                field: "name",
-                                                value: e.target.value,
-                                            }),
-                                        );
-                                    }}
+                                    placeholder="چیپس لیمویی"
+                                    value={form.name}
+                                    name="name"
+                                    onChange={handleChange}
                                 />
                             </div>
                             <div className="flex flex-col gap-2">
@@ -99,15 +184,9 @@ const AddProductModal = () => {
                                     size="small"
                                     fullWidth
                                     placeholder="6269334116182"
-                                    value={formData.barcode}
-                                    onChange={(e) => {
-                                        dispatch(
-                                            productFormActions.updateForm({
-                                                field: "barcode",
-                                                value: e.target.value,
-                                            }),
-                                        );
-                                    }}
+                                    value={form.barcode}
+                                    name="barcode"
+                                    onChange={handleChange}
                                 />
                             </div>
                             <div className="flex items-center gap-2 w-full">
@@ -119,15 +198,9 @@ const AddProductModal = () => {
                                         placeholder="مبلغ به ریال ، (نامحدود)"
                                         size="small"
                                         fullWidth
-                                        value={formData.buy_price}
-                                        onChange={(e) => {
-                                            dispatch(
-                                                productFormActions.updateForm({
-                                                    field: "buy_price",
-                                                    value: e.target.value,
-                                                }),
-                                            );
-                                        }}
+                                        value={form.buy_price}
+                                        name="buy_price"
+                                        onChange={handleChange}
                                     />
                                 </div>
                                 <div className="w-full">
@@ -139,42 +212,14 @@ const AddProductModal = () => {
                                             placeholder="مبلغ به ریال ، (نامحدود)"
                                             size="small"
                                             fullWidth
-                                            value={formData.sell_price}
-                                            onChange={(e) => {
-                                                dispatch(
-                                                    productFormActions.updateForm(
-                                                        {
-                                                            field: "sell_price",
-                                                            value: e.target
-                                                                .value,
-                                                        },
-                                                    ),
-                                                );
-                                            }}
+                                            value={form.sell_price}
+                                            name="sell_price"
+                                            onChange={handleChange}
                                         />
                                     </div>
                                 </div>
                             </div>
                             <div className="flex items-center gap-2 w-full">
-                                <div className="w-full">
-                                    <Typography variant="body2">
-                                        تاریخ
-                                    </Typography>
-                                    <TextField
-                                        placeholder="1404/05/29"
-                                        size="small"
-                                        fullWidth
-                                        value={formData.date}
-                                        onChange={(e) => {
-                                            dispatch(
-                                                productFormActions.updateForm({
-                                                    field: "date",
-                                                    value: e.target.value,
-                                                }),
-                                            );
-                                        }}
-                                    />
-                                </div>
                                 <div className="w-full">
                                     <Typography variant="body2">
                                         تاریخ انقضا (اختیاری)
@@ -183,15 +228,22 @@ const AddProductModal = () => {
                                         placeholder="1404/05/29"
                                         size="small"
                                         fullWidth
-                                        value={formData.exp_date}
-                                        onChange={(e) => {
-                                            dispatch(
-                                                productFormActions.updateForm({
-                                                    field: "exp_date",
-                                                    value: e.target.value,
-                                                }),
-                                            );
-                                        }}
+                                        value={form.exp_date}
+                                        name="exp_date"
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                                <div className="w-full">
+                                    <Typography variant="body2">
+                                        موجودی (اختیاری)
+                                    </Typography>
+                                    <TextField
+                                        placeholder="1404/05/29"
+                                        size="small"
+                                        fullWidth
+                                        value={form.stock}
+                                        name="stock"
+                                        onChange={handleChange}
                                     />
                                 </div>
                             </div>
@@ -205,53 +257,12 @@ const AddProductModal = () => {
                                         id="category-select"
                                         options={categories}
                                         getOptionLabel={(option) => option.name}
-                                        value={formData.categorie}
+                                        value={form.categorie || null}
                                         onChange={(event, newValue) => {
-                                            dispatch(
-                                                productFormActions.updateForm({
-                                                    field: "categorie",
-                                                    value: newValue,
-                                                }),
-                                            );
-                                        }}
-                                        renderOption={(props, option) => {
-                                            return (
-                                                <li {...props} key={option.id}>
-                                                    {option.name}
-                                                </li>
-                                            );
-                                        }}
-                                        renderInput={(params) => (
-                                            <TextField
-                                                {...params}
-                                                placeholder="انتخاب کنید..."
-                                            />
-                                        )}
-                                        size="small"
-                                        fullWidth
-                                    />
-                                </div>
-                                <div className="w-full">
-                                    <Typography variant="body2">
-                                        شاخه
-                                    </Typography>
-                                    <Autocomplete
-                                        disablePortal
-                                        id="branch-select"
-                                        options={
-                                            branches[
-                                                `${formData.categorie?.value}`
-                                            ]
-                                        }
-                                        getOptionLabel={(option) => option.name}
-                                        value={formData.branch}
-                                        onChange={(event, newValue) => {
-                                            dispatch(
-                                                productFormActions.updateForm({
-                                                    field: "branch",
-                                                    value: newValue,
-                                                }),
-                                            );
+                                            setForm((prev) => ({
+                                                ...prev,
+                                                categorie: newValue,
+                                            }));
                                         }}
                                         renderOption={(props, option) => {
                                             return (
@@ -276,27 +287,25 @@ const AddProductModal = () => {
                                 rows={3}
                                 label="توضیحات"
                                 size="small"
-                                value={formData.description}
-                                onChange={(e) => {
-                                    dispatch(
-                                        productFormActions.updateForm({
-                                            field: "description",
-                                            value: e.target.value,
-                                        }),
-                                    );
-                                }}
+                                value={form.description}
+                                name="description"
+                                onChange={handleChange}
                             />
                         </form>
                     </Box>
                     <div className="flex gap-2 border-t border-gray-300 pt-4 ">
-                        <Button variant="contained" onClick={handleAddProduct}>
+                        <Button
+                            variant="contained"
+                            onClick={handleAddProduct}
+                            disabled={isLoading}
+                        >
                             ثبت محصول
                         </Button>
                         <Button
                             variant="outlined"
                             color="error"
                             onClick={() => {
-                                dispatch(productFormActions.resetForm() );
+                                dispatch(productFormActions.resetForm());
                                 handleClose();
                             }}
                         >

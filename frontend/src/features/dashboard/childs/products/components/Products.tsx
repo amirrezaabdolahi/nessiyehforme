@@ -17,7 +17,7 @@ const GetProducts = () => {
 
     if (error) {
         if ("status" in error && error.status === 401) {
-            return <p>Unauthorized</p>;
+            router.push("/auth?mode=login");
         }
 
         return <p>Something went wrong</p>;

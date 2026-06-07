@@ -39,10 +39,8 @@ export interface ProductModalFormType {
     barcode: string | number,
     buy_price: string | number,
     sell_price: string | number,
-    date: string | number,
     exp_date: string | number,
     categorie: Category | null,
-    branch: BranchMap | null,
     description?: string
-
+    stock?: number,
 }
