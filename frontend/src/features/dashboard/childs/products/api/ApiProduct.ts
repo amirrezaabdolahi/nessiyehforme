@@ -1,6 +1,5 @@
 import { ProductModalFormType } from "@/types/modalsTypes";
 import { ProductShowType, ProductType } from "@/types/productTypes";
-import { env } from "@/utils/env/env";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const ApiProduct = createApi({
@@ -15,6 +14,10 @@ export const ApiProduct = createApi({
             query: () => "products/",
             providesTags: ["Products"],
         }),
+        getProductById: builder.query<{ ok: boolean, product: ProductType }, string>({
+            query: (id) => `products/${id}/`,
+            providesTags: ["Products"],
+        }),
         addProduct: builder.mutation<{ ok: boolean, product: ProductType }, ProductModalFormType>({
             query: (newProduct) => ({
                 url: "products/",
@@ -23,7 +26,15 @@ export const ApiProduct = createApi({
             }),
             invalidatesTags: ["Products"],
         }),
+        deleteProduct: builder.mutation<any, any>({
+            query: (id) => ({
+                url: `products/${id}/`,
+                method: "DELETE",
+            }),
+            invalidatesTags: ["Products"]
+        })
+
     }),
 });
 
-export const { useGetProductsQuery, useAddProductMutation } = ApiProduct;
+export const { useGetProductsQuery, useGetProductByIdQuery, useAddProductMutation, useDeleteProductMutation } = ApiProduct;
