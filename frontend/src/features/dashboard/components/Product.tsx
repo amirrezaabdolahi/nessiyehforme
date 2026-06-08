@@ -11,7 +11,7 @@ const Product = ({ product }: ProductProps) => {
     return (
         <Link href={`products/${product.id}`} className="h-full">
             <Card className="rounded-lg! h-full">
-                <div className="w-full h-80 flex items-center justify-center">
+                <div className="w-full h-70 flex items-center justify-center">
                     <ImageRounded color="action" />
                 </div>
                 <div className="p-2">

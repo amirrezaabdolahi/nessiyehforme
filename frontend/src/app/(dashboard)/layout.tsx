@@ -2,14 +2,32 @@ import DashboardNavBar from "@/features/dashboard/components/DashboardNavBar";
 import SideBar from "@/features/dashboard/components/SideBar";
 import SlideUpAnimation from "@/components/SlideUpAnimation";
 import MobileMenu from "@/components/dash/MobileMenu";
+import { getCurrentUser } from "@/utils/auth/GetCurrentUser";
+import { redirect } from "next/navigation";
+import AuthHydrator from "@/utils/auth/AuthHydrateRedux";
 
-export default function MainLayout({
+export default async function MainLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
+    const user = await getCurrentUser();
+
+    if (!user) {
+        redirect("/auth?mode=login");
+    }
+
+    if (!user.is_shop) {
+        redirect("/");
+    }
+
     return (
         <div className="h-screen grid  grid-rows-[auto_1fr] ">
+
+            {/* ser user information to redux */}
+
+            <AuthHydrator user={user} />
+
             {/* Navbar */}
             <div className="z-10">
                 <DashboardNavBar />
