@@ -69,8 +69,8 @@ class RegisterView(APIView):
                 full_name=serializer.validated_data["full_name"],
                 password=serializer.validated_data["password"],
                 is_shop=serializer.validated_data["is_shop"],
-                shop_name=serializer.validated_data["shop_name"],
-                shop_address=serializer.validated_data["shop_address"]
+                shop_name=serializer.validated_data.get("shop_name", ""),
+                shop_address=serializer.validated_data.get("shop_address", "")
             )
         
             return Response({
