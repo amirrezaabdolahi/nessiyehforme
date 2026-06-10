@@ -6,7 +6,7 @@ export async function GET(req: Request) {
 
     try {
 
-        const result = await authenticatedFetch("products/")
+        const result = await authenticatedFetch("customers/")
 
         if (!result || result.response.status == 401) {
             return NextResponse.json(
@@ -50,7 +50,7 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
     try {
         const body = await req.json();
-        const result = await authenticatedFetch("products/", {
+        const result = await authenticatedFetch("customers/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

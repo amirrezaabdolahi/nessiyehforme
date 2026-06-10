@@ -2,12 +2,12 @@ type statusType = "active" | "overdue" | "settled" | "partial"
 
 export type CustomerType = {
     id: number,
-    username: string,
-    phone: string,
-    totalCredit: number,
-    paid: number,
-    status: statusType,
-    lastPayment: string
+    full_name: string,
+    phone_number: string,
+    totalCredit?: number,
+    paid?: number,
+    status?: statusType,
+    lastPayment?: string
 }
 
 export interface CustomerPayedType {
