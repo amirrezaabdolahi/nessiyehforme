@@ -28,10 +28,7 @@ export interface PaymentModalFormType {
 
 
 export interface CustomerModalFormType {
-    fullname: string,
-    phone: string | number,
-    code: string | number,
-    description?: string
+    phone_number: string | number,
 }
 
 export interface ProductModalFormType {

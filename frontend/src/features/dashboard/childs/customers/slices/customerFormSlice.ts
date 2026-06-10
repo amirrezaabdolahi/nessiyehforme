@@ -4,10 +4,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 
 const initialState: CustomerModalFormType = {
-    fullname: '',
-    phone: '',
-    code: '',
-    description: ''
+    phone_number: '',
 }
 
 

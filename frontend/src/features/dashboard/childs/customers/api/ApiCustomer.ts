@@ -1,3 +1,4 @@
+import { CustomerModalFormType } from "@/types/modalsTypes";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 interface CustomerResponse {
@@ -17,7 +18,15 @@ export const ApiCustomer = createApi({
             query: () => "customers/",
             providesTags: ["Customers"]
         }),
+        addCustomer: builder.mutation<CustomerResponse , CustomerModalFormType >({
+            query: (data) => ({
+                url: "customers/",
+                method: "POST",
+                body: JSON.stringify(data)
+            }),
+            invalidatesTags: ["Customers"]
+        })
     })
 })
 
-export const { useGetCustomerQuery } = ApiCustomer
+export const { useGetCustomerQuery, useAddCustomerMutation } = ApiCustomer
