@@ -7,7 +7,7 @@ const initialState: ProductModalFormType = {
     buy_price: 0,
     sell_price: 0,
     exp_date: '',
-    categorie: null,
+    category: null,
     description: '',
     stock: 0,
 }

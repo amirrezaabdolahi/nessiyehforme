@@ -7,11 +7,11 @@ export const validateAddProductForm = z.object({
     sell_price: z.number().min(1, "قیمت فروش باید بزرگتر از صفر باشد"),
     stock: z.number().min(0, "موجودی باید بزرگتر از صفر باشد").optional(),
     exp_date: z.string().optional(),
-    category: z
-        .object({
-            id: z.number(),
-            name: z.string(),
-        })
-        .optional(),
+    // category: z
+    //     .object({
+    //         id: z.number(),
+    //         name: z.string(),
+    //     })
+    //     .optional(),
     description: z.string().optional(),
 });

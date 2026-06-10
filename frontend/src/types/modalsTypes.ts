@@ -40,7 +40,7 @@ export interface ProductModalFormType {
     buy_price: string | number,
     sell_price: string | number,
     exp_date: string | number,
-    categorie: Category | null,
+    category: Category | null,
     description?: string
     stock?: number,
 }

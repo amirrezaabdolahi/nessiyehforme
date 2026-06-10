@@ -1,12 +1,13 @@
 "use client";
-import BranchSelect from "@/components/dash/BranchSelectField";
 import CategorySelect from "@/components/dash/CategorySelectField";
 import Container from "@/components/dash/Container";
-import SelectUnitField from "@/features/dashboard/components/SelectUnitField";
 import { ArrowForwardIosRounded } from "@mui/icons-material";
 import { Avatar, Button, Card, TextField, Typography } from "@mui/material";
 import Link from "next/link";
 import { useGetProductByIdQuery } from "../api/ApiProduct";
+import { useState } from "react";
+import { ProductType } from "@/types/productTypes";
+import { ProductModalFormType } from "@/types/modalsTypes";
 
 const ProductDetailsEditPage = ({ id }: { id: string }) => {
     const { data, isLoading, isSuccess, error } = useGetProductByIdQuery(id);
@@ -15,15 +16,16 @@ const ProductDetailsEditPage = ({ id }: { id: string }) => {
 
     const product = isSuccess ? data.product : null;
 
-    const formatter = new Intl.NumberFormat("fa-IR", {
-        style: "currency",
-        currency: "IRR",
+    const [form, setForm] = useState({
+        name: product?.name,
+        barcode: product?.barcode,
+        buy_price: product?.buy_price,
+        sell_price: product?.sell_price,
+        stock: product?.stock,
+        exp_date: product?.exp_date,
+        description: product?.description,
     });
-    const dateFormatter = new Intl.DateTimeFormat("fa-IR", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-    });
+
 
     if (isLoading) {
         return (
@@ -44,7 +46,6 @@ const ProductDetailsEditPage = ({ id }: { id: string }) => {
             </Container>
         );
     }
-
 
     return (
         <Container>
@@ -68,7 +69,7 @@ const ProductDetailsEditPage = ({ id }: { id: string }) => {
                         fullWidth
                     />
                     <TextField
-                        value={product.sku}
+                        value={product.barcode}
                         size="small"
                         label="بارکد"
                         fullWidth
@@ -87,9 +88,9 @@ const ProductDetailsEditPage = ({ id }: { id: string }) => {
                     </div>
                     <div className="flex gap-2 w-full">
                         <TextField
-                            value={product.man_date}
+                            value={product.stock}
                             size="small"
-                            label="تاریخ تولید"
+                            label="تعداد"
                         />
                         <TextField
                             value={product.exp_date}
@@ -99,15 +100,6 @@ const ProductDetailsEditPage = ({ id }: { id: string }) => {
                     </div>
                     <div className="flex gap-2 w-full">
                         <CategorySelect setCategory={null} />
-                    </div>
-                    <div className="flex gap-2 w-full">
-                        <SelectUnitField />
-                        <TextField
-                            value={product.qty}
-                            size="small"
-                            label="تعداد"
-                            fullWidth
-                        />
                     </div>
                     <TextField
                         value={product.description || ""}

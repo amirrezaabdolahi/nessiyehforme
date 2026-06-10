@@ -30,7 +30,7 @@ const AddProductModal = () => {
         buy_price: formData.buy_price,
         sell_price: formData.sell_price,
         exp_date: formData.exp_date,
-        categorie: formData.categorie,
+        category: formData.category,
         description: formData.description,
         stock: formData.stock,
     });
@@ -54,60 +54,17 @@ const AddProductModal = () => {
             ...prev,
             [name]: value,
         }));
+
+        dispatch(productFormActions.updateForm({ field: name, value: value }));
     };
 
     async function handleAddProduct() {
         const isValid = validateAddProductForm.safeParse(form);
         if (!isValid.success) {
             toast.error(isValid.error.issues[0].message);
+            console.log(isValid.error.issues);
             return;
         }
-
-        dispatch(
-            productFormActions.updateForm({ field: "name", value: form.name }),
-        );
-        dispatch(
-            productFormActions.updateForm({
-                field: "barcode",
-                value: form.barcode,
-            }),
-        );
-        dispatch(
-            productFormActions.updateForm({
-                field: "buy_price",
-                value: form.buy_price,
-            }),
-        );
-        dispatch(
-            productFormActions.updateForm({
-                field: "sell_price",
-                value: form.sell_price,
-            }),
-        );
-        dispatch(
-            productFormActions.updateForm({
-                field: "exp_date",
-                value: form.exp_date,
-            }),
-        );
-        dispatch(
-            productFormActions.updateForm({
-                field: "categorie",
-                value: form.categorie,
-            }),
-        );
-        dispatch(
-            productFormActions.updateForm({
-                field: "description",
-                value: form.description || "",
-            }),
-        );
-        dispatch(
-            productFormActions.updateForm({
-                field: "stock",
-                value: form.stock || 0,
-            }),
-        );
 
         try {
             const result = await addProduct(form).unwrap();
@@ -123,7 +80,7 @@ const AddProductModal = () => {
                     buy_price: 0,
                     sell_price: 0,
                     exp_date: "",
-                    categorie: null,
+                    category: null,
                     description: "",
                     stock: 0,
                 });
@@ -227,6 +184,7 @@ const AddProductModal = () => {
                                     <TextField
                                         placeholder="1404/05/29"
                                         size="small"
+                                        type="date"
                                         fullWidth
                                         value={form.exp_date}
                                         name="exp_date"

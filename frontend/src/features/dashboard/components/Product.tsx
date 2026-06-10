@@ -16,9 +16,9 @@ const Product = ({ product }: ProductProps) => {
                 </div>
                 <div className="p-2">
                     <Typography variant="body1">{product.name}</Typography>
-                    {product.sku && (
+                    {product.barcode && (
                         <Typography variant="body2">
-                            بارکد : {product.sku}
+                            بارکد : {product.barcode}
                         </Typography>
                     )}
                     <Typography variant="body2">
@@ -31,7 +31,7 @@ const Product = ({ product }: ProductProps) => {
                     )}
                     <Typography variant="body2">{product.category}</Typography>
                     <Typography variant="body2">
-                        {product.unit} : {product.qty}
+                        تعداد : {product.stock}
                     </Typography>
                 </div>
             </Card>
