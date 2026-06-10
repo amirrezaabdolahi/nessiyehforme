@@ -1,7 +1,7 @@
 "use client";
 
 import { useAppDispatch } from "@/lib/redux/hooks";
-import { shopSignupFormSchema } from "@/utils/validateSignupForm";
+import { shopSignupFormSchema } from "@/utils/validations/validateSignupForm";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
     Button,

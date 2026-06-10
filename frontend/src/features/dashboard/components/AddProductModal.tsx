@@ -17,7 +17,7 @@ import { toast } from "react-toastify";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { productFormActions } from "../childs/products/slices/productFormSlice";
 import { ProductModalFormType } from "@/types/modalsTypes";
-import { validateAddProductForm } from "@/utils/validateAddProductForm";
+import { validateAddProductForm } from "@/utils/validations/ProductValidation";
 import { useAddProductMutation } from "../childs/products/api/ApiProduct";
 
 const AddProductModal = () => {

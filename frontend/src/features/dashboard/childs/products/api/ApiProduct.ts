@@ -32,9 +32,23 @@ export const ApiProduct = createApi({
                 method: "DELETE",
             }),
             invalidatesTags: ["Products"]
-        })
+        }),
+        updateProduct: builder.mutation<{ ok: boolean; product: ProductType }, { id: string; data: Partial<ProductType> }>({
+            query: ({ id, data }) => ({
+                url: `products/${id}/`,
+                method: "PUT",
+                body: data,
+            }),
+            invalidatesTags: ["Products"],
+        }),
 
     }),
 });
 
-export const { useGetProductsQuery, useGetProductByIdQuery, useAddProductMutation, useDeleteProductMutation } = ApiProduct;
+export const {
+    useGetProductsQuery,
+    useGetProductByIdQuery,
+    useAddProductMutation,
+    useDeleteProductMutation,
+    useUpdateProductMutation
+} = ApiProduct;

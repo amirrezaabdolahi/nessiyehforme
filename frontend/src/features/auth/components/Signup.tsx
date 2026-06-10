@@ -3,7 +3,7 @@
 import { useAppDispatch } from "@/lib/redux/hooks";
 import {
     signupFormSchema,
-} from "@/utils/validateSignupForm";
+} from "@/utils/validations/validateSignupForm";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
     Button,
