@@ -7,12 +7,9 @@ import { BranchMap, categories, Category } from "@/utils/filteringData";
 
 
 export interface DebtModalFormType {
-    customer?: CustomersUsernameAndId | null,
-    products?: ProductType[] | [],
+    customer_id?: CustomersUsernameAndId | null,
+    items?: ProductType[] | [],
     price?: string | number,
-    date?: string,
-    period?: { id: number, name: string, value: string } | null,
-    description?: string
 }
 
 

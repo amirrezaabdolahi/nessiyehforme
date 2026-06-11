@@ -1,12 +1,6 @@
 "use client";
-
-import {
-    CustomersDataAutoComplete,
-    installmentTime,
-} from "@/data/AutoCompletesData";
-import { products } from "@/data/DashboardProducts";
 import { ProductType } from "@/types/productTypes";
-import { AddRounded, CloseRounded, SelectAllSharp } from "@mui/icons-material";
+import { AddRounded, CloseRounded } from "@mui/icons-material";
 import {
     Autocomplete,
     Box,
@@ -16,27 +10,32 @@ import {
     TextField,
     Typography,
 } from "@mui/material";
+import { createFilterOptions } from "@mui/material/Autocomplete";
 import { useEffect, useState } from "react";
 import ModalContainer from "./ModalContainer";
-import { toast } from "react-toastify";
-import { useAppSelector, useAppDispatch } from "@/lib/redux/hooks";
+import { useAppDispatch } from "@/lib/redux/hooks";
 import { salesSliceActions } from "../childs/debts/slices/debtsFormSlice";
 import { useGetCustomerQuery } from "../childs/customers/api/ApiCustomer";
 import { useGetProductsQuery } from "../childs/products/api/ApiProduct";
+import { useAddSalesMutation } from "../childs/sales/api/ApiSales";
 
 const AddSaleModal = () => {
     const dispatch = useAppDispatch();
-    const formData = useAppSelector((s) => s.salesForm);
+
+    const [form, setForm] = useState<{customer_id : number | null , items : Array<{product_id : number}>}>({
+        customer_id: null,
+        items: [],
+    });
 
     const [open, setOpen] = useState(false);
+
     const [selectedCustomer, setSelectedCustomer] = useState<{
-        id: string | number | null;
-        username: string | null;
+        id: number;
+        phone_number: string;
+        full_name: string;
     } | null>(null);
 
-    const [selectedProducts, setSelectedProducts] = useState<
-        ProductType[] | null
-    >(null);
+    const [selectedProducts, setSelectedProducts] = useState<ProductType[]>([]);
 
     const [cost, setCost] = useState<number>(0);
 
@@ -44,7 +43,15 @@ const AddSaleModal = () => {
     const handleClose = () => {
         setOpen(false);
     };
+    const filterOptions = createFilterOptions({
+        stringify: (option: {
+            id: number;
+            phone_number: string;
+            full_name: string;
+        }) => `${option.full_name} ${option.phone_number}`,
+    });
 
+    // products api RTKQuery
     const {
         data: customersData,
         isLoading: isCustomerLoading,
@@ -55,9 +62,13 @@ const AddSaleModal = () => {
         isLoading: isProuctLoading,
         error: isProuctError,
     } = useGetProductsQuery();
+    const [
+        addSale,
+        { data: addSaleRes, isLoading: addSaleLoading, error: addSaleError },
+    ] = useAddSalesMutation();
 
     const customers = customersData?.customers ?? [];
-    // const products = ProductsData?.products ?? [];
+    const products = ProductsData?.products ?? [];
 
     const handleCost = () => {
         if (!selectedProducts || selectedProducts.length === 0) {
@@ -71,24 +82,15 @@ const AddSaleModal = () => {
         setCost(total);
     };
 
-    async function handleCreateCredit() {
-        // Define the promise
-        const myPromise = new Promise((resolve, reject) => {
-            setTimeout(() => {
-                // Simulate success or error
-                const success = true;
-                if (success) resolve("Data sent successfully!");
-                else reject("Something went wrong!");
-                dispatch(salesSliceActions.resetForm());
-            }, 2000);
-        });
+    useEffect(() => {
+        handleCost();
+    }, [selectedProducts]);
 
-        // Pass the promise to toast
-        toast.promise(myPromise, {
-            pending: "درحال ثبت نسیه...",
-            success: "نسیه ثبت شد",
-            error: "اوهو ارور داریم !",
-        });
+    async function handleAddSale() {
+
+        try {
+            // const result = await addSale().unwrap()
+        } catch (error) {}
     }
 
     const handleClear = () => {
@@ -127,37 +129,31 @@ const AddSaleModal = () => {
                             <div className="flex flex-col gap-2">
                                 <Typography variant="body2">مشتری</Typography>
                                 <Autocomplete
-                                    disablePortal
-                                    id="category-select"
                                     options={customers}
-                                    getOptionLabel={(option) => option.full_name}
-                                    value={formData.customer}
-                                    renderOption={(props, option) => {
-                                        return (
-                                            <li {...props} key={option.id}  >
-                                                <span>{option.full_name}</span>
-                                                -
-                                                <span>{option.phone_number}</span>
-                                            </li>
-                                        );
-                                    }}
+                                    filterOptions={filterOptions}
+                                    getOptionLabel={(option) =>
+                                        option.full_name
+                                    }
+                                    value={selectedCustomer}
                                     onChange={(event, newValue) => {
                                         setSelectedCustomer(newValue);
-                                        dispatch(
-                                            salesSliceActions.updateForm({
-                                                field: "customer",
-                                                value: newValue,
-                                            }),
-                                        );
+                                        setForm(prev => ({
+                                            ...prev,
+                                            customer_id : newValue?.id
+                                        }))
                                     }}
+                                    renderOption={(props, option) => (
+                                        <li {...props} key={option.id}>
+                                            <span>{option.full_name}</span> -
+                                            <span>{option.phone_number}</span>
+                                        </li>
+                                    )}
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
                                             placeholder="انتخاب کنید..."
                                         />
                                     )}
-                                    size="small"
-                                    fullWidth
                                 />
                             </div>
                             <div className="flex flex-col gap-2">
@@ -168,22 +164,17 @@ const AddSaleModal = () => {
                                     id="category-select"
                                     options={products}
                                     getOptionLabel={(option) => option.name}
-                                    value={formData.products}
+                                    value={selectedProducts}
                                     renderOption={(props, option) => {
                                         return (
                                             <li {...props} key={option.id}>
-                                                {option.name}
+                                                {option.name} -{" "}
+                                                {option.sell_price.toLocaleString()}
                                             </li>
                                         );
                                     }}
                                     onChange={(event, newValue) => {
                                         setSelectedProducts((old) => newValue);
-                                        dispatch(
-                                            salesSliceActions.updateForm({
-                                                field: "products",
-                                                value: newValue,
-                                            }),
-                                        );
                                     }}
                                     disabled={!selectedCustomer}
                                     renderInput={(params) => (
@@ -205,25 +196,14 @@ const AddSaleModal = () => {
                                         placeholder="مبلغ به ریال"
                                         size="small"
                                         fullWidth
-                                        value={formData.price}
-                                        onChange={(e) => {
-                                            dispatch(
-                                                salesSliceActions.updateForm({
-                                                    field: "price",
-                                                    value: cost,
-                                                }),
-                                            );
-                                        }}
+                                        value={cost}
                                     />
                                 </div>
                             </div>
                         </form>
                     </Box>
                     <div className="flex gap-2 border-t border-gray-300 pt-4 ">
-                        <Button
-                            onClick={handleCreateCredit}
-                            variant="contained"
-                        >
+                        <Button onClick={handleAddSale} variant="contained">
                             ثبت نسیه
                         </Button>
                         <Button

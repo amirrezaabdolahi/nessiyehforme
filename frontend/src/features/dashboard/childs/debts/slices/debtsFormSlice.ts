@@ -3,12 +3,9 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 
 const initialState: DebtModalFormType = {
-    customer: null,
-    date: '',
-    description: '',
-    period: null,
+    customer_id: null,
     price: 0,
-    products: []
+    items: []
 }
 
 
