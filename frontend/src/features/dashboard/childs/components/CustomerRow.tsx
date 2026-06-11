@@ -1,5 +1,5 @@
 "use client";
-import { CustomerType } from "@/data/DashboardCustomers";
+import { CustomerType } from "@/types/customerType";
 import { Avatar, Box, Button, Typography } from "@mui/material";
 
 interface CustomerRowProps {
@@ -29,24 +29,24 @@ const CustomerRow = ({ customer }: CustomerRowProps) => {
                                "
         >
             <Box className="flex items-center gap-2">
-                <Avatar alt={customer.username}>{customer.username[0]}</Avatar>
+                <Avatar alt={customer.full_name}>{customer?.full_name[0]}</Avatar>
                 <Typography variant="body2" className="text-start">
-                    {customer.username}
+                    {customer.full_name}
                 </Typography>
             </Box>
             <Typography variant="body2" className="text-start">
-                {customer.phone}
+                {customer.phone_number}
             </Typography>
             <Typography variant="body2" className="text-start">
-                {customer.totalCredit} ریال
+                {customer?.totalCredit} ریال
             </Typography>
             <Typography variant="body2" className="text-start">
-                {customer.paid} ریال
+                {customer?.paid} ریال
             </Typography>
             <Typography variant="body2" className="text-start">
-                {customer.totalCredit - customer.paid} ریال
+                {customer?.totalCredit - customer?.paid} ریال
             </Typography>
-            {customer.status === "active" ? (
+            {customer?.status === "active" ? (
                 <Typography
                     className="bg-blue-400/10 text-blue-500 rounded-full  text-center w-max px-3"
                     variant="body2"
@@ -69,7 +69,7 @@ const CustomerRow = ({ customer }: CustomerRowProps) => {
                 </Typography>
             )}
             <Typography variant="body2" className="text-start">
-                {customer.lastPayment}
+                {customer?.lastPayment}
             </Typography>
             <Button variant="text">پرداخت</Button>
         </Box>

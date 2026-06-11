@@ -55,7 +55,13 @@ const AddProductModal = () => {
             [name]: value,
         }));
 
-        dispatch(productFormActions.updateForm({ field: name, value: value }));
+        type FormFields = keyof typeof validateAddProductForm.shape;
+
+        const fieldName = name as FormFields;
+
+        dispatch(
+            productFormActions.updateForm({ field: fieldName, value: value }),
+        );
     };
 
     async function handleAddProduct() {
@@ -215,7 +221,7 @@ const AddProductModal = () => {
                                         id="category-select"
                                         options={categories}
                                         getOptionLabel={(option) => option.name}
-                                        value={form.categorie || null}
+                                        value={form.category || null}
                                         onChange={(event, newValue) => {
                                             setForm((prev) => ({
                                                 ...prev,

@@ -8,6 +8,7 @@ import PagesFilterLinks from "@/features/dashboard/components/PagesFilterLinks";
 import CustomerRow from "@/features/dashboard/childs/components/CustomerRow";
 import { Box } from "@mui/material";
 import Link from "next/link";
+import CustomersList from "@/features/dashboard/childs/customers/components/CustomersList";
 
 const DashboardCustomers = () => {
     return (
@@ -23,11 +24,7 @@ const DashboardCustomers = () => {
                 <PagesFilterLinks page="customers" />
                 {/* branches */}
                 <BranchHead branches={CustomersBranchName} />
-                {Customers.map((customer) => (
-                    <Link href={`customers/${customer.id}`} key={customer.id}>
-                        <CustomerRow customer={customer} />
-                    </Link>
-                ))}
+                <CustomersList />
             </Box>
         </Container>
     );
