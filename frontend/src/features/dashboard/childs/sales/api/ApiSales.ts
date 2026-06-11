@@ -31,7 +31,7 @@ export const ApiSales = createApi({
             query: () => "sales/",
             providesTags: ["Sales"]
         }),
-        addSales: builder.mutation<SalesResponesType, CustomerModalFormType>({
+        addSales: builder.mutation<SalesResponesType, {customer_id : number | null , items : Array<{product_id : number}>}>({
             query: (data) => ({
                 url: "sales/",
                 method: "POST",

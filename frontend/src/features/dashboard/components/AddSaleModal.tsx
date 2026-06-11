@@ -18,11 +18,16 @@ import { salesSliceActions } from "../childs/debts/slices/debtsFormSlice";
 import { useGetCustomerQuery } from "../childs/customers/api/ApiCustomer";
 import { useGetProductsQuery } from "../childs/products/api/ApiProduct";
 import { useAddSalesMutation } from "../childs/sales/api/ApiSales";
+import { number } from "zod";
+import { toast } from "react-toastify";
 
 const AddSaleModal = () => {
     const dispatch = useAppDispatch();
 
-    const [form, setForm] = useState<{customer_id : number | null , items : Array<{product_id : number}>}>({
+    const [form, setForm] = useState<{
+        customer_id: number | null;
+        items: Array<{ product_id: number }>;
+    }>({
         customer_id: null,
         items: [],
     });
@@ -87,16 +92,34 @@ const AddSaleModal = () => {
     }, [selectedProducts]);
 
     async function handleAddSale() {
-
         try {
-            // const result = await addSale().unwrap()
-        } catch (error) {}
+            const result = await addSale(form).unwrap();
+
+            if (!result.ok) {
+                toast.error("خطا در ایجاد فروش");
+                return;
+            }
+
+            toast.success("فروش ثبت شد");
+            setForm({
+                customer_id: null,
+                items: [],
+            });
+            setSelectedCustomer(null);
+            setSelectedProducts([]);
+            return;
+        } catch (error) {
+            console.log(error);
+            toast.error("error");
+        }
     }
 
     const handleClear = () => {
         dispatch(salesSliceActions.resetForm());
         handleClose();
     };
+
+    console.log(form);
 
     return (
         <>
@@ -137,10 +160,10 @@ const AddSaleModal = () => {
                                     value={selectedCustomer}
                                     onChange={(event, newValue) => {
                                         setSelectedCustomer(newValue);
-                                        setForm(prev => ({
+                                        setForm((prev) => ({
                                             ...prev,
-                                            customer_id : newValue?.id
-                                        }))
+                                            customer_id: newValue?.id ?? null,
+                                        }));
                                     }}
                                     renderOption={(props, option) => (
                                         <li {...props} key={option.id}>
@@ -175,6 +198,13 @@ const AddSaleModal = () => {
                                     }}
                                     onChange={(event, newValue) => {
                                         setSelectedProducts((old) => newValue);
+                                        setForm((prev) => ({
+                                            ...prev,
+                                            items: newValue.map((product) => ({
+                                                product_id: Number(product.id),
+                                                quantity: 1,
+                                            })),
+                                        }));
                                     }}
                                     disabled={!selectedCustomer}
                                     renderInput={(params) => (
