@@ -6,7 +6,7 @@ import {
 } from "@/data/AutoCompletesData";
 import { products } from "@/data/DashboardProducts";
 import { ProductType } from "@/types/productTypes";
-import { AddRounded, CloseRounded } from "@mui/icons-material";
+import { AddRounded, CloseRounded, SelectAllSharp } from "@mui/icons-material";
 import {
     Autocomplete,
     Box,
@@ -20,11 +20,13 @@ import { useEffect, useState } from "react";
 import ModalContainer from "./ModalContainer";
 import { toast } from "react-toastify";
 import { useAppSelector, useAppDispatch } from "@/lib/redux/hooks";
-import { debtsSliceActions } from "../childs/debts/slices/debtsFormSlice";
+import { salesSliceActions } from "../childs/debts/slices/debtsFormSlice";
+import { useGetCustomerQuery } from "../childs/customers/api/ApiCustomer";
+import { useGetProductsQuery } from "../childs/products/api/ApiProduct";
 
-const AddCreditModal = () => {
+const AddSaleModal = () => {
     const dispatch = useAppDispatch();
-    const formData = useAppSelector((s) => s.debtsForm);
+    const formData = useAppSelector((s) => s.salesForm);
 
     const [open, setOpen] = useState(false);
     const [selectedCustomer, setSelectedCustomer] = useState<{
@@ -42,6 +44,20 @@ const AddCreditModal = () => {
     const handleClose = () => {
         setOpen(false);
     };
+
+    const {
+        data: customersData,
+        isLoading: isCustomerLoading,
+        error: isCustomerError,
+    } = useGetCustomerQuery();
+    const {
+        data: ProductsData,
+        isLoading: isProuctLoading,
+        error: isProuctError,
+    } = useGetProductsQuery();
+
+    const customers = customersData?.customers ?? [];
+    // const products = ProductsData?.products ?? [];
 
     const handleCost = () => {
         if (!selectedProducts || selectedProducts.length === 0) {
@@ -63,7 +79,7 @@ const AddCreditModal = () => {
                 const success = true;
                 if (success) resolve("Data sent successfully!");
                 else reject("Something went wrong!");
-                dispatch(debtsSliceActions.resetForm());
+                dispatch(salesSliceActions.resetForm());
             }, 2000);
         });
 
@@ -74,14 +90,11 @@ const AddCreditModal = () => {
             error: "اوهو ارور داریم !",
         });
     }
-    useEffect(() => {
-        handleCost();
-    }, [selectedProducts]);
 
     const handleClear = () => {
-        dispatch(debtsSliceActions.resetForm())
-        handleClose()
-    }
+        dispatch(salesSliceActions.resetForm());
+        handleClose();
+    };
 
     return (
         <>
@@ -103,7 +116,7 @@ const AddCreditModal = () => {
                 <ModalContainer>
                     <Box className="p-2 flex items-center justify-between w-full border-b border-gray-200">
                         <Typography variant="subtitle1" className="font-bold!">
-                            ثبت نسیه
+                            ثبت فروش
                         </Typography>
                         <IconButton color="error" onClick={handleClose}>
                             <CloseRounded />
@@ -116,20 +129,22 @@ const AddCreditModal = () => {
                                 <Autocomplete
                                     disablePortal
                                     id="category-select"
-                                    options={CustomersDataAutoComplete}
-                                    getOptionLabel={(option) => option.username}
+                                    options={customers}
+                                    getOptionLabel={(option) => option.full_name}
                                     value={formData.customer}
                                     renderOption={(props, option) => {
                                         return (
-                                            <li {...props} key={option.id}>
-                                                {option.username}
+                                            <li {...props} key={option.id}  >
+                                                <span>{option.full_name}</span>
+                                                -
+                                                <span>{option.phone_number}</span>
                                             </li>
                                         );
                                     }}
                                     onChange={(event, newValue) => {
                                         setSelectedCustomer(newValue);
                                         dispatch(
-                                            debtsSliceActions.updateForm({
+                                            salesSliceActions.updateForm({
                                                 field: "customer",
                                                 value: newValue,
                                             }),
@@ -164,7 +179,7 @@ const AddCreditModal = () => {
                                     onChange={(event, newValue) => {
                                         setSelectedProducts((old) => newValue);
                                         dispatch(
-                                            debtsSliceActions.updateForm({
+                                            salesSliceActions.updateForm({
                                                 field: "products",
                                                 value: newValue,
                                             }),
@@ -193,7 +208,7 @@ const AddCreditModal = () => {
                                         value={formData.price}
                                         onChange={(e) => {
                                             dispatch(
-                                                debtsSliceActions.updateForm({
+                                                salesSliceActions.updateForm({
                                                     field: "price",
                                                     value: cost,
                                                 }),
@@ -201,41 +216,7 @@ const AddCreditModal = () => {
                                         }}
                                     />
                                 </div>
-                                <div className="w-full">
-                                    <Typography variant="body2">
-                                        تاریخ
-                                    </Typography>
-                                    <TextField
-                                        placeholder="مبلغ به ریال"
-                                        size="small"
-                                        fullWidth
-                                        value={formData.date}
-                                        onChange={(e) => {
-                                            dispatch(
-                                                debtsSliceActions.updateForm({
-                                                    field: "date",
-                                                    value: e.target.value,
-                                                }),
-                                            );
-                                        }}
-                                    />
-                                </div>
                             </div>
-
-                            <TextField
-                                multiline
-                                label="توضیحات"
-                                size="small"
-                                value={formData.description}
-                                onChange={(e) => {
-                                    dispatch(
-                                        debtsSliceActions.updateForm({
-                                            field: "description",
-                                            value: e.target.value,
-                                        }),
-                                    );
-                                }}
-                            />
                         </form>
                     </Box>
                     <div className="flex gap-2 border-t border-gray-300 pt-4 ">
@@ -259,4 +240,4 @@ const AddCreditModal = () => {
     );
 };
 
-export default AddCreditModal;
+export default AddSaleModal;

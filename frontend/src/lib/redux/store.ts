@@ -1,27 +1,33 @@
 import { customerSliceReducer } from "@/features/dashboard/childs/customers/slices/customerFormSlice"
-import { debtsSliceReducer } from "@/features/dashboard/childs/debts/slices/debtsFormSlice"
 import { paymentSliceReducer } from "@/features/dashboard/childs/payments/slices/paymentFormSlice"
 import { productFormReducers } from "@/features/dashboard/childs/products/slices/productFormSlice"
+import { salesSliceReducer } from "@/features/dashboard/childs/debts/slices/debtsFormSlice"
 import { configureStore } from "@reduxjs/toolkit"
 import { userInfoReducer } from "@/features/auth/slices/userInformationsSlice"
 import { ApiProduct } from "@/features/dashboard/childs/products/api/ApiProduct"
 import { ApiCustomer } from "@/features/dashboard/childs/customers/api/ApiCustomer"
+import { ApiSales } from "@/features/dashboard/childs/sales/api/ApiSales"
 
 
 
 export const store = configureStore({
     reducer: {
         userInfo: userInfoReducer,
-        debtsForm: debtsSliceReducer,
+        salesForm: salesSliceReducer,
         paymentsForm: paymentSliceReducer,
         customersForm: customerSliceReducer,
         productsForm: productFormReducers,
         [ApiProduct.reducerPath]: ApiProduct.reducer,
         [ApiCustomer.reducerPath]: ApiCustomer.reducer,
+        [ApiSales.reducerPath]: ApiSales.reducer,
 
     },
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(ApiProduct.middleware, ApiCustomer.middleware),
+        getDefaultMiddleware().concat(
+            ApiProduct.middleware,
+            ApiCustomer.middleware,
+            ApiSales.middleware
+        ),
 })
 
 export type RootState = ReturnType<typeof store.getState>

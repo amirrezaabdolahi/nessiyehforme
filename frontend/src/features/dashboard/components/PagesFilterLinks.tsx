@@ -8,14 +8,8 @@ const PagesFilterLinks = ({page} : {page : string}) => {
             <Link href={`/dashboard/${page}`}>
                 <Button variant="outlined">همه</Button>
             </Link>
-            <Link href={"?filter=active"}>
-                <Button variant="outlined">باز</Button>
-            </Link>
-            <Link href={"?filter=overdue"}>
-                <Button variant="outlined">پرداخت نشده</Button>
-            </Link>
-            <Link href={"?filter=settled"}>
-                <Button variant="outlined">پرداخت شده</Button>
+            <Link href={`/dashboard/${page}?q=debts`}>
+                <Button variant="outlined">نسیه ها</Button>
             </Link>
         </Box>
     );

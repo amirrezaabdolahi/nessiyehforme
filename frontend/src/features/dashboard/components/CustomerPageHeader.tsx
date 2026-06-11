@@ -3,7 +3,7 @@ import { Box, Button } from "@mui/material";
 import Link from "next/link";
 import React from "react";
 import AddPaymentModal from "./AddPaymentModal";
-import AddCreditModal from "./AddCreditModal";
+import AddSaleModal from "./AddSaleModal";
 
 const CustomerPageHeader = () => {
     return (
@@ -18,7 +18,7 @@ const CustomerPageHeader = () => {
                 </Button>
             </Link>
             <Box className="flex gap-2">
-                <AddCreditModal />
+                <AddSaleModal />
                 <AddPaymentModal />
             </Box>
         </div>

@@ -1,27 +1,25 @@
 import Container from "@/components/dash/Container";
 import DashboardsPageHeader from "@/components/dash/DashboardsPageHeader";
-import { CreditBranchName, Credits } from "@/data/DashboardCredits";
-import AddCreditModal from "@/features/dashboard/components/AddCreditModal";
+import { CreditBranchName } from "@/data/DashboardCredits";
 import BranchHead from "@/features/dashboard/components/BranchHead";
 import PagesFilterLinks from "@/features/dashboard/components/PagesFilterLinks";
-import DebtsCreaditsRows from "@/features/dashboard/childs/debts/components/DebtsCreaditsRows";
 import { Box } from "@mui/material";
+import SalesList from "@/features/dashboard/childs/sales/components/SalesList";
+import AddSaleModal from "@/features/dashboard/components/AddSaleModal";
 
 const Sales = () => {
     return (
         <Container>
             <DashboardsPageHeader
-                title="حساب ها"
+                title="فروش ها"
                 caption="128 حساب ، 180000000 ریال جمع حساب ها"
             >
-                <AddCreditModal />
+                <AddSaleModal />
             </DashboardsPageHeader>
             <Box className="w-full overflow-x-scroll xl:overflow-auto">
-                <PagesFilterLinks page="debts" />
+                <PagesFilterLinks page="sales" />
                 <BranchHead branches={CreditBranchName} />
-                {Credits.map((credit) => (
-                    <DebtsCreaditsRows key={credit.id} credit={credit} />
-                ))}
+                <SalesList />
             </Box>
         </Container>
     );

@@ -1,12 +1,12 @@
 import Container from "@/components/dash/Container";
 import DashboardsPageHeader from "@/components/dash/DashboardsPageHeader";
-import AddCreditModal from "@/features/dashboard/components/AddCreditModal";
 import AddPaymentModal from "@/features/dashboard/components/AddPaymentModal";
 import DashboardsCards from "@/features/dashboard/childs/dashboard/components/DashboardsCards";
 import DashboardsCharts from "@/features/dashboard/childs/dashboard/components/DashboardsCharts";
 import DashboardsRecents from "@/features/dashboard/childs/dashboard/components/DashboardsRecents";
 import { formatedTodayDate } from "@/utils/date";
 import { CheckAuthServer } from "@/utils/auth/CheckAuth";
+import AddSaleModal from "@/features/dashboard/components/AddSaleModal";
 
 const Dashboard = async () => {
     await CheckAuthServer();
@@ -17,7 +17,7 @@ const Dashboard = async () => {
                 title="روز خوش ، امیررضا"
                 caption={` ارومیه نگین ،${formatedTodayDate()}`}
             >
-                <AddCreditModal />
+                <AddSaleModal />
                 <AddPaymentModal />
             </DashboardsPageHeader>
             <DashboardsCards />

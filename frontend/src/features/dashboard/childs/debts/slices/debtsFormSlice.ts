@@ -12,8 +12,8 @@ const initialState: DebtModalFormType = {
 }
 
 
-const debtsFormSlice = createSlice({
-    name: "debtsForm",
+const saleFormSlice = createSlice({
+    name: "salesForm",
     initialState,
     reducers: {
         updateForm: <K extends keyof DebtModalFormType>(state : DebtModalFormType, action: PayloadAction<{ field: K, value: DebtModalFormType[K] }>) => {
@@ -25,5 +25,5 @@ const debtsFormSlice = createSlice({
 
 
 
-export const debtsSliceReducer = debtsFormSlice.reducer;
-export const debtsSliceActions = debtsFormSlice.actions;
+export const salesSliceReducer = saleFormSlice.reducer;
+export const salesSliceActions = saleFormSlice.actions;
