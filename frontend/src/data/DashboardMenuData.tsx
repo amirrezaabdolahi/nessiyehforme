@@ -35,6 +35,11 @@ export const links: Array<LinkItemType> = [
                 icon: <AddCardRounded />,
             },
             {
+                name: "فروش ها",
+                href: "/dashboard/sales",
+                icon: <AddCardRounded />,
+            },
+            {
                 name: "پرداختی ها",
                 href: "/dashboard/payments",
                 icon: <MoneyRounded />,
