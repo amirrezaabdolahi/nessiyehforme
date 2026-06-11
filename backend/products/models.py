@@ -8,6 +8,9 @@ class Category(models.Model):
     def __str__(self):
         return self.name
     
+    class Meta:
+        verbose_name_plural = 'Categories'
+    
 class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, blank=True, null=True)
     shop = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -24,3 +27,4 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+    
