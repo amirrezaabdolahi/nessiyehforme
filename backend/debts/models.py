@@ -1,0 +1,25 @@
+from django.db import models
+from accounts.models import User
+from sales.models import Sale
+from customer_management.models import CustomerShop
+
+
+class Debt(models.Model):
+    shop = models.ForeignKey(User, on_delete=models.CASCADE, related_name='shop_debts')
+    customer = models.ForeignKey(CustomerShop, on_delete=models.CASCADE, related_name='debts')
+    sale = models.OneToOneField(Sale, on_delete=models.CASCADE, related_name='debt', null=True, blank=True)
+    amount = models.PositiveBigIntegerField()
+    paid_amount = models.PositiveBigIntegerField(default=0)
+    description = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def remaining(self):
+        return self.amount - self.paid_amount
+
+    @property
+    def is_paid(self):
+        return self.remaining <= 0
+
+    def __str__(self):
+        return f"Debt #{self.id} - {self.customer.customer.full_name} - {self.remaining}"

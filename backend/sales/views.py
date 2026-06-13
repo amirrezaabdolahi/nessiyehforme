@@ -3,11 +3,12 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from django.db import transaction
-
+from debts.models import Debt
 from .models import Sale, SaleItem
 from .serializers import SaleSerializer, SaleItemSerializer
 from products.models import Product
 from accounts.models import User
+from customer_management.models import CustomerShop
 
 
 class SaleListCreateView(APIView):
@@ -28,33 +29,38 @@ class SaleListCreateView(APIView):
 
         items_data = request.data.get('items', [])
         customer_id = request.data.get('customer_id', None)
+        is_debt = request.data.get('is_debt', False)
 
         if not items_data:
             return Response({'ok': False, 'error': 'حداقل یک محصول الزامی است'}, status=status.HTTP_400_BAD_REQUEST)
 
+        if is_debt and not customer_id:
+            return Response({'ok': False, 'error': 'برای سیل نسیه، مشتری الزامی است'}, status=status.HTTP_400_BAD_REQUEST)
+
         customer = None
+        customer_shop = None
         if customer_id:
             try:
                 customer = User.objects.get(id=customer_id, is_shop=False)
+                customer_shop = CustomerShop.objects.get(shop=request.user, customer=customer)
             except User.DoesNotExist:
                 return Response({'ok': False, 'error': 'مشتری یافت نشد'}, status=status.HTTP_404_NOT_FOUND)
+            except CustomerShop.DoesNotExist:
+                return Response({'ok': False, 'error': 'این مشتری در لیست شما نیست'}, status=status.HTTP_404_NOT_FOUND)
 
         serializer = SaleItemSerializer(data=items_data, many=True)
         serializer.is_valid(raise_exception=True)
 
-        sale = Sale.objects.create(shop=request.user, customer=customer)
+        sale = Sale.objects.create(shop=request.user, customer=customer, is_debt=is_debt)
 
         for item in serializer.validated_data:
             try:
                 product = Product.objects.get(id=item['product_id'], shop=request.user)
             except Product.DoesNotExist:
-                raise Exception(f"محصول {item['product_id']} یافت نشد")
+                return Response({'ok': False, 'error': f"محصول {item['product_id']} یافت نشد"}, status=status.HTTP_404_NOT_FOUND)
 
             if product.stock < item['quantity']:
-                return Response(
-                    {'ok': False, 'error': f"کافی نیست {product.name} موجودی"},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
+                return Response({'ok': False, 'error': f"موجودی {product.name} کافی نیست"}, status=status.HTTP_400_BAD_REQUEST)
 
             SaleItem.objects.create(
                 sale=sale,
@@ -65,6 +71,15 @@ class SaleListCreateView(APIView):
 
             product.stock -= item['quantity']
             product.save()
+
+        if is_debt:
+            total = sum(item.price * item.quantity for item in sale.items.all())
+            Debt.objects.create(
+                shop=request.user,
+                customer=customer_shop,
+                sale=sale,
+                amount=total
+            )
 
         result = SaleSerializer(sale)
         return Response({'ok': True, 'message': 'فروش با موفقیت ثبت شد', 'sale': result.data}, status=status.HTTP_201_CREATED)

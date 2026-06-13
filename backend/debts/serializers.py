@@ -1,0 +1,30 @@
+from rest_framework import serializers
+from .models import Debt
+
+
+class DebtSerializer(serializers.ModelSerializer):
+    remaining = serializers.SerializerMethodField()
+    is_paid = serializers.SerializerMethodField()
+    customer_name = serializers.SerializerMethodField()
+    customer_phone = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Debt
+        fields = [
+            'id', 'customer', 'customer_name', 'customer_phone', 'sale',
+            'amount', 'paid_amount', 'remaining', 'is_paid',
+            'description', 'created_at'
+        ]
+        read_only_fields = ['shop', 'created_at']
+
+    def get_remaining(self, obj):
+        return obj.remaining
+
+    def get_is_paid(self, obj):
+        return obj.is_paid
+
+    def get_customer_name(self, obj):
+        return obj.customer.customer.full_name if obj.customer else None
+
+    def get_customer_phone(self, obj):
+        return obj.customer.customer.phone_number if obj.customer else None

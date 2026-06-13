@@ -23,7 +23,7 @@ class SaleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Sale
-        fields = ['id', 'shop', 'customer', 'customer_name', 'items', 'total', 'created_at']
+        fields = ['id', 'shop', 'customer', 'customer_name', 'is_debt', 'items', 'total', 'created_at']
         read_only_fields = ['shop', 'created_at']
 
     def get_customer_name(self, obj):
