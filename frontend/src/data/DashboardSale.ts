@@ -3,11 +3,9 @@
 export const SaleBranchName: Array<string> = [
     "شناسه",
     "مشتری",
-    "توضیحات",
     "جمع",
-    "پرداخت",
-    "مانده",
     "تاریخ",
+    "نوع",
     "وضعیت"
 ]
 
@@ -16,6 +14,7 @@ export type SaleType = {
     shop: number;
     customer: number;
     customer_name: string;
+    is_debt : boolean,
     items: {
         id: number;
         product_id: number;

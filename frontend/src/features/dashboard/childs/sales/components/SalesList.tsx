@@ -4,7 +4,7 @@ import { useGetSalesQuery } from "../api/ApiSales";
 import SaleRow from "./SaleRow";
 
 const SalesList = () => {
-    const { data, isLoading, error } = useGetSalesQuery();
+    const { data, isLoading, error, isSuccess } = useGetSalesQuery();
 
     if (isLoading) {
         return <p>loading...</p>;
@@ -19,9 +19,11 @@ const SalesList = () => {
 
     return (
         <>
-            {sales.map((sale) => (
-                <SaleRow sale={sale} key={sale.id} />
-            ))}
+            {isSuccess && sales.length > 0 ? (
+                sales.map((sale) => <SaleRow sale={sale} key={sale.id} />)
+            ) : (
+                <p>فروشی یافت نشد</p>
+            )}
         </>
     );
 };

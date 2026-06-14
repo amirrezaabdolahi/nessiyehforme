@@ -72,8 +72,8 @@ const AddCustomerModal = () => {
                 toast.error("خطا در ثبت مشتری");
             }
         } catch (error) {
-            console.error("Error adding product:", error);
-            toast.error("خطا در ثبت مشتری");
+            console.log("Error adding product:", error);
+            toast.error(error.data.error || "خطا در ثبت مشتری");
             return;
         }
     }

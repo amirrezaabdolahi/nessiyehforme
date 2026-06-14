@@ -18,7 +18,7 @@ const SaleRow = ({ sale }: SaleRowPropType) => {
                                   sticky top-0
                                   z-50
                                   grid 
-                                  grid-cols-8
+                                  grid-cols-6
                                   items-center
                                   justify-between
                                   p-4
@@ -35,20 +35,37 @@ const SaleRow = ({ sale }: SaleRowPropType) => {
             <Typography variant="body2" className="text-start">
                 {sale.customer_name || "ناشناس"}
             </Typography>
-            <Typography variant="body2" className="text-start">
+            {/* <Typography variant="body2" className="text-start">
                 {sale.description}
-            </Typography>
+            </Typography> */}
             <Typography variant="body2" className="text-start">
                 {sale.total} ریال
             </Typography>
-            <Typography variant="body2" className="text-start">
-                {sale.paid} ریال
-            </Typography>
-            <Typography variant="body2" className="text-start">
+            {/* <Typography variant="body2" className="text-start">
+                {sale.paid || "-"} 
+            </Typography> */}
+            {/* <Typography variant="body2" className="text-start">
                 {sale.total - sale.paid} ریال
-            </Typography>
+            </Typography> */}
             <Typography variant="body2" className="text-start">
                 {sale.created_at}
+            </Typography>
+            <Typography variant="body2" className="text-start">
+                {sale.is_debt ? (
+                    <Typography
+                        className="bg-blue-400/10 text-blue-500 rounded-full  text-center w-max px-3"
+                        variant="body2"
+                    >
+                        نسیه
+                    </Typography>
+                ) : (
+                    <Typography
+                        className="bg-green-400/10 text-green-500 rounded-full  text-center w-max px-3"
+                        variant="body2"
+                    >
+                        نقدی
+                    </Typography>
+                )}
             </Typography>
             {sale.status === "active" ? (
                 <Typography
