@@ -18,7 +18,7 @@ class SaleListCreateView(APIView):
         if not request.user.is_shop:
             return Response({'ok': False, 'error': 'دسترسی ندارید'}, status=status.HTTP_403_FORBIDDEN)
 
-        sales = Sale.objects.filter(shop=request.user).prefetch_related('items__product')
+        sales = Sale.objects.filter(shop=request.user, is_debt=False).prefetch_related('items__product')
         serializer = SaleSerializer(sales, many=True)
         return Response({'ok': True, 'sales': serializer.data})
 
