@@ -1,12 +1,11 @@
 import Container from "@/components/dash/Container";
 import DashboardsPageHeader from "@/components/dash/DashboardsPageHeader";
-import { CreditBranchName } from "@/data/DashboardCredits";
 import BranchHead from "@/features/dashboard/components/BranchHead";
 import PagesFilterLinks from "@/features/dashboard/components/PagesFilterLinks";
 import { Box } from "@mui/material";
 import SalesList from "@/features/dashboard/childs/sales/components/SalesList";
-import AddSaleModal from "@/features/dashboard/components/AddSaleModal";
 import { SaleBranchName } from "@/data/DashboardSale";
+import AddSaleModal from "@/features/dashboard/components/AddSaleModal";
 
 const Sales = () => {
     return (

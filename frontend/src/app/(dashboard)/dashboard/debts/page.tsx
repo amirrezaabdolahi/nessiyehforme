@@ -3,10 +3,9 @@ import DashboardsPageHeader from "@/components/dash/DashboardsPageHeader";
 import { DebtsBranchName } from "@/data/DashboardCredits";
 import BranchHead from "@/features/dashboard/components/BranchHead";
 import PagesFilterLinks from "@/features/dashboard/components/PagesFilterLinks";
-import DebtsCreaditsRows from "@/features/dashboard/childs/debts/components/DebtsCreaditsRows";
 import { Box } from "@mui/material";
-import AddSaleModal from "@/features/dashboard/components/AddSaleModal";
 import DebtsList from "@/features/dashboard/childs/debts/components/DebtsList";
+import AddDebtModal from "@/features/dashboard/components/AddDebtsModal";
 
 const Orders = () => {
     return (
@@ -15,7 +14,7 @@ const Orders = () => {
                 title="حساب ها"
                 caption="128 حساب ، 180000000 ریال جمع حساب ها"
             >
-                <AddSaleModal />
+                <AddDebtModal />
             </DashboardsPageHeader>
             <Box className="w-full overflow-x-scroll xl:overflow-auto">
                 <PagesFilterLinks page="debts" />

@@ -43,13 +43,17 @@ export const ApiSales = createApi({
                 method: "POST",
                 body: JSON.stringify(data)
             }),
-            invalidatesTags: ["Sales"]
+            invalidatesTags: ["Sales", "Debts"]
         }),
-        getDebts: builder.query<GetDebtsResponeseType , void>({
+        getDebts: builder.query<GetDebtsResponeseType, void>({
             query: () => "debts/",
             providesTags: ["Debts"]
         })
     })
 })
 
-export const { useGetSalesQuery, useAddSalesMutation } = ApiSales
+export const {
+    useGetSalesQuery,
+    useAddSalesMutation,
+    useGetDebtsQuery
+} = ApiSales

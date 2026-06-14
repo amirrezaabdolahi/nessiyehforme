@@ -21,15 +21,17 @@ import { useAddSalesMutation } from "../childs/sales/api/ApiSales";
 import { number } from "zod";
 import { toast } from "react-toastify";
 
-const AddSaleModal = () => {
+const AddDebtModal = () => {
     const dispatch = useAppDispatch();
 
     const [form, setForm] = useState<{
         customer_id: number | null;
         items: Array<{ product_id: number }>;
+        is_debt: boolean;
     }>({
         customer_id: null,
         items: [],
+        is_debt: true,
     });
 
     const [open, setOpen] = useState(false);
@@ -96,14 +98,15 @@ const AddSaleModal = () => {
             const result = await addSale(form).unwrap();
 
             if (!result.ok) {
-                toast.error("خطا در ایجاد فروش");
+                toast.error("خطا در ایجاد نسیه");
                 return;
             }
 
-            toast.success("فروش ثبت شد");
+            toast.success("نسیه ثبت شد");
             setForm({
                 customer_id: null,
                 items: [],
+                is_debt: true,
             });
             setSelectedCustomer(null);
             setSelectedProducts([]);
@@ -128,7 +131,7 @@ const AddSaleModal = () => {
                 variant="outlined"
                 onClick={handleOpen}
             >
-                فروش
+                نسیه
             </Button>
 
             <Modal
@@ -141,7 +144,7 @@ const AddSaleModal = () => {
                 <ModalContainer>
                     <Box className="p-2 flex items-center justify-between w-full border-b border-gray-200">
                         <Typography variant="subtitle1" className="font-bold!">
-                            ثبت فروش
+                            ثبت نسیه
                         </Typography>
                         <IconButton color="error" onClick={handleClose}>
                             <CloseRounded />
@@ -212,6 +215,7 @@ const AddSaleModal = () => {
                                             placeholder="انتخاب کنید..."
                                         />
                                     )}
+                                    disabled={!selectedCustomer}
                                     size="small"
                                     fullWidth
                                 />
@@ -233,7 +237,7 @@ const AddSaleModal = () => {
                     </Box>
                     <div className="flex gap-2 border-t border-gray-300 pt-4 ">
                         <Button onClick={handleAddSale} variant="contained">
-                            ثبت فروش
+                            ثبت نسیه
                         </Button>
                         <Button
                             variant="outlined"
@@ -249,4 +253,4 @@ const AddSaleModal = () => {
     );
 };
 
-export default AddSaleModal;
+export default AddDebtModal;

@@ -1,16 +1,16 @@
 "use client";
-import { CreditType } from "@/data/DashboardCredits";
+import { DebtType } from "@/data/DashboardCredits";
 import { Box, Typography } from "@mui/material";
 
-interface DebtsCreditsRowsProps {
-    credit: CreditType;
+interface DebtsRowsProps {
+    debt: DebtType;
 }
 
-const DebtsCreaditsRows = ({ credit }: DebtsCreditsRowsProps) => {
+const DebtsCreaditsRows = ({ debt }: DebtsRowsProps) => {
     return (
         <Box
             onClick={() => {
-                console.log(credit);
+                console.log(debt);
             }}
             className="w-300
                                   xl:w-full
@@ -28,49 +28,66 @@ const DebtsCreaditsRows = ({ credit }: DebtsCreditsRowsProps) => {
                                   cursor-pointer
                                "
         >
-            <Typography variant="body2" className="text-start">
-                {credit.id}
+            <Typography variant="body2" className="text-center">
+                {debt.id}
             </Typography>
-            <Typography variant="body2" className="text-start">
-                {credit.customer}
+            <Typography variant="body2" className="text-center">
+                {debt.customer_name}
             </Typography>
-            <Typography variant="body2" className="text-start">
-                {credit.description}
+            <Typography variant="body2" className="text-center">
+                {debt.description}
             </Typography>
-            <Typography variant="body2" className="text-start">
-                {credit.total} ریال
+            <Typography variant="body2" className="text-center">
+                {debt.amount} ریال
             </Typography>
-            <Typography variant="body2" className="text-start">
-                {credit.paid} ریال
+            <Typography variant="body2" className="text-center">
+                {debt.paid_amount} ریال
             </Typography>
-            <Typography variant="body2" className="text-start">
-                {credit.total - credit.paid} ریال
+            <Typography variant="body2" className="text-center">
+                {debt.remaining} ریال
             </Typography>
-            <Typography variant="body2" className="text-start">
-                {credit.date}
+            <Typography variant="body2" className="text-center">
+                {debt.created_at}
             </Typography>
-            {credit.status === "active" ? (
-                <Typography
-                    className="bg-blue-400/10 text-blue-500 rounded-full  text-center w-max px-3"
-                    variant="body2"
-                >
-                    باز
-                </Typography>
-            ) : credit.status === "overdue" ? (
-                <Typography
-                    className="bg-red-400/10 text-red-500 rounded-full  text-center w-max px-3"
-                    variant="body2"
-                >
-                    نشده
-                </Typography>
-            ) : (
-                <Typography
-                    className="bg-green-400/10 text-green-500 rounded-full  text-center w-max px-3"
-                    variant="body2"
-                >
-                    بسته
-                </Typography>
-            )}
+            <div className="flex justify-center">
+                {/* {debt.status === "active" ? (
+                    <Typography
+                        className="bg-blue-400/10 text-blue-500 rounded-full  text-center w-max px-3"
+                        variant="body2"
+                    >
+                        باز
+                    </Typography>
+                ) : debt.status === "overdue" ? (
+                    <Typography
+                        className="bg-red-400/10 text-red-500 rounded-full  text-center w-max px-3"
+                        variant="body2"
+                    >
+                        نشده
+                    </Typography>
+                ) : (
+                    <Typography
+                        className="bg-green-400/10 text-green-500 rounded-full  text-center w-max px-3"
+                        variant="body2"
+                    >
+                        بسته
+                    </Typography>
+                )} */}
+                {debt.is_paid ? (
+                    <Typography
+                        className="bg-green-400/10 text-green-500 rounded-full  text-center w-max px-3"
+                        variant="body2"
+                    >
+                        پرداخت شده
+                    </Typography>
+                ) : (
+                    <Typography
+                        className="bg-blue-400/10 text-blue-500 rounded-full  text-center w-max px-3"
+                        variant="body2"
+                    >
+                        پرداخت نشده
+                    </Typography>
+                )}
+            </div>
         </Box>
     );
 };
