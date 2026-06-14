@@ -29,16 +29,16 @@ const SaleRow = ({ sale }: SaleRowPropType) => {
                                   cursor-pointer
                                "
         >
-            <Typography variant="body2" className="text-start">
+            <Typography variant="body2" className="text-center">
                 {sale.id}
             </Typography>
-            <Typography variant="body2" className="text-start">
+            <Typography variant="body2" className="text-center">
                 {sale.customer_name || "ناشناس"}
             </Typography>
             {/* <Typography variant="body2" className="text-start">
                 {sale.description}
             </Typography> */}
-            <Typography variant="body2" className="text-start">
+            <Typography variant="body2" className="text-center">
                 {sale.total} ریال
             </Typography>
             {/* <Typography variant="body2" className="text-start">
@@ -47,10 +47,10 @@ const SaleRow = ({ sale }: SaleRowPropType) => {
             {/* <Typography variant="body2" className="text-start">
                 {sale.total - sale.paid} ریال
             </Typography> */}
-            <Typography variant="body2" className="text-start">
+            <Typography variant="body2" className="text-center">
                 {sale.created_at}
             </Typography>
-            <Typography variant="body2" className="text-start">
+            <div className="flex justify-center">
                 {sale.is_debt ? (
                     <Typography
                         className="bg-blue-400/10 text-blue-500 rounded-full  text-center w-max px-3"
@@ -66,29 +66,31 @@ const SaleRow = ({ sale }: SaleRowPropType) => {
                         نقدی
                     </Typography>
                 )}
-            </Typography>
-            {sale.status === "active" ? (
-                <Typography
-                    className="bg-blue-400/10 text-blue-500 rounded-full  text-center w-max px-3"
-                    variant="body2"
-                >
-                    باز
-                </Typography>
-            ) : sale.status === "overdue" ? (
-                <Typography
-                    className="bg-red-400/10 text-red-500 rounded-full  text-center w-max px-3"
-                    variant="body2"
-                >
-                    نشده
-                </Typography>
-            ) : (
-                <Typography
-                    className="bg-green-400/10 text-green-500 rounded-full  text-center w-max px-3"
-                    variant="body2"
-                >
-                    بسته
-                </Typography>
-            )}
+            </div>
+            <div className="flex justify-center">
+                {sale.status === "active" ? (
+                    <Typography
+                        className="bg-blue-400/10 text-blue-500 rounded-full  text-center w-max px-3"
+                        variant="body2"
+                    >
+                        باز
+                    </Typography>
+                ) : sale.status === "overdue" ? (
+                    <Typography
+                        className="bg-red-400/10 text-red-500 rounded-full  text-center w-max px-3"
+                        variant="body2"
+                    >
+                        نشده
+                    </Typography>
+                ) : (
+                    <Typography
+                        className="bg-green-400/10 text-green-500 rounded-full  text-center w-max px-3"
+                        variant="body2"
+                    >
+                        بسته
+                    </Typography>
+                )}
+            </div>
         </Box>
     );
 };

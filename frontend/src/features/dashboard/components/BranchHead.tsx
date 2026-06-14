@@ -21,7 +21,7 @@ const BranchHead = ({ branches }: { branches: Array<string> }) => {
                 `}
         >
             {branches.map((name, index) => (
-                <Typography key={index} variant="body2" className="text-start">
+                <Typography key={index} variant="body2" className="text-center">
                     {name}
                 </Typography>
             ))}
