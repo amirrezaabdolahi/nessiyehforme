@@ -128,7 +128,7 @@ const AddSaleModal = () => {
                 variant="outlined"
                 onClick={handleOpen}
             >
-                نسیه
+                فروش
             </Button>
 
             <Modal
@@ -206,7 +206,6 @@ const AddSaleModal = () => {
                                             })),
                                         }));
                                     }}
-                                    disabled={!selectedCustomer}
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
