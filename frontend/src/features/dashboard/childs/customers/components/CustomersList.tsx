@@ -1,12 +1,12 @@
 "use client";
 
 import React from "react";
-import { useGetCustomerQuery } from "../api/ApiCustomer";
+import { useGetCustomersQuery } from "../api/ApiCustomer";
 import CustomerRow from "../../components/CustomerRow";
 import Link from "next/link";
 
 const CustomersList = () => {
-    const { data, isLoading, error } = useGetCustomerQuery();
+    const { data, isLoading, error } = useGetCustomersQuery();
 
     if (isLoading) {
         return <p>loading...</p>;

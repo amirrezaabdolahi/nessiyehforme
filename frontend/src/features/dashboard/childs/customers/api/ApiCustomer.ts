@@ -1,9 +1,22 @@
+import { DebtType } from "@/data/DashboardCredits";
+import { SaleType } from "@/data/DashboardSale";
+import { CustomerType } from "@/types/customerType";
 import { CustomerModalFormType } from "@/types/modalsTypes";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 interface CustomerResponse {
     ok: boolean,
     customers: Array<{ id: number, phone_number: string, full_name: string }>
+}
+interface CustomeResponse {
+    ok: boolean,
+    customer: { id: number, phone_number: string, full_name: string }
+}
+interface CustomerCreditsResponse {
+    ok: boolean,
+    customer: CustomerType,
+    sales: Array<SaleType>,
+    debts: Array<DebtType>
 }
 
 export const ApiCustomer = createApi({
@@ -12,13 +25,21 @@ export const ApiCustomer = createApi({
         baseUrl: "/api/",
         credentials: "include",
     }),
-    tagTypes: ["Customers"],
+    tagTypes: ["Customers", "Customer"],
     endpoints: (builder) => ({
-        getCustomer: builder.query<CustomerResponse, void>({
+        getCustomers: builder.query<CustomerResponse, void>({
             query: () => "customers/",
             providesTags: ["Customers"]
         }),
-        addCustomer: builder.mutation<CustomerResponse , CustomerModalFormType >({
+        getCustomer: builder.query<CustomeResponse, void>({
+            query: (id) => `customers/${id}`,
+            providesTags: ["Customers"]
+        }),
+        getCustomerCredits: builder.query<CustomerCreditsResponse, string>({
+            query: (id) => `customers/${id}/history/`,
+            providesTags: ["Customer"]
+        }),
+        addCustomer: builder.mutation<CustomerResponse, CustomerModalFormType>({
             query: (data) => ({
                 url: "customers/",
                 method: "POST",
@@ -29,4 +50,9 @@ export const ApiCustomer = createApi({
     })
 })
 
-export const { useGetCustomerQuery, useAddCustomerMutation } = ApiCustomer
+export const {
+    useGetCustomersQuery,
+    useAddCustomerMutation,
+    useGetCustomerCreditsQuery,
+    useGetCustomerQuery
+} = ApiCustomer

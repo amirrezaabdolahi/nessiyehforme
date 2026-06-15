@@ -12,20 +12,10 @@ interface customerProps {
 const Customer = async ({ params }: customerProps) => {
     const { id } = await params;
 
-    const { customer, payeds } = GetCustomer(id);
-
-    if (!customer) {
-        return (
-            <div className="flex items-center justify-center w-full h-full">
-                هیچ مشتری با این شناسه پیدا نشد
-            </div>
-        );
-    }
-
     return (
         <Container>
             <CustomerPageHeader />
-            <CustomersPage customer={customer} payeds={payeds} />
+            <CustomersPage id={id} />
         </Container>
     );
 };
