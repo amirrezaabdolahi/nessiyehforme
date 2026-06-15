@@ -1,8 +1,10 @@
 from rest_framework import serializers
 from .models import Debt
+from sales.serializers import SaleItemDetailSerializer
 
 
 class DebtSerializer(serializers.ModelSerializer):
+    items = SaleItemDetailSerializer(source = 'sale.items', many=True, read_only=True)
     remaining = serializers.SerializerMethodField()
     is_paid = serializers.SerializerMethodField()
     customer_name = serializers.SerializerMethodField()
@@ -11,7 +13,7 @@ class DebtSerializer(serializers.ModelSerializer):
     class Meta:
         model = Debt
         fields = [
-            'id', 'customer', 'customer_name', 'customer_phone', 'sale',
+            'id', 'customer', 'customer_name', 'customer_phone', 'sale', 'items',
             'amount', 'paid_amount', 'remaining', 'is_paid',
             'description', 'created_at'
         ]

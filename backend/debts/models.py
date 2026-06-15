@@ -1,6 +1,6 @@
 from django.db import models
 from accounts.models import User
-from sales.models import Sale
+from sales.models import Sale, SaleItem
 from customer_management.models import CustomerShop
 
 
