@@ -1,6 +1,13 @@
 "use client";
 import { AddRounded } from "@mui/icons-material";
-import { Avatar, Box, Button, Card, Typography } from "@mui/material";
+import {
+    Avatar,
+    Box,
+    Button,
+    Card,
+    CircularProgress,
+    Typography,
+} from "@mui/material";
 import CustomersPayeds from "./CustomersPayeds";
 import { useGetCustomerCreditsQuery } from "../customers/api/ApiCustomer";
 import Container from "@/components/dash/Container";
@@ -15,11 +22,13 @@ const CustomersPage = ({ id }: { id: string }) => {
     const sales = isSuccess ? data.sales : [];
     const debts = isSuccess ? data.debts : [];
 
+    console.log(data);
+
     if (isLoading) {
         return (
             <Container>
                 <div className="w-full h-screen flex items-center justify-center">
-                    <Typography variant="h6">در حال بارگذاری...</Typography>
+                    <CircularProgress aria-label="loading..." />
                 </div>
             </Container>
         );
