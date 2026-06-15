@@ -1,32 +1,67 @@
-import { CustomerPayedType, CustomerType } from "@/data/DashboardCustomers";
+"use client";
 import { AddRounded } from "@mui/icons-material";
-import { Avatar, Box, Button, Card, Typography } from "@mui/material";
+import {
+    Avatar,
+    Box,
+    Button,
+    Card,
+    CircularProgress,
+    Typography,
+} from "@mui/material";
 import CustomersPayeds from "./CustomersPayeds";
+import { useGetCustomerCreditsQuery } from "../customers/api/ApiCustomer";
+import Container from "@/components/dash/Container";
+import DebtsCreaditsRows from "../debts/components/DebtsCreaditsRows";
+import SaleRow from "../sales/components/SaleRow";
 
-interface CustomerProps {
-    customer: CustomerType;
-    payeds: CustomerPayedType[] | undefined;
-}
+const CustomersPage = ({ id }: { id: string }) => {
+    const { data, isLoading, error, isSuccess } =
+        useGetCustomerCreditsQuery(id);
 
-const CustomersPage = ({ customer, payeds }: CustomerProps) => {
+    const customer = isSuccess ? data.customer : null;
+    const sales = isSuccess ? data.sales : [];
+    const debts = isSuccess ? data.debts : [];
+
+    console.log(data);
+
+    if (isLoading) {
+        return (
+            <Container>
+                <div className="w-full h-screen flex items-center justify-center">
+                    <CircularProgress aria-label="loading..." />
+                </div>
+            </Container>
+        );
+    }
+
+    if (!customer) {
+        return (
+            <Container>
+                <div className="w-full h-screen flex items-center justify-center">
+                    <Typography variant="h6">مشتری یافت نشد</Typography>
+                </div>
+            </Container>
+        );
+    }
+
     return (
         <>
             <Card className="flex flex-wrap items-center justify-center md:justify-between p-6 rounded-lg!">
                 <Box className="flex items-center gap-4">
                     <Avatar
-                        alt={customer.username}
+                        alt={customer.full_name}
                         variant="rounded"
                         className="w-20! h-20! rounded-lg!"
                     >
-                        {customer.username[0]}
+                        {customer.full_name[0]}
                     </Avatar>
                     <Box className="flex flex-col ">
                         <Typography variant="h5" className="font-bold!">
-                            {customer.username}
+                            {customer.full_name}
                         </Typography>
                         <Box className="flex gap-2">
                             <Typography variant="body2">
-                                {customer.phone}
+                                {customer.phone_number}
                             </Typography>
                             <Typography variant="body2">.</Typography>
                             {customer.status === "active" ? (
@@ -94,8 +129,36 @@ const CustomersPage = ({ customer, payeds }: CustomerProps) => {
                     className="flex flex-col px-4 "
                     sx={{ borderTopRightRadius: 0, borderTopLeftRadius: 0 }}
                 >
-                    {payeds?.map((pay) => (
-                        <CustomersPayeds key={pay.id} pay={pay} />
+                    {debts?.map((debt) => (
+                        <DebtsCreaditsRows key={debt.id} debt={debt} />
+                    ))}
+                </Card>
+                <Card
+                    className="flex flex-col p-4 border-b border-gray-400"
+                    sx={{
+                        borderBottomRightRadius: 0,
+                        borderBottomLeftRadius: 0,
+                    }}
+                >
+                    <Box className="flex items-center justify-between">
+                        <Typography variant="h6" className="font-bold!">
+                            جدول فروش ها
+                        </Typography>
+                        <Button
+                            size="small"
+                            variant="contained"
+                            endIcon={<AddRounded />}
+                        >
+                            فروش جدید
+                        </Button>
+                    </Box>
+                </Card>
+                <Card
+                    className="flex flex-col px-4 "
+                    sx={{ borderTopRightRadius: 0, borderTopLeftRadius: 0 }}
+                >
+                    {sales?.map((sale) => (
+                        <SaleRow key={sale.id} sale={sale} />
                     ))}
                 </Card>
             </Box>

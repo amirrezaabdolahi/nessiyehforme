@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
 import ModalContainer from "./ModalContainer";
 import { useAppDispatch } from "@/lib/redux/hooks";
 import { salesSliceActions } from "../childs/debts/slices/debtsFormSlice";
-import { useGetCustomerQuery } from "../childs/customers/api/ApiCustomer";
+import { useGetCustomersQuery } from "../childs/customers/api/ApiCustomer";
 import { useGetProductsQuery } from "../childs/products/api/ApiProduct";
 import { useAddSalesMutation } from "../childs/sales/api/ApiSales";
 import { number } from "zod";
@@ -63,7 +63,7 @@ const AddDebtModal = () => {
         data: customersData,
         isLoading: isCustomerLoading,
         error: isCustomerError,
-    } = useGetCustomerQuery();
+    } = useGetCustomersQuery();
     const {
         data: ProductsData,
         isLoading: isProuctLoading,
