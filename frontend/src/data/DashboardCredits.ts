@@ -1,3 +1,4 @@
+import { SaleType } from "./DashboardSale"
 
 
 export const DebtsBranchName: Array<string> = [
@@ -21,6 +22,13 @@ export type DebtType = {
     paid_amount: number,
     remaining: number,
     is_paid: boolean,
+    items: {
+        id: number;
+        product_id: number;
+        product_name: string;
+        quantity: number;
+        price: number;
+    }[];
     description: string,
     created_at: string,
     status: "active" | "overdue" | "settled"

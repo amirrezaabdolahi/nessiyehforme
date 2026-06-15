@@ -13,6 +13,8 @@ import { useGetCustomerCreditsQuery } from "../customers/api/ApiCustomer";
 import Container from "@/components/dash/Container";
 import DebtsCreaditsRows from "../debts/components/DebtsCreaditsRows";
 import SaleRow from "../sales/components/SaleRow";
+import CustomerDetailsDebts from "../customers/components/CustomerDetailsDebts";
+import CustomerDetailsSales from "../customers/components/CustomerDetailsSales";
 
 const CustomersPage = ({ id }: { id: string }) => {
     const { data, isLoading, error, isSuccess } =
@@ -104,15 +106,18 @@ const CustomersPage = ({ id }: { id: string }) => {
                     </Box>
                 </Box>
             </Card>
-            <Box>
+
+            {/* each debt for customer */}
+
+            <div>
                 <Card
-                    className="flex flex-col p-4 border-b border-gray-400"
+                    className="flex flex-col p-4 border-b border-gray-400 "
                     sx={{
                         borderBottomRightRadius: 0,
                         borderBottomLeftRadius: 0,
                     }}
                 >
-                    <Box className="flex items-center justify-between">
+                    <Box className="flex items-center justify-between ">
                         <Typography variant="h6" className="font-bold!">
                             جدول اقساط
                         </Typography>
@@ -126,13 +131,18 @@ const CustomersPage = ({ id }: { id: string }) => {
                     </Box>
                 </Card>
                 <Card
-                    className="flex flex-col px-4 "
+                    className="flex flex-col"
                     sx={{ borderTopRightRadius: 0, borderTopLeftRadius: 0 }}
                 >
                     {debts?.map((debt) => (
-                        <DebtsCreaditsRows key={debt.id} debt={debt} />
+                        <CustomerDetailsDebts key={debt.id} debt={debt} />
                     ))}
                 </Card>
+            </div>
+
+            {/* each sale for customer */}
+
+            <div className="">
                 <Card
                     className="flex flex-col p-4 border-b border-gray-400"
                     sx={{
@@ -154,14 +164,14 @@ const CustomersPage = ({ id }: { id: string }) => {
                     </Box>
                 </Card>
                 <Card
-                    className="flex flex-col px-4 "
+                    className="flex flex-col"
                     sx={{ borderTopRightRadius: 0, borderTopLeftRadius: 0 }}
                 >
                     {sales?.map((sale) => (
-                        <SaleRow key={sale.id} sale={sale} />
+                        <CustomerDetailsSales key={sale.id} sale={sale} />
                     ))}
                 </Card>
-            </Box>
+            </div>
         </>
     );
 };
