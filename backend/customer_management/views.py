@@ -5,6 +5,10 @@ from rest_framework.permissions import IsAuthenticated
 from accounts.models import User
 from .models import CustomerShop
 from .serializers import CustomerSerializer
+from sales.models import Sale
+from sales.serializers import SaleSerializer
+from debts.models import Debt
+from debts.serializers import DebtSerializer
 
 
 class CustomerListCreateView(APIView):
@@ -54,3 +58,24 @@ class CustomerDeleteView(APIView):
 
         relation.delete()
         return Response({'ok': True, 'message': 'مشتری حذف شد'})
+    
+
+class CustomerHistoryView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):
+        if not request.user.is_shop:
+            return Response({'ok': False, 'error': 'دسترسی ندارید'}, status=status.HTTP_403_FORBIDDEN)
+
+        if not CustomerShop.objects.filter(shop=request.user, customer_id=pk).exists():
+            return Response({'ok': False, 'error': 'این مشتری در لیست شما نیست'}, status=status.HTTP_404_NOT_FOUND)
+
+        sales = Sale.objects.filter(shop=request.user, customer_id=pk).prefetch_related('items__product')
+        debts = Debt.objects.filter(shop=request.user, customer__customer_id=pk)
+
+        return Response({
+            'ok': True,
+            'customer': CustomerSerializer(User.objects.get(id=pk)).data,
+            'sales': SaleSerializer(sales, many=True).data,
+            'debts': DebtSerializer(debts, many=True).data
+        })
