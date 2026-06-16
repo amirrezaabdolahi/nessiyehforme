@@ -7,6 +7,11 @@ from rest_framework_simplejwt.tokens import RefreshToken as JWTRefreshToken
 from rest_framework.permissions import IsAuthenticated
 import random
 from utils import send_otp_code
+from customer_management.models import CustomerShop
+from sales.models import Sale
+from sales.serializers import SaleSerializer
+from debts.models import Debt
+from debts.serializers import DebtSerializer
 
 from .models import User, OtpCode
 from .serializers import (
@@ -276,3 +281,40 @@ class ProfileView(APIView):
             "shop_name": user.shop_name,
             "shop_address": user.shop_address
         })
+    
+
+class MyShopsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        if request.user.is_shop:
+            return Response({
+                "ok": False,
+                "error": "شما یک فروشگاه هستید و نمی‌توانید فروشگاه‌ها را مشاهده کنید."
+            }, status=status.HTTP_403_FORBIDDEN)
+        
+        customer_shops = CustomerShop.objects.filter(customer=request.user).select_related('shop')
+
+        result = []
+        for cs in customer_shops:
+            shop = cs.shop
+
+            sales = Sale.objects.filter(
+                shop=shop,
+                customer=request.user
+            ).prefetch_related('items__product')
+
+            debts = Debt.objects.filter(
+                shop=shop,
+                customer=cs
+            )
+
+            result.append({
+                'shop_id': shop.id,
+                'shop_name': shop.shop_name,
+                'shop_address': shop.shop_address,
+                'sales': SaleSerializer(sales, many=True).data,
+                'debts': DebtSerializer(debts, many=True).data
+            })
+
+        return Response({'ok': True, 'shops': result})
