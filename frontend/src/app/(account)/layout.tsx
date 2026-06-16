@@ -1,0 +1,20 @@
+import { getCurrentUser } from "@/utils/auth/GetCurrentUser";
+import { redirect } from "next/navigation";
+
+export default async function MainLayout({
+    children,
+}: {
+    children: React.ReactNode;
+}) {
+    const user = await getCurrentUser();
+
+    if (!user) {
+        redirect("/auth?mode=login");
+    }
+
+    if (user.is_shop) {
+        redirect("/dashboard");
+    }
+
+    return <div className="container mx-auto">{children}</div>;
+}
