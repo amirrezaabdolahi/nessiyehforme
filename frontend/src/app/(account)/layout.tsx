@@ -1,3 +1,4 @@
+import AuthHydrator from "@/utils/auth/AuthHydrateRedux";
 import { getCurrentUser } from "@/utils/auth/GetCurrentUser";
 import { redirect } from "next/navigation";
 
@@ -16,5 +17,10 @@ export default async function MainLayout({
         redirect("/dashboard");
     }
 
-    return <div className="container mx-auto">{children}</div>;
+    return (
+        <div className="container mx-auto">
+            <AuthHydrator user={user} />
+            {children}
+        </div>
+    );
 }
