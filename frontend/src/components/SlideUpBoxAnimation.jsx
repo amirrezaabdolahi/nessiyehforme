@@ -1,7 +1,7 @@
 "use client";
 import { AnimatePresence, motion } from "framer-motion";
 import { usePathname } from "next/navigation";
-const SlideUpBoxAnimation = ({ children, delay = 0 }) => {
+const SlideUpBoxAnimation = ({ children, delay = 0 , className = "" }) => {
     const pathname = usePathname();
 
     return (
@@ -10,7 +10,7 @@ const SlideUpBoxAnimation = ({ children, delay = 0 }) => {
             initial="hidden"
             animate="visible"
             exit="hidden"
-            className="flex-1"
+            className={className}
             variants={{
                 hidden: { opacity: 0, y: 10 },
                 visible: {

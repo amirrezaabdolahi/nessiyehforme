@@ -1,11 +1,9 @@
+import "./globals.css";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import "./globals.css";
 import ThemeRegistry from "@/providers/ThemeRegistry";
 import { ToastContainer } from "react-toastify";
 import StoreProvider from "@/providers/ReduxProvider";
-import { getCurrentUser } from "@/utils/auth/GetCurrentUser";
-import { redirect } from "next/navigation";
 
 const vazirmatn = localFont({
     src: [

@@ -1,9 +1,10 @@
-import React from 'react'
+import ShopDetailsPage from "@/features/account/components/ShopDetailsPage";
+import React from "react";
 
-const page = () => {
-  return (
-    <div>page</div>
-  )
-}
+const page = async ({ params }: { params: Promise<{ id: string }> }) => {
+    const { id } = await params;
 
-export default page
+    return <ShopDetailsPage id={id} />;
+};
+
+export default page;

@@ -13,6 +13,10 @@ export const ApiAccount = createApi({
             query: () => "account/my_shops",
             providesTags: ["Shops"]
         })
+        // getShop: builder.query<void, string>({
+        //     query: ({id}) => "account/my_shops",
+        //     providesTags: ["Shops"]
+        // })
     })
 });
 
