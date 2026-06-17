@@ -1,17 +1,33 @@
 "use client";
 import Container from "@/components/dash/Container";
-import SlideUpAnimation from "@/components/SlideUpAnimation";
 import SlideUpBoxAnimation from "@/components/SlideUpBoxAnimation";
 import { useAppSelector } from "@/lib/redux/hooks";
-import { ReceiptRounded, StoreRounded } from "@mui/icons-material";
-import { Box, Button, Divider, Typography } from "@mui/material";
+import {
+    Box,
+    Button,
+    Card,
+    CircularProgress,
+    Divider,
+    Typography,
+} from "@mui/material";
 import Link from "next/link";
-import React from "react";
-import { useGetShopsQuery } from "../api/ApiAccount";
+import { useGetShopQuery } from "../api/ApiAccount";
+import CustomerDetailsDebts from "@/features/dashboard/childs/customers/components/CustomerDetailsDebts";
+import CustomerDetailsSales from "@/features/dashboard/childs/customers/components/CustomerDetailsSales";
 
-const ShopDetailsPage = ({ id }) => {
+const ShopDetailsPage = ({ id }: { id: string }) => {
     const user = useAppSelector((s) => s.userInfo);
-    const {} = useGetShopsQuery();
+    const { data, isLoading, error, isSuccess } = useGetShopQuery(id);
+
+    if (isLoading) {
+        return <CircularProgress />;
+    }
+    if (error) {
+        return <p>something went wrong</p>;
+    }
+
+    const debts = isSuccess ? data.debts : [];
+    const sales = isSuccess ? data.sales : [];
 
     return (
         <Container>
@@ -82,6 +98,27 @@ const ShopDetailsPage = ({ id }) => {
                         </Button>
                     </Link>
                 </SlideUpBoxAnimation>
+            </div>
+
+            <div className="flex flex-col">
+                <div className="">
+                    <Typography variant="h6">نسیه ها</Typography>
+                </div>
+                <div className="">
+                    {debts.map((debt) => (
+                        <CustomerDetailsDebts debt={debt} key={debt.id} />
+                    ))}
+                </div>
+            </div>
+            <div className="flex flex-col">
+                <div className="">
+                    <Typography variant="h6">فروش ها</Typography>
+                </div>
+                <div className="">
+                    {sales.map((sale) => (
+                        <CustomerDetailsSales sale={sale} key={sale.id} />
+                    ))}
+                </div>
             </div>
         </Container>
     );

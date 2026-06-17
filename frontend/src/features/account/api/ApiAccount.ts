@@ -7,20 +7,20 @@ export const ApiAccount = createApi({
         baseUrl: "/api/",
         credentials: "include",
     }),
-    tagTypes: ["Shops"],
+    tagTypes: ["Shops", "Shop"],
     endpoints: (builder) => ({
         getShops: builder.query<void, void>({
             query: () => "account/my_shops",
             providesTags: ["Shops"]
+        }),
+        getShop: builder.query<void, string>({
+            query: (id) => `account/my_shops/${id}/history`,
+            providesTags: ["Shop"]
         })
-        // getShop: builder.query<void, string>({
-        //     query: ({id}) => "account/my_shops",
-        //     providesTags: ["Shops"]
-        // })
     })
 });
 
 export const {
     useGetShopsQuery,
-    
+    useGetShopQuery
 } = ApiAccount;
