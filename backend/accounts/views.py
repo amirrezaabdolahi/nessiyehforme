@@ -295,26 +295,57 @@ class MyShopsView(APIView):
         
         customer_shops = CustomerShop.objects.filter(customer=request.user).select_related('shop')
 
-        result = []
-        for cs in customer_shops:
-            shop = cs.shop
-
-            sales = Sale.objects.filter(
-                shop=shop,
-                customer=request.user
-            ).prefetch_related('items__product')
-
-            debts = Debt.objects.filter(
-                shop=shop,
-                customer=cs
-            )
-
-            result.append({
-                'shop_id': shop.id,
-                'shop_name': shop.shop_name,
-                'shop_address': shop.shop_address,
-                'sales': SaleSerializer(sales, many=True).data,
-                'debts': DebtSerializer(debts, many=True).data
-            })
-
+        result = [
+            {
+                'shop_id': cs.shop.id,
+                'shop_name': cs.shop.shop_name,
+                'shop_address': cs.shop.shop_address,
+            }
+            for cs in customer_shops
+        ]
         return Response({'ok': True, 'shops': result})
+
+        # result = []
+        # for cs in customer_shops:
+        #     shop = cs.shop
+# 
+        #     sales = Sale.objects.filter(
+        #         shop=shop,
+        #         customer=request.user
+        #     ).prefetch_related('items__product')
+# 
+        #     debts = Debt.objects.filter(
+        #         shop=shop,
+        #         customer=cs
+        #     )
+# 
+        #     result.append({
+        #         'shop_id': shop.id,
+        #         'shop_name': shop.shop_name,
+        #         'shop_address': shop.shop_address,
+        #         'sales': SaleSerializer(sales, many=True).data,
+        #         'debts': DebtSerializer(debts, many=True).data
+        #     })
+
+        # return Response({'ok': True, 'shops': result})
+
+
+class MyShopHistoryView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, shop_id):
+        if request.user.is_shop:
+            return Response({'ok': False, 'error': 'شمما فروشنده هستید نمیتوانید ببینید سیهدیر'}, status=status.HTTP_403_FORBIDDEN)
+
+        if not CustomerShop.objects.filter(shop_id=shop_id, customer=request.user).exists():
+            return Response({'ok': False, 'error': 'شما در این فروشگاه ثبت نیستید'}, status=status.HTTP_404_NOT_FOUND)
+
+        sales = Sale.objects.filter(shop_id=shop_id, customer=request.user).prefetch_related('items__product')
+        customer_shop = CustomerShop.objects.get(shop_id=shop_id, customer=request.user)
+        debts = Debt.objects.filter(shop_id=shop_id, customer=customer_shop)
+
+        return Response({
+            'ok': True,
+            'sales': SaleSerializer(sales, many=True).data,
+            'debts': DebtSerializer(debts, many=True).data
+        })
