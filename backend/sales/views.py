@@ -35,7 +35,7 @@ class SaleListCreateView(APIView):
             return Response({'ok': False, 'error': 'حداقل یک محصول الزامی است'}, status=status.HTTP_400_BAD_REQUEST)
 
         if is_debt and not customer_id:
-            return Response({'ok': False, 'error': 'برای سیل نسیه، مشتری الزامی است'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'ok': False, 'error': 'برای فروش نسیه، مشتری الزامی است'}, status=status.HTTP_400_BAD_REQUEST)
 
         customer = None
         customer_shop = None
