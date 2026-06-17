@@ -14,6 +14,7 @@ import Link from "next/link";
 import { useGetShopQuery } from "../api/ApiAccount";
 import CustomerDetailsDebts from "@/features/dashboard/childs/customers/components/CustomerDetailsDebts";
 import CustomerDetailsSales from "@/features/dashboard/childs/customers/components/CustomerDetailsSales";
+import ShopDetailsDebts from "./ShopDetailsDebts";
 
 const ShopDetailsPage = ({ id }: { id: string }) => {
     const user = useAppSelector((s) => s.userInfo);
@@ -100,13 +101,13 @@ const ShopDetailsPage = ({ id }: { id: string }) => {
                 </SlideUpBoxAnimation>
             </div>
 
-            <div className="flex flex-col">
+            <div className="flex flex-col ">
                 <div className="">
                     <Typography variant="h6">نسیه ها</Typography>
                 </div>
-                <div className="">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {debts.map((debt) => (
-                        <CustomerDetailsDebts debt={debt} key={debt.id} />
+                        <ShopDetailsDebts debt={debt} key={debt.id} />
                     ))}
                 </div>
             </div>
