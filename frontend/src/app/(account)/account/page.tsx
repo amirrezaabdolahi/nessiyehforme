@@ -1,9 +1,10 @@
 "use client";
 import Container from "@/components/dash/Container";
 import SlideUpAnimation from "@/components/SlideUpAnimation";
+import { useGetShopsQuery } from "@/features/account/api/ApiAccount";
+import ShopsCard from "@/features/account/components/ShopsCard";
 import { useAppSelector } from "@/lib/redux/hooks";
 import {
-    ChevronLeft,
     ChevronLeftRounded,
     ReceiptRounded,
     StoreRounded,
@@ -13,6 +14,7 @@ import {
     Box,
     Button,
     Card,
+    CircularProgress,
     Divider,
     Paper,
     Typography,
@@ -21,6 +23,16 @@ import React from "react";
 
 const page = () => {
     const user = useAppSelector((s) => s.userInfo);
+    const { data, isLoading, error, isSuccess } = useGetShopsQuery();
+
+    if (isLoading) {
+        return <CircularProgress />;
+    }
+    if (error) {
+        return <p>something went wrong</p>;
+    }
+
+    const my_shops = isSuccess ? data.shops : [];
 
     return (
         <Container>
@@ -102,43 +114,9 @@ const page = () => {
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
-                    <Card className="rounded-xl! p-4! flex flex-col gap-8">
-                        <div className="flex items-center justify-between w-full">
-                            <div className="flex  gap-2 items-center">
-                                <Avatar variant="rounded" />
-                                <div className="">
-                                    <Typography variant="body1">
-                                        سوپرمارکت نگین
-                                    </Typography>
-                                    <Typography variant="caption">
-                                        دانشکده کوچه 7
-                                    </Typography>
-                                </div>
-                            </div>
-                            <ChevronLeftRounded color="disabled" />
-                        </div>
-                        <div className="bg-blue-500/50! p-4 border border-blue-500 rounded-xl!">
-                            <Typography variant="body2">
-                                بدهی باقی‌مانده
-                            </Typography>
-                            <Typography
-                                variant="h5"
-                                color="primary"
-                                className="font-bold!"
-                            >
-                                3,230,000 تومان
-                            </Typography>
-                        </div>
-                        <div className="flex w-full items-center justify-between">
-                            <Button variant="outlined">3 فاکتور باز</Button>
-                            <Typography variant="caption">
-                                1405/03/29
-                            </Typography>
-                        </div>
-                        <Button variant="contained" fullWidth>
-                            مشاهده جزئیات
-                        </Button>
-                    </Card>
+                    {my_shops?.map((shop) => (
+                        <ShopsCard shop={shop} key={shop.id} />
+                    ))}
                 </div>
             </SlideUpAnimation>
         </Container>

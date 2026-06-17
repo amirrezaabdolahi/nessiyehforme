@@ -7,6 +7,7 @@ import { userInfoReducer } from "@/features/auth/slices/userInformationsSlice"
 import { ApiProduct } from "@/features/dashboard/childs/products/api/ApiProduct"
 import { ApiCustomer } from "@/features/dashboard/childs/customers/api/ApiCustomer"
 import { ApiSales } from "@/features/dashboard/childs/sales/api/ApiSales"
+import { ApiAccount } from "@/features/account/api/ApiAccount"
 
 
 
@@ -20,13 +21,15 @@ export const store = configureStore({
         [ApiProduct.reducerPath]: ApiProduct.reducer,
         [ApiCustomer.reducerPath]: ApiCustomer.reducer,
         [ApiSales.reducerPath]: ApiSales.reducer,
+        [ApiAccount.reducerPath]: ApiAccount.reducer,
 
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(
             ApiProduct.middleware,
             ApiCustomer.middleware,
-            ApiSales.middleware
+            ApiSales.middleware,
+            ApiAccount.middleware,
         ),
 })
 
