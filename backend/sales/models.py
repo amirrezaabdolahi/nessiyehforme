@@ -15,7 +15,7 @@ class Sale(models.Model):
 
 
 class SaleItem(models.Model):
-    """this is test for commit"""
+    """Sale > sale items"""
     sale = models.ForeignKey(Sale, on_delete=models.CASCADE, related_name='items')
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
