@@ -13,6 +13,7 @@ class Category(models.Model):
         verbose_name_plural = 'Categories'
     
 class Product(models.Model):
+    """Product > products items"""
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, blank=True, null=True)
     shop = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
