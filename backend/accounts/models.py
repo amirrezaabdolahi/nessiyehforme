@@ -4,6 +4,7 @@ from .managers import UserManager
 from django.utils import timezone
 
 class User(AbstractBaseUser):
+    """Users Database"""
     phone_number = models.CharField(max_length=11, unique=True)
     full_name = models.CharField(max_length=255, blank=True, null=True)
     is_shop = models.BooleanField(default=False)
