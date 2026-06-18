@@ -22,4 +22,4 @@ export type ProductShowType = {
     stock: number;
 }
 
-export type UnitTypes = "عدد" | "کیلو" | "بسته" | "بطری" | "قوطی" | "گالن"
+// export type UnitTypes = "عدد" | "کیلو" | "بسته" | "بطری" | "قوطی" | "گالن"
