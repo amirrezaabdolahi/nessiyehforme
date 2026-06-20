@@ -1,5 +1,4 @@
 "use client";
-import { ProductType } from "@/types/productTypes";
 import { AddRounded, CloseRounded } from "@mui/icons-material";
 import {
     Autocomplete,
@@ -20,13 +19,14 @@ import { useGetProductsQuery } from "../childs/products/api/ApiProduct";
 import { useAddSalesMutation } from "../childs/sales/api/ApiSales";
 import { number } from "zod";
 import { toast } from "react-toastify";
+import { ProductType } from "@/types/types";
 
 const AddDebtModal = () => {
     const dispatch = useAppDispatch();
 
     const [form, setForm] = useState<{
         customer_id: number | null;
-        items: Array<{ product_id: number }>;
+        items: Array<{ product_id: number; quantity: number }>;
         is_debt: boolean;
     }>({
         customer_id: null,

@@ -47,3 +47,15 @@ export type ProductType = {
     stock: number;
     description?: string;
 }
+
+export interface CustomerType {
+    id: number,
+    phone_number: string,
+    full_name: string
+}
+
+export interface ShopType {
+    shop_id : number,
+    shop_name : string,
+    shop_address : string
+}

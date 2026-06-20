@@ -1,6 +1,9 @@
-import { DebtType, ProductType, SaleType } from "./types"
+import { CustomerType, DebtType, ProductType, SaleType, ShopType } from "./types"
 
 
+
+
+// sales
 export interface GetSalesResponesType {
     ok: boolean,
     sales: Array<SaleType>
@@ -11,11 +14,14 @@ export interface PostSalesType {
     items: { product_id: number, quantity: number }[]
 }
 
+// debts
 export interface GetDebtsResponeseType {
     ok: boolean,
     debts: DebtType[]
 }
 
+
+// products
 export interface GetProductsResponse {
     ok: boolean,
     products: ProductType[]
@@ -23,4 +29,32 @@ export interface GetProductsResponse {
 export interface GetProductResponse {
     ok: boolean,
     product: ProductType
+}
+
+
+// customers
+export interface GetCustomersResponse {
+    ok: boolean,
+    customers: CustomerType[]
+}
+export interface GetCustomerResponse {
+    ok: boolean,
+    customer: CustomerType
+}
+export interface GetCustomerDetailsResponse {
+    ok: boolean,
+    customer: CustomerType,
+    sales: SaleType[],
+    debts: DebtType[]
+}
+
+// account
+export interface GetMyShopsResponse {
+    ok: boolean,
+    shops: ShopType[]
+}
+export interface GetShopDetailResponse {
+    ok : boolean,
+    sales : SaleType[],
+    debts : DebtType[]
 }

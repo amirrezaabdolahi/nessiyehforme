@@ -1,5 +1,5 @@
 "use client";
-import { DebtType } from "@/data/DashboardCredits";
+import { DebtType } from "@/types/types";
 import { Box, Typography } from "@mui/material";
 
 interface DebtsRowsProps {

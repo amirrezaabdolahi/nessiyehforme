@@ -115,7 +115,7 @@ const page = () => {
 
                 <div className="grid grid-cols-2 gap-4">
                     {my_shops?.map((shop) => (
-                        <ShopsCard shop={shop} key={shop.id} />
+                        <ShopsCard shop={shop} key={shop.shop_id} />
                     ))}
                 </div>
             </SlideUpAnimation>

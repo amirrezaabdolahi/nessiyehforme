@@ -1,7 +1,7 @@
 import { CustomersUsernameAndId } from "@/data/AutoCompletesData";
-import { ProductType } from "./productTypes";
 import { formPayMethod, MetodsType } from "./methods";
 import { BranchMap, categories, Category } from "@/utils/filteringData";
+import { ProductType } from "./types";
 
 
 

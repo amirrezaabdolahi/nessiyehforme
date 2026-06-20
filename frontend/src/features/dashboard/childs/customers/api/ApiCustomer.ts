@@ -1,23 +1,7 @@
-import { DebtType } from "@/data/DashboardCredits";
-import { SaleType } from "@/data/DashboardSale";
-import { CustomerType } from "@/types/customerType";
+import { GetCustomerDetailsResponse, GetCustomerResponse, GetCustomersResponse } from "@/types/ApiResponesesType";
 import { CustomerModalFormType } from "@/types/modalsTypes";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-interface CustomerResponse {
-    ok: boolean,
-    customers: Array<{ id: number, phone_number: string, full_name: string }>
-}
-interface CustomeResponse {
-    ok: boolean,
-    customer: { id: number, phone_number: string, full_name: string }
-}
-interface CustomerCreditsResponse {
-    ok: boolean,
-    customer: CustomerType,
-    sales: Array<SaleType>,
-    debts: Array<DebtType>
-}
 
 export const ApiCustomer = createApi({
     reducerPath: "ApiCustomer",
@@ -27,19 +11,19 @@ export const ApiCustomer = createApi({
     }),
     tagTypes: ["Customers", "Customer"],
     endpoints: (builder) => ({
-        getCustomers: builder.query<CustomerResponse, void>({
+        getCustomers: builder.query<GetCustomersResponse, void>({
             query: () => "customers/",
             providesTags: ["Customers"]
         }),
-        getCustomer: builder.query<CustomeResponse, void>({
+        getCustomer: builder.query<GetCustomerResponse, void>({
             query: (id) => `customers/${id}`,
             providesTags: ["Customers"]
         }),
-        getCustomerCredits: builder.query<CustomerCreditsResponse, string>({
+        getCustomerCredits: builder.query<GetCustomerDetailsResponse, string>({
             query: (id) => `customers/${id}/history/`,
             providesTags: ["Customer"]
         }),
-        addCustomer: builder.mutation<CustomerResponse, CustomerModalFormType>({
+        addCustomer: builder.mutation<GetCustomersResponse, CustomerModalFormType>({
             query: (data) => ({
                 url: "customers/",
                 method: "POST",
