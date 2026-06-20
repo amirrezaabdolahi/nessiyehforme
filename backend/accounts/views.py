@@ -86,7 +86,7 @@ class RegisterView(APIView):
             })
     
 class RegisterVerifyCodeView(APIView):
-
+    """This view verifies the OTP code sent to the user's phone number during registration."""
     def post(self, request):
 
         serializer = RegisterVerifyCodeSerializer(data=request.data)
