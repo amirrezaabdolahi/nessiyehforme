@@ -332,17 +332,32 @@ class MyShopHistoryView(APIView):
 
     def get(self, request, shop_id):
         if request.user.is_shop:
-            return Response({'ok': False, 'error': 'شمما فروشنده هستید نمیتوانید ببینید سیهدیر'}, status=status.HTTP_403_FORBIDDEN)
+            return Response({'ok': False, 'error': 'این endpoint برای مشتریان است'}, status=status.HTTP_403_FORBIDDEN)
 
-        if not CustomerShop.objects.filter(shop_id=shop_id, customer=request.user).exists():
+        try:
+            customer_shop = CustomerShop.objects.get(shop_id=shop_id, customer=request.user)
+        except CustomerShop.DoesNotExist:
             return Response({'ok': False, 'error': 'شما در این فروشگاه ثبت نیستید'}, status=status.HTTP_404_NOT_FOUND)
 
         sales = Sale.objects.filter(shop_id=shop_id, customer=request.user).prefetch_related('items__product')
-        customer_shop = CustomerShop.objects.get(shop_id=shop_id, customer=request.user)
         debts = Debt.objects.filter(shop_id=shop_id, customer=customer_shop)
+
+        total_purchase = sum(
+            sum(item.price * item.quantity for item in sale.items.all())
+            for sale in sales
+        )
+        total_debt = sum(d.amount for d in debts)
+        total_paid = sum(d.paid_amount for d in debts)
+        total_remaining = total_debt - total_paid
 
         return Response({
             'ok': True,
+            'summary': {
+                'total_purchase': total_purchase,
+                'total_debt': total_debt,
+                'total_paid': total_paid,
+                'total_remaining': total_remaining
+            },
             'sales': SaleSerializer(sales, many=True).data,
             'debts': DebtSerializer(debts, many=True).data
         })
