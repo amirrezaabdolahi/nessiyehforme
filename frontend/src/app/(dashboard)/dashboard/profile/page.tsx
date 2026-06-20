@@ -1,12 +1,14 @@
-"use client"
+"use client";
 import Container from "@/components/dash/Container";
 import { Avatar, Button, Card, TextField, Typography } from "@mui/material";
 
 import default_Profile from "../../../../../public/default-profile.jpg";
-import Signout from "@/features/auth/components/Signout";
 import { SignoutAuth } from "@/utils/auth/CheckAuth";
+import { useAppSelector } from "@/lib/redux/hooks";
 
 const ProfilePage = () => {
+    const user = useAppSelector((s) => s.userInfo);
+
     return (
         <Container>
             <Card className="p-4 flex flex-col justify-center gap-8">
@@ -16,16 +18,16 @@ const ProfilePage = () => {
                             className="size-20! md:size-30! lg:size-40!"
                             src={default_Profile.src}
                         >
-                            P
+                            {user.full_name?.[0] || "A"}
                         </Avatar>
                     </div>
                     <div className="text-center md:text-start">
-                        <Typography variant="h5">امیررضا عبدالهی</Typography>
+                        <Typography variant="h5">{user.full_name}</Typography>
                         <Typography variant="body1">
-                            09225621256 - فروشگاه نگین
+                            {user.phone_number} - فروشگاه {user.shop_name}
                         </Typography>
                         <Typography variant="body1">
-                            amirezaabdolahi752@gmail.com
+                            {user.email || user.shop_address}
                         </Typography>
                         <Button variant="outlined">تغییر عکس پروفایل</Button>
                     </div>
@@ -61,8 +63,10 @@ const ProfilePage = () => {
                     <Button variant="contained" color="primary">
                         ویرایش
                     </Button>
-                    <Button variant="contained" color="error" 
-                      onClick={SignoutAuth}
+                    <Button
+                        variant="contained"
+                        color="error"
+                        onClick={SignoutAuth}
                     >
                         خروج از اکانت
                     </Button>
