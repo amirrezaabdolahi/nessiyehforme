@@ -24,7 +24,7 @@ from .serializers import (
 
 
 class RefreshTokenView(APIView):
-
+    """This view allows clients to refresh their access token using a valid refresh token."""
     def post(self, request):
         refresh_token = request.data.get("refresh")
 
