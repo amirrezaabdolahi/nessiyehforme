@@ -268,19 +268,38 @@ class OTPLoginView(APIView):
     
 
 
+
+
 class ProfileView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         user = request.user
-        return Response({
+
+        data = {
             "ok": True,
             "phone_number": user.phone_number,
             "full_name": user.full_name,
             "is_shop": user.is_shop,
             "shop_name": user.shop_name,
-            "shop_address": user.shop_address
-        })
+            "shop_address": user.shop_address,
+        }
+
+        if not user.is_shop:
+            customer_shops = CustomerShop.objects.filter(customer=user)
+            debts = Debt.objects.filter(customer__in=customer_shops)
+
+            total_debt = sum(d.amount for d in debts)
+            total_paid = sum(d.paid_amount for d in debts)
+            total_remaining = total_debt - total_paid
+
+            data['debt_summary'] = {
+                'total_debt': total_debt,
+                'total_paid': total_paid,
+                'total_remaining': total_remaining
+            }
+
+        return Response(data)
     
 
 class MyShopsView(APIView):
