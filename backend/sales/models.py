@@ -4,6 +4,7 @@ from products.models import Product
 
 
 class Sale(models.Model):
+    """Sale sales"""
     shop = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sales')
     customer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='purchases')
     is_debt = models.BooleanField(default=False)
@@ -14,7 +15,7 @@ class Sale(models.Model):
 
 
 class SaleItem(models.Model):
-    """this is test for commit"""
+    """Sale > sale items"""
     sale = models.ForeignKey(Sale, on_delete=models.CASCADE, related_name='items')
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()

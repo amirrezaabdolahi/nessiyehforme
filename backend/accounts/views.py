@@ -305,29 +305,7 @@ class MyShopsView(APIView):
         ]
         return Response({'ok': True, 'shops': result})
 
-        # result = []
-        # for cs in customer_shops:
-        #     shop = cs.shop
-# 
-        #     sales = Sale.objects.filter(
-        #         shop=shop,
-        #         customer=request.user
-        #     ).prefetch_related('items__product')
-# 
-        #     debts = Debt.objects.filter(
-        #         shop=shop,
-        #         customer=cs
-        #     )
-# 
-        #     result.append({
-        #         'shop_id': shop.id,
-        #         'shop_name': shop.shop_name,
-        #         'shop_address': shop.shop_address,
-        #         'sales': SaleSerializer(sales, many=True).data,
-        #         'debts': DebtSerializer(debts, many=True).data
-        #     })
 
-        # return Response({'ok': True, 'shops': result})
 
 
 class MyShopHistoryView(APIView):
