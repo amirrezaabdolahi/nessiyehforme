@@ -332,7 +332,7 @@ class MyShopHistoryView(APIView):
 
     def get(self, request, shop_id):
         if request.user.is_shop:
-            return Response({'ok': False, 'error': 'این endpoint برای مشتریان است'}, status=status.HTTP_403_FORBIDDEN)
+            return Response({'ok': False, 'error': 'این  برای مشتریان است'}, status=status.HTTP_403_FORBIDDEN)
 
         try:
             customer_shop = CustomerShop.objects.get(shop_id=shop_id, customer=request.user)
