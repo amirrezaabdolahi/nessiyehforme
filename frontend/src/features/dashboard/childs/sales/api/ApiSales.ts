@@ -1,29 +1,8 @@
-import { DebtType } from "@/data/DashboardCredits";
-import { CustomerModalFormType } from "@/types/modalsTypes";
+import { GetDebtsResponeseType, GetSalesResponesType, PostSalesType } from "@/types/ApiResponesesType";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-interface SalesResponesType {
-    ok: boolean,
-    sales: Array<{
-        id: number,
-        shop: number,
-        customer: number,
-        customer_name: string,
-        items: {
-            id: number,
-            product_id: number,
-            product_name: string,
-            quantity: number,
-            price: number
-        }[],
-        total: number,
-    }>
-}
 
-interface GetDebtsResponeseType {
-    ok: boolean,
-    debts: DebtType[]
-}
+
 
 export const ApiSales = createApi({
     reducerPath: "ApiSales",
@@ -33,11 +12,11 @@ export const ApiSales = createApi({
     }),
     tagTypes: ["Sales", "Debts"],
     endpoints: (builder) => ({
-        getSales: builder.query<SalesResponesType, void>({
+        getSales: builder.query<GetSalesResponesType, void>({
             query: () => "sales/",
             providesTags: ["Sales"]
         }),
-        addSales: builder.mutation<SalesResponesType, { customer_id: number | null, items: Array<{ product_id: number }> }>({
+        addSales: builder.mutation<GetSalesResponesType, PostSalesType>({
             query: (data) => ({
                 url: "sales/",
                 method: "POST",

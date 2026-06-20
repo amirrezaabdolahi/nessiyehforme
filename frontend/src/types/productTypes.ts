@@ -1,15 +1,4 @@
-export type ProductType = {
-    id: string;
-    name: string;
-    barcode?: string;
-    buy_price: number;
-    sell_price: number;
-    exp_date?: string;
-    image?: string;
-    category: string;
-    stock: number;
-    description?: string;
-}
+
 
 export type ProductShowType = {
     id: string;

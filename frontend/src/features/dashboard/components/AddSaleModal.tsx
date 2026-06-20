@@ -20,14 +20,12 @@ import { useGetProductsQuery } from "../childs/products/api/ApiProduct";
 import { useAddSalesMutation } from "../childs/sales/api/ApiSales";
 import { number } from "zod";
 import { toast } from "react-toastify";
+import { PostSalesType } from "@/types/ApiResponesesType";
 
 const AddSaleModal = () => {
     const dispatch = useAppDispatch();
 
-    const [form, setForm] = useState<{
-        customer_id: number | null;
-        items: Array<{ product_id: number }>;
-    }>({
+    const [form, setForm] = useState<PostSalesType>({
         customer_id: null,
         items: [],
     });

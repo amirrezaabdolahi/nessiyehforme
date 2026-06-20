@@ -1,6 +1,5 @@
 "use client";
-import { CreditType } from "@/data/DashboardCredits";
-import { SaleType } from "@/data/DashboardSale";
+import { SaleType } from "@/types/types";
 import { Box, Typography } from "@mui/material";
 
 interface SaleRowPropType {
