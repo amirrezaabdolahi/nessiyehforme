@@ -50,7 +50,9 @@ class RefreshTokenView(APIView):
 
 
 class RegisterView(APIView):
-
+    """This view handles user registration by
+    accepting phone number, full name, password, and optional shop details.
+    It generates an OTP code for verification and creates a temporary OtpCode entry."""
     def post(self, request):
 
         serializer = RegisterSerializer(data=request.data)
