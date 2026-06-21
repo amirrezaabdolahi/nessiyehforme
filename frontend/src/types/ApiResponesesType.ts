@@ -39,7 +39,12 @@ export interface GetCustomersResponse {
 }
 export interface GetCustomerResponse {
     ok: boolean,
-    customer: CustomerType
+    customer: CustomerType,
+    summary: {
+        total_debt: number,
+        total_paid: number,
+        total_remaining: number
+    }
 }
 export interface GetCustomerDetailsResponse {
     ok: boolean,
@@ -54,7 +59,7 @@ export interface GetMyShopsResponse {
     shops: ShopType[]
 }
 export interface GetShopDetailResponse {
-    ok : boolean,
-    sales : SaleType[],
-    debts : DebtType[]
+    ok: boolean,
+    sales: SaleType[],
+    debts: DebtType[]
 }

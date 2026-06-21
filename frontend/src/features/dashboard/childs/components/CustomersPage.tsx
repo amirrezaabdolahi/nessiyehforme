@@ -8,25 +8,37 @@ import {
     CircularProgress,
     Typography,
 } from "@mui/material";
-import CustomersPayeds from "./CustomersPayeds";
-import { useGetCustomerCreditsQuery } from "../customers/api/ApiCustomer";
+import {
+    useGetCustomerCreditsQuery,
+    useGetCustomerQuery,
+} from "../customers/api/ApiCustomer";
 import Container from "@/components/dash/Container";
-import DebtsCreaditsRows from "../debts/components/DebtsCreaditsRows";
-import SaleRow from "../sales/components/SaleRow";
 import CustomerDetailsDebts from "../customers/components/CustomerDetailsDebts";
 import CustomerDetailsSales from "../customers/components/CustomerDetailsSales";
 
 const CustomersPage = ({ id }: { id: string }) => {
-    const { data, isLoading, error, isSuccess } =
-        useGetCustomerCreditsQuery(id);
+    const {
+        data: credits,
+        isLoading: creditsLoading,
+        error: creditsError,
+        isSuccess: creditsSuccess,
+    } = useGetCustomerCreditsQuery(id);
 
-    const customer = isSuccess ? data.customer : null;
-    const sales = isSuccess ? data.sales : [];
-    const debts = isSuccess ? data.debts : [];
+    const {
+        data: profile,
+        isLoading: profileLoading,
+        error: profileError,
+        isSuccess: profileSuccess,
+    } = useGetCustomerQuery(id);
 
-    console.log(data);
+    const customer = profileSuccess ? profile.customer : null;
+    const summary = profileSuccess ? profile.summary : null;
+    const sales = creditsSuccess ? credits.sales : [];
+    const debts = creditsSuccess ? credits.debts : [];
 
-    if (isLoading) {
+    console.log(customer, summary);
+
+    if (creditsLoading || profileLoading) {
         return (
             <Container>
                 <div className="w-full h-screen flex items-center justify-center">
@@ -93,16 +105,23 @@ const CustomersPage = ({ id }: { id: string }) => {
                 </Box>
                 <Box className="flex gap-4">
                     <Box className="flex flex-col gap-0 items-center">
-                        <Typography variant="h6" color="warning">
-                            {customer.totalCredit - customer.paid} ریال
+                        <Typography variant="h6" color="info">
+                            {summary?.total_debt.toLocaleString("fa")} تومان
                         </Typography>
-                        <Typography variant="caption">باقی مانده</Typography>
+                        <Typography variant="caption">چمع کل حساب</Typography>
                     </Box>
                     <Box className="flex flex-col gap-0 items-center">
                         <Typography variant="h6" color="success">
-                            {customer.paid} ریال
+                            {summary?.total_paid.toLocaleString("fa")} تومان
                         </Typography>
                         <Typography variant="caption">حساب شده</Typography>
+                    </Box>
+                    <Box className="flex flex-col gap-0 items-center">
+                        <Typography variant="h6" color="warning">
+                            {summary?.total_remaining.toLocaleString("fa")}{" "}
+                            تومان
+                        </Typography>
+                        <Typography variant="caption">باقی مانده</Typography>
                     </Box>
                 </Box>
             </Card>

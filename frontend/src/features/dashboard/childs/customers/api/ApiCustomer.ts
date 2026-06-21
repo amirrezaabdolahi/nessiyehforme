@@ -15,8 +15,8 @@ export const ApiCustomer = createApi({
             query: () => "customers/",
             providesTags: ["Customers"]
         }),
-        getCustomer: builder.query<GetCustomerResponse, void>({
-            query: (id) => `customers/${id}`,
+        getCustomer: builder.query<GetCustomerResponse, string>({
+            query: (id) => `customers/${id}/`,
             providesTags: ["Customers"]
         }),
         getCustomerCredits: builder.query<GetCustomerDetailsResponse, string>({

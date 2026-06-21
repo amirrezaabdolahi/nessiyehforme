@@ -66,14 +66,14 @@ const CustomerDetailsDebts = ({ debt }: CustomerDetailsDebtsPropsType) => {
                                 </Typography>
 
                                 <Typography variant="body2">
-                                    {item.quantity} ×{" "}
-                                    {item.price.toLocaleString()}
+                                    {item.quantity.toLocaleString("fa")} ×{" "}
+                                    {item.price.toLocaleString("fa")}
                                 </Typography>
 
                                 <Typography variant="body2" fontWeight={700}>
                                     {(
                                         item.quantity * item.price
-                                    ).toLocaleString()}
+                                    ).toLocaleString("fa")}
                                 </Typography>
                             </Stack>
 
@@ -89,7 +89,7 @@ const CustomerDetailsDebts = ({ debt }: CustomerDetailsDebtsPropsType) => {
                         <Typography fontWeight={700}>جمع کل</Typography>
 
                         <Typography fontWeight={700}>
-                            {debt.amount.toLocaleString()}
+                            {debt.amount.toLocaleString("fa")}
                         </Typography>
                     </Stack>
                 </Stack>
