@@ -47,6 +47,35 @@ class CustomerListCreateView(APIView):
 class CustomerDeleteView(APIView):
     permission_classes = [IsAuthenticated]
 
+    def get(self, request, pk):
+        if not request.user.is_shop:
+            return Response({'ok': False, 'error': 'دسترسی ندارید'}, status=status.HTTP_403_FORBIDDEN)
+
+        try:
+            customer_shop = CustomerShop.objects.get(shop=request.user, customer_id=pk)
+        except CustomerShop.DoesNotExist:
+            return Response({'ok': False, 'error': 'مشتری یافت نشد'}, status=status.HTTP_404_NOT_FOUND)
+
+        customer = customer_shop.customer
+        debts = Debt.objects.filter(shop=request.user, customer=customer_shop)
+
+        total_debt = sum(d.amount for d in debts)
+        total_paid = sum(d.paid_amount for d in debts)
+
+        return Response({
+            'ok': True,
+            'customer': {
+                'id': customer.id,
+                'full_name': customer.full_name,
+                'phone_number': customer.phone_number,
+            },
+            'summary': {
+                'total_debt': total_debt,
+                'total_paid': total_paid,
+                'total_remaining': total_debt - total_paid
+            }
+        })
+
     def delete(self, request, pk):
         if not request.user.is_shop:
             return Response({'ok': False, 'error': 'دسترسی ندارید'}, status=status.HTTP_403_FORBIDDEN)
