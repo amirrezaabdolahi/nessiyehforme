@@ -73,6 +73,7 @@ class CustomerListCreateView(APIView):
 
 
 class CustomerVerifyView(APIView):
+    """Verifies the OTP code for adding a customer to the shops list."""
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
