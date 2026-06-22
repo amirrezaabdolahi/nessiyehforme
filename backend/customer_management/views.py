@@ -9,6 +9,8 @@ from sales.models import Sale
 from sales.serializers import SaleSerializer
 from debts.models import Debt
 from debts.serializers import DebtSerializer
+from accounts.models import User, OtpCode
+import random
 
 
 class CustomerListCreateView(APIView):
@@ -22,6 +24,26 @@ class CustomerListCreateView(APIView):
         customers = User.objects.filter(id__in=customer_ids)
         serializer = CustomerSerializer(customers, many=True)
         return Response({'ok': True, 'customers': serializer.data})
+
+    # def post(self, request):
+    #     if not request.user.is_shop:
+    #         return Response({'ok': False, 'error': 'دسترسی ندارید'}, status=status.HTTP_403_FORBIDDEN)
+# 
+    #     phone_number = request.data.get('phone_number')
+    #     if not phone_number:
+    #         return Response({'ok': False, 'error': 'شماره تلفن الزامی است'}, status=status.HTTP_400_BAD_REQUEST)
+# 
+    #     try:
+    #         customer = User.objects.get(phone_number=phone_number, is_shop=False)
+    #     except User.DoesNotExist:
+    #         return Response({'ok': False, 'error': 'کاربر یافت نشد'}, status=status.HTTP_404_NOT_FOUND)
+# 
+    #     if CustomerShop.objects.filter(shop=request.user, customer=customer).exists():
+    #         return Response({'ok': False, 'error': 'این مشتری قبلاً اضافه شده است'}, status=status.HTTP_400_BAD_REQUEST)
+# 
+    #     CustomerShop.objects.create(shop=request.user, customer=customer)
+    #     serializer = CustomerSerializer(customer)
+    #     return Response({'ok': True, 'message': 'مشتری اضافه شد', 'customer': serializer.data}, status=status.HTTP_201_CREATED)
 
     def post(self, request):
         if not request.user.is_shop:
@@ -39,9 +61,48 @@ class CustomerListCreateView(APIView):
         if CustomerShop.objects.filter(shop=request.user, customer=customer).exists():
             return Response({'ok': False, 'error': 'این مشتری قبلاً اضافه شده است'}, status=status.HTTP_400_BAD_REQUEST)
 
+        OtpCode.objects.filter(phone_number=phone_number).delete()
+
+        code = random.randint(100000, 999999)
+        OtpCode.objects.create(phone_number=phone_number, code=str(code))
+
+        # send_otp_code(phone_number, code)
+
+        return Response({'ok': True, 'message': 'کد تایید به مشتری ارسال شد'})
+
+
+class CustomerVerifyView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        if not request.user.is_shop:
+            return Response({'ok': False, 'error': 'دسترسی ندارید'}, status=status.HTTP_403_FORBIDDEN)
+
+        phone_number = request.data.get('phone_number')
+        code = request.data.get('code')
+
+        if not phone_number or not code:
+            return Response({'ok': False, 'error': 'شماره و کد الزامی است'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            customer = User.objects.get(phone_number=phone_number, is_shop=False)
+        except User.DoesNotExist:
+            return Response({'ok': False, 'error': 'کاربر یافت نشد'}, status=status.HTTP_404_NOT_FOUND)
+
+        otp = OtpCode.objects.filter(phone_number=phone_number, code=code).order_by('-created_at').first()
+
+        if not otp:
+            return Response({'ok': False, 'error': 'کد تایید اشتباه است'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not otp.is_valid():
+            otp.delete()
+            return Response({'ok': False, 'error': 'کد تایید منقضی شده است'}, status=status.HTTP_400_BAD_REQUEST)
+
+        otp.delete()
+
         CustomerShop.objects.create(shop=request.user, customer=customer)
         serializer = CustomerSerializer(customer)
-        return Response({'ok': True, 'message': 'مشتری اضافه شد', 'customer': serializer.data}, status=status.HTTP_201_CREATED)
+        return Response({'ok': True, 'message': 'مشتری با موفقیت اضافه شد', 'customer': serializer.data}, status=status.HTTP_201_CREATED)
 
 
 class CustomerDeleteView(APIView):
