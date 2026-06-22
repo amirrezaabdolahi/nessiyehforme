@@ -1,7 +1,7 @@
 "use client";
 
 import { branches, categories } from "@/utils/filteringData";
-import { AddRounded, CloseRounded } from "@mui/icons-material";
+import { AddRounded, CloseRounded, QrCodeRounded } from "@mui/icons-material";
 import {
     Autocomplete,
     Box,
@@ -19,6 +19,7 @@ import { productFormActions } from "../childs/products/slices/productFormSlice";
 import { ProductModalFormType } from "@/types/modalsTypes";
 import { validateAddProductForm } from "@/utils/validations/ProductValidation";
 import { useAddProductMutation } from "../childs/products/api/ApiProduct";
+import AddProductScannerDilog from "../childs/products/components/AddProductScannerDilog";
 
 const AddProductModal = () => {
     const formData = useAppSelector((e) => e.productsForm);
@@ -36,6 +37,7 @@ const AddProductModal = () => {
     });
 
     const [open, setOpen] = useState(false);
+    const [scannerOpen, setScannerOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
@@ -141,15 +143,38 @@ const AddProductModal = () => {
                                     onChange={handleChange}
                                 />
                             </div>
-                            <div className="flex flex-col gap-2">
-                                <Typography variant="body2">بارکد</Typography>
-                                <TextField
-                                    size="small"
-                                    fullWidth
-                                    placeholder="6269334116182"
-                                    value={form.barcode}
-                                    name="barcode"
-                                    onChange={handleChange}
+                            <div className="flex items-end gap-2 w-full">
+                                <div className="w-full flex flex-col gap-2">
+                                    <Typography variant="body2">
+                                        بارکد
+                                    </Typography>
+                                    <TextField
+                                        size="small"
+                                        fullWidth
+                                        placeholder="6269334116182"
+                                        value={form.barcode}
+                                        name="barcode"
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                                <IconButton
+                                    className="flex items-center justify-center"
+                                    aria-label="scanner"
+                                    color="primary"
+                                    onClick={() => setScannerOpen(true)}
+                                >
+                                    <QrCodeRounded />
+                                </IconButton>
+                                <AddProductScannerDilog
+                                    open={scannerOpen}
+                                    onClose={() => setScannerOpen(false)}
+                                    onScan={(barcode) => {
+                                        setForm((prev) => ({
+                                            ...prev,
+                                            barcode,
+                                        }));
+                                        setScannerOpen(false);
+                                    }}
                                 />
                             </div>
                             <div className="flex items-center gap-2 w-full">
