@@ -108,6 +108,7 @@ class CustomerVerifyView(APIView):
 
 
 class CustomerDeleteView(APIView):
+    """Deletes a customer from the shops list and also provides a summary of the customer's debts and sales history."""
     permission_classes = [IsAuthenticated]
 
     def get(self, request, pk):
