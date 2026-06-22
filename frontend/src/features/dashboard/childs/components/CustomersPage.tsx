@@ -15,6 +15,8 @@ import {
 import Container from "@/components/dash/Container";
 import CustomerDetailsDebts from "../customers/components/CustomerDetailsDebts";
 import CustomerDetailsSales from "../customers/components/CustomerDetailsSales";
+import AddDebtForCustomerModal from "./AddDebtForCustomerModal";
+import AddSaleForCustomerModal from "./AddSaleForCustomerModal";
 
 const CustomersPage = ({ id }: { id: string }) => {
     const {
@@ -140,13 +142,7 @@ const CustomersPage = ({ id }: { id: string }) => {
                         <Typography variant="h6" className="font-bold!">
                             جدول اقساط
                         </Typography>
-                        <Button
-                            size="small"
-                            variant="contained"
-                            endIcon={<AddRounded />}
-                        >
-                            نسیه جدید
-                        </Button>
+                        <AddDebtForCustomerModal customer={customer} />
                     </Box>
                 </Card>
                 <Card
@@ -173,13 +169,7 @@ const CustomersPage = ({ id }: { id: string }) => {
                         <Typography variant="h6" className="font-bold!">
                             جدول فروش ها
                         </Typography>
-                        <Button
-                            size="small"
-                            variant="contained"
-                            endIcon={<AddRounded />}
-                        >
-                            فروش جدید
-                        </Button>
+                        <AddSaleForCustomerModal customer={customer} />
                     </Box>
                 </Card>
                 <Card

@@ -9,7 +9,7 @@ export const ApiCustomer = createApi({
         baseUrl: "/api/",
         credentials: "include",
     }),
-    tagTypes: ["Customers", "Customer"],
+    tagTypes: ["Customers", "Customer" , "Credits"],
     endpoints: (builder) => ({
         getCustomers: builder.query<GetCustomersResponse, void>({
             query: () => "customers/",
@@ -17,11 +17,11 @@ export const ApiCustomer = createApi({
         }),
         getCustomer: builder.query<GetCustomerResponse, string>({
             query: (id) => `customers/${id}/`,
-            providesTags: ["Customers"]
+            providesTags: ["Customer"]
         }),
         getCustomerCredits: builder.query<GetCustomerDetailsResponse, string>({
             query: (id) => `customers/${id}/history/`,
-            providesTags: ["Customer"]
+            providesTags: ["Credits"]
         }),
         addCustomer: builder.mutation<GetCustomersResponse, CustomerModalFormType>({
             query: (data) => ({

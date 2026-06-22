@@ -39,16 +39,16 @@ const CustomerDetailsDebts = ({ debt }: CustomerDetailsDebtsPropsType) => {
                         <ClearRounded color="error" />
                     )}
                     <Typography variant="body2">
-                        جمع : {debt.amount.toLocaleString()}
+                        جمع : {debt.amount.toLocaleString("fa")}
                     </Typography>
                     <Typography variant="body2">
-                        مبلغ داده شده : {debt.paid_amount.toLocaleString()}
+                        مبلغ داده شده : {debt.paid_amount.toLocaleString("fa")}
                     </Typography>
                     <Typography
                         variant="body2"
                         color={debt.remaining > 0 ? "error" : "success"}
                     >
-                        مانده : {debt.remaining.toLocaleString()}
+                        مانده : {debt.remaining.toLocaleString("fa")}
                     </Typography>
                 </Stack>
             </AccordionSummary>

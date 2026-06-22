@@ -11,35 +11,30 @@ import {
 } from "@mui/material";
 import { createFilterOptions } from "@mui/material/Autocomplete";
 import { useEffect, useState } from "react";
-import ModalContainer from "./ModalContainer";
 import { useAppDispatch } from "@/lib/redux/hooks";
-import { salesSliceActions } from "../childs/debts/slices/debtsFormSlice";
-import { useGetCustomersQuery } from "../childs/customers/api/ApiCustomer";
-import { useGetProductsQuery } from "../childs/products/api/ApiProduct";
-import { useAddSalesMutation } from "../childs/sales/api/ApiSales";
 import { toast } from "react-toastify";
 import { ProductType } from "@/types/types";
+import { ApiCustomer } from "../customers/api/ApiCustomer";
+import { useGetProductsQuery } from "../products/api/ApiProduct";
+import { useAddSalesMutation } from "../sales/api/ApiSales";
+import { salesSliceActions } from "../debts/slices/debtsFormSlice";
+import ModalContainer from "../../components/ModalContainer";
+import { CustomerType } from "@/types/customerType";
 
-const AddDebtModal = () => {
+const AddDebtForCustomerModal = ({ customer }: { customer: CustomerType }) => {
     const dispatch = useAppDispatch();
 
     const [form, setForm] = useState<{
-        customer_id: number | null;
+        customer_id: number;
         items: Array<{ product_id: number; quantity: number }>;
         is_debt: boolean;
     }>({
-        customer_id: null,
+        customer_id: customer.id,
         items: [],
         is_debt: true,
     });
 
     const [open, setOpen] = useState(false);
-
-    const [selectedCustomer, setSelectedCustomer] = useState<{
-        id: number;
-        phone_number: string;
-        full_name: string;
-    } | null>(null);
 
     const [selectedProducts, setSelectedProducts] = useState<ProductType[]>([]);
 
@@ -59,11 +54,6 @@ const AddDebtModal = () => {
 
     // products api RTKQuery
     const {
-        data: customersData,
-        isLoading: isCustomerLoading,
-        error: isCustomerError,
-    } = useGetCustomersQuery();
-    const {
         data: ProductsData,
         isLoading: isProuctLoading,
         error: isProuctError,
@@ -73,7 +63,6 @@ const AddDebtModal = () => {
         { data: addSaleRes, isLoading: addSaleLoading, error: addSaleError },
     ] = useAddSalesMutation();
 
-    const customers = customersData?.customers ?? [];
     const products = ProductsData?.products ?? [];
 
     const handleCost = () => {
@@ -101,18 +90,19 @@ const AddDebtModal = () => {
                 return;
             }
 
+            handleClose()
+            dispatch(ApiCustomer.util.invalidateTags(["Credits", "Customer"]));
             toast.success("نسیه ثبت شد");
             setForm({
-                customer_id: null,
+                customer_id: customer.id,
                 items: [],
                 is_debt: true,
             });
-            setSelectedCustomer(null);
             setSelectedProducts([]);
             return;
         } catch (error) {
             console.log(error);
-            toast.error("error");
+            toast.error(error.data.error || "error");
         }
     }
 
@@ -122,15 +112,15 @@ const AddDebtModal = () => {
     };
 
     console.log(form);
-
     return (
         <>
             <Button
                 endIcon={<AddRounded fontSize="small" />}
-                variant="outlined"
+                size="small"
+                variant="contained"
                 onClick={handleOpen}
             >
-                نسیه
+                نسیه جدید
             </Button>
 
             <Modal
@@ -151,36 +141,6 @@ const AddDebtModal = () => {
                     </Box>
                     <Box className="p-4">
                         <form className="flex flex-col gap-4">
-                            <div className="flex flex-col gap-2">
-                                <Typography variant="body2">مشتری</Typography>
-                                <Autocomplete
-                                    options={customers}
-                                    filterOptions={filterOptions}
-                                    getOptionLabel={(option) =>
-                                        option.full_name
-                                    }
-                                    value={selectedCustomer}
-                                    onChange={(event, newValue) => {
-                                        setSelectedCustomer(newValue);
-                                        setForm((prev) => ({
-                                            ...prev,
-                                            customer_id: newValue?.id ?? null,
-                                        }));
-                                    }}
-                                    renderOption={(props, option) => (
-                                        <li {...props} key={option.id}>
-                                            <span>{option.full_name}</span> -
-                                            <span>{option.phone_number}</span>
-                                        </li>
-                                    )}
-                                    renderInput={(params) => (
-                                        <TextField
-                                            {...params}
-                                            placeholder="انتخاب کنید..."
-                                        />
-                                    )}
-                                />
-                            </div>
                             <div className="flex flex-col gap-2">
                                 <Typography variant="body2">مصولات</Typography>
                                 <Autocomplete
@@ -214,7 +174,6 @@ const AddDebtModal = () => {
                                             placeholder="انتخاب کنید..."
                                         />
                                     )}
-                                    disabled={!selectedCustomer}
                                     size="small"
                                     fullWidth
                                 />
@@ -235,7 +194,11 @@ const AddDebtModal = () => {
                         </form>
                     </Box>
                     <div className="flex gap-2 border-t border-gray-300 pt-4 ">
-                        <Button onClick={handleAddSale} variant="contained">
+                        <Button
+                            onClick={handleAddSale}
+                            disabled={addSaleLoading}
+                            variant="contained"
+                        >
                             ثبت نسیه
                         </Button>
                         <Button
@@ -252,4 +215,4 @@ const AddDebtModal = () => {
     );
 };
 
-export default AddDebtModal;
+export default AddDebtForCustomerModal;

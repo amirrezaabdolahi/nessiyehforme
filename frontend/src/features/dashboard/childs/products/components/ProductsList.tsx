@@ -6,21 +6,21 @@ import Product from "@/features/dashboard/components/Product";
 import ProductListLoading from "./ProductSkeletone";
 import { useRouter } from "next/navigation";
 
-const GetProducts = () => {
+const ProductsList = () => {
     const { data, error, isLoading, isSuccess } = useGetProductsQuery();
 
     const router = useRouter();
 
     if (isLoading) {
-        return <ProductListLoading count={3} />;
+        return <ProductListLoading count={5} />;
     }
 
     if (error) {
-        if ("status" in error && error.status === 401) {
-            router.push("/auth?mode=login");
-        }
-
-        return <p>Something went wrong</p>;
+        return (
+            <p className="w-full text-center text-lg">
+                مشکلی در محصولات به وجود آمده
+            </p>
+        );
     }
     return (
         <>
@@ -35,4 +35,4 @@ const GetProducts = () => {
     );
 };
 
-export default GetProducts;
+export default ProductsList;

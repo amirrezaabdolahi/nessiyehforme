@@ -1,5 +1,4 @@
 "use client";
-import { ProductType } from "@/types/productTypes";
 import { AddRounded, CloseRounded } from "@mui/icons-material";
 import {
     Autocomplete,
@@ -21,6 +20,7 @@ import { useAddSalesMutation } from "../childs/sales/api/ApiSales";
 import { number } from "zod";
 import { toast } from "react-toastify";
 import { PostSalesType } from "@/types/ApiResponesesType";
+import { ProductType } from "@/types/types";
 
 const AddSaleModal = () => {
     const dispatch = useAppDispatch();
