@@ -154,6 +154,7 @@ class CustomerDeleteView(APIView):
     
 
 class CustomerHistoryView(APIView):
+    """Provides a detailed history of a customers interactions with the shop, including sales and debts."""
     permission_classes = [IsAuthenticated]
 
     def get(self, request, pk):
