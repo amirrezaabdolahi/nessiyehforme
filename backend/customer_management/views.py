@@ -14,6 +14,7 @@ import random
 
 
 class CustomerListCreateView(APIView):
+    """This view allows shop users to list their customers and add new customers by phone number with OTP verification."""
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
