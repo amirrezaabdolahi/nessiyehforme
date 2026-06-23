@@ -23,11 +23,16 @@ class ProductListCreateView(APIView):
     # parser_classes = [MultiPartParser, FormParser]
 
     def get(self, request):
+        barcode = request.query_params.get('barcode')
+    
         if request.user.is_authenticated and request.user.is_shop:
             products = Product.objects.filter(shop=request.user)
         else:
             products = Product.objects.all()
-
+    
+        if barcode:
+            products = products.filter(barcode=barcode)
+    
         serializer = ProductSerializer(products, many=True)
         return Response({"ok": True, "products": serializer.data})
 
