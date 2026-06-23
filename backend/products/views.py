@@ -31,7 +31,11 @@ class ProductListCreateView(APIView):
             products = Product.objects.all()
     
         if barcode:
-            products = products.filter(barcode=barcode)
+            product = products.filter(barcode=barcode).first()
+            if not product:
+                return Response({'ok': False, 'message': 'محصول یافت نشد'}, status=status.HTTP_404_NOT_FOUND)
+            serializer = ProductSerializer(product)
+            return Response({"ok": True, "product": serializer.data})
     
         serializer = ProductSerializer(products, many=True)
         return Response({"ok": True, "products": serializer.data})
