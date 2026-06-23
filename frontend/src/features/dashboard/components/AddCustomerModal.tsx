@@ -16,7 +16,10 @@ import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { customerSliceActions } from "../childs/customers/slices/customerFormSlice";
 import { CustomerModalFormType } from "@/types/modalsTypes";
 import { validateAddCustomerForm } from "@/utils/validations/CustomerValidation";
-import { useAddCustomerMutation } from "../childs/customers/api/ApiCustomer";
+import {
+    useAddCustomerMutation,
+    useVerifyCustomerMutation,
+} from "../childs/customers/api/ApiCustomer";
 
 const AddCustomerModal = () => {
     const formData = useAppSelector((s) => s.customersForm);
@@ -25,12 +28,18 @@ const AddCustomerModal = () => {
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+    const [isCode, setIsCode] = useState(false);
 
     const [form, setForm] = useState<CustomerModalFormType>({
-        phone_number: formData.phone_number,
+        phone_number: "",
+        code: "",
     });
 
     const [addCustomer, { isLoading, error, data }] = useAddCustomerMutation();
+    const [
+        verifyCustomer,
+        { isLoading: isvrifying, error: verifyError, data: vrifyData },
+    ] = useVerifyCustomerMutation();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         let { name, value }: { name: string; value: string | number } =
@@ -49,8 +58,10 @@ const AddCustomerModal = () => {
         );
     };
 
-    async function handleAddCustomer() {
-        const isValid = validateAddCustomerForm.safeParse(form);
+    async function handleSentCode() {
+        const isValid = validateAddCustomerForm.safeParse({
+            phone_number: form.phone_number,
+        });
         if (!isValid.success) {
             toast.error(isValid.error.issues[0].message);
             console.log(isValid.error.issues);
@@ -63,13 +74,41 @@ const AddCustomerModal = () => {
             console.log("Add product result:", result);
 
             if (result.ok) {
-                toast.success("مشتری با موفقیت ثبت شد");
+                toast.success("کد برای مشتری ارسال شد");
                 dispatch(customerSliceActions.resetForm());
-                setForm({
-                    phone_number: "",
-                });
+                setIsCode(true);
             } else {
-                toast.error("خطا در ثبت مشتری");
+                toast.error("خطا در ارسال کد مشتری");
+            }
+        } catch (error) {
+            console.log("Error adding product:", error);
+            toast.error(error.data.error || "خطا در ثبت مشتری");
+            return;
+        }
+    }
+
+    async function handleVerifyCustomer() {
+        const isValid = validateAddCustomerForm.safeParse({
+            code: form.code,
+        });
+        if (!isValid.success) {
+            toast.error(isValid.error.issues[0].message);
+            console.log(isValid.error.issues);
+            return;
+        }
+
+        try {
+            const result = await verifyCustomer(form).unwrap();
+
+            console.log("Add product result:", result);
+
+            if (result.ok) {
+                toast.success("مشتری اضافه شد");
+                dispatch(customerSliceActions.resetForm());
+                setIsCode(false);
+                handleClose();
+            } else {
+                toast.error("خطا در اضافه کردن مشتری");
             }
         } catch (error) {
             console.log("Error adding product:", error);
@@ -106,28 +145,44 @@ const AddCustomerModal = () => {
                     </Box>
                     <Box className="p-4">
                         <form className="flex flex-col gap-4">
-                            <div className="w-full">
-                                <Typography variant="body2">
-                                    شماره موبایل
-                                </Typography>
-                                <TextField
-                                    name="phone_number"
-                                    placeholder="*******0922"
-                                    size="small"
-                                    fullWidth
-                                    value={formData.phone_number}
-                                    onChange={handleChange}
-                                />
-                            </div>
+                            {isCode ? (
+                                <div className="w-full">
+                                    <Typography variant="body2">کد</Typography>
+                                    <TextField
+                                        name="code"
+                                        placeholder="******"
+                                        size="small"
+                                        fullWidth
+                                        value={form.code}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            ) : (
+                                <div className="w-full">
+                                    <Typography variant="body2">
+                                        شماره موبایل
+                                    </Typography>
+                                    <TextField
+                                        name="phone_number"
+                                        placeholder="*******0922"
+                                        size="small"
+                                        fullWidth
+                                        value={form.phone_number}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            )}
                         </form>
                     </Box>
                     <div className="flex gap-2 border-t border-gray-300 pt-4 ">
                         <Button
                             variant="contained"
-                            onClick={handleAddCustomer}
+                            onClick={
+                                isCode ? handleVerifyCustomer : handleSentCode
+                            }
                             disabled={isLoading}
                         >
-                            ثبت مشتری
+                            {isCode ? " ثبت مشتری" : "ارسال کد"}
                         </Button>
                         <Button
                             variant="outlined"

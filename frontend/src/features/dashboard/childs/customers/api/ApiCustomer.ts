@@ -1,5 +1,6 @@
 import { GetCustomerDetailsResponse, GetCustomerResponse, GetCustomersResponse } from "@/types/ApiResponesesType";
 import { CustomerModalFormType } from "@/types/modalsTypes";
+import { CustomerType } from "@/types/types";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 
@@ -9,7 +10,7 @@ export const ApiCustomer = createApi({
         baseUrl: "/api/",
         credentials: "include",
     }),
-    tagTypes: ["Customers", "Customer" , "Credits"],
+    tagTypes: ["Customers", "Customer", "Credits"],
     endpoints: (builder) => ({
         getCustomers: builder.query<GetCustomersResponse, void>({
             query: () => "customers/",
@@ -30,6 +31,13 @@ export const ApiCustomer = createApi({
                 body: JSON.stringify(data)
             }),
             invalidatesTags: ["Customers"]
+        }),
+        verifyCustomer: builder.mutation<{ ok: boolean, message: string, customer: CustomerType }, { phone_number: string | number, code: string | number }>({
+            query: (data) => ({
+                url: "customers/verify",
+                method: "POST",
+                body: JSON.stringify(data)
+            })
         })
     })
 })
@@ -38,5 +46,6 @@ export const {
     useGetCustomersQuery,
     useAddCustomerMutation,
     useGetCustomerCreditsQuery,
-    useGetCustomerQuery
+    useGetCustomerQuery,
+    useVerifyCustomerMutation
 } = ApiCustomer
