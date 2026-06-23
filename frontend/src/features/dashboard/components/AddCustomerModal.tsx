@@ -68,6 +68,8 @@ const AddCustomerModal = () => {
             return;
         }
 
+        console.log("this is from handle sent code")
+
         try {
             const result = await addCustomer(form).unwrap();
 
@@ -96,6 +98,8 @@ const AddCustomerModal = () => {
             console.log(isValid.error.issues);
             return;
         }
+
+        console.log('this from handle verify code')
 
         try {
             const result = await verifyCustomer(form).unwrap();

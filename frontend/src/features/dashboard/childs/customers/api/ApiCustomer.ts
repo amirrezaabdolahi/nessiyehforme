@@ -37,7 +37,8 @@ export const ApiCustomer = createApi({
                 url: "customers/verify",
                 method: "POST",
                 body: JSON.stringify(data)
-            })
+            }),
+            invalidatesTags: ["Customers"]
         })
     })
 })

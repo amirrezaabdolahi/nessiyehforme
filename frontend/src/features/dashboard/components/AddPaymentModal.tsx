@@ -23,10 +23,21 @@ import { paymentSliceActions } from "../childs/payments/slices/paymentFormSlice"
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 
 const AddPaymentModal = () => {
-    // datas that comes from redux paymentsForm
-    const formData = useAppSelector((s) => s.paymentsForm);
-
     const dispatch = useAppDispatch();
+
+    const [form, setForm] = useState({
+        customer_id: null,
+        debt_id: null,
+        amount : null,
+    });
+
+    const [state, setState] = useState({
+        customer: null,
+        debt: null,
+        amount: null,
+        date: null,
+        decription: null,
+    });
 
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
@@ -44,7 +55,7 @@ const AddPaymentModal = () => {
                 const success = true;
                 if (success) resolve("Data sent successfully!");
                 else reject("Something went wrong!");
-                dispatch(paymentSliceActions.resetForm())
+                dispatch(paymentSliceActions.resetForm());
             }, 2000);
         });
 
@@ -91,7 +102,7 @@ const AddPaymentModal = () => {
                                     id="category-select"
                                     options={CustomersDataAutoComplete}
                                     getOptionLabel={(option) => option.username}
-                                    value={formData.customer}
+                                    // value={}
                                     renderOption={(props, option) => {
                                         return (
                                             <li {...props} key={option.id}>
@@ -125,7 +136,7 @@ const AddPaymentModal = () => {
                                     id="category-select"
                                     options={CustomersDataAutoComplete}
                                     getOptionLabel={(option) => option.username}
-                                    value={formData.debts}
+                                    // value={}
                                     renderOption={(props, option) => {
                                         return (
                                             <li {...props} key={option.id}>
@@ -161,7 +172,7 @@ const AddPaymentModal = () => {
                                         placeholder="مبلغ به ریال"
                                         size="small"
                                         fullWidth
-                                        value={formData.price}
+                                        // value={}
                                         onChange={(e) => {
                                             dispatch(
                                                 paymentSliceActions.updateForm({
@@ -186,7 +197,7 @@ const AddPaymentModal = () => {
                                                 </li>
                                             );
                                         }}
-                                        value={formData.method}
+                                        // value={}
                                         onChange={(event, newValue) => {
                                             dispatch(
                                                 paymentSliceActions.updateForm({
@@ -216,7 +227,7 @@ const AddPaymentModal = () => {
                                         placeholder="مبلغ به ریال"
                                         size="small"
                                         fullWidth
-                                        value={formData.date}
+                                        // value={}
                                         onChange={(e) => {
                                             dispatch(
                                                 paymentSliceActions.updateForm({
@@ -233,7 +244,7 @@ const AddPaymentModal = () => {
                                 rows={3}
                                 label="توضیحات"
                                 size="small"
-                                value={formData.description}
+                                // value={}
                                 onChange={(e) => {
                                     dispatch(
                                         paymentSliceActions.updateForm({
