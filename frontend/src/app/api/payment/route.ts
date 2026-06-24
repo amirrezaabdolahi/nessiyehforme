@@ -4,15 +4,15 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
     try {
 
-        const 
-
         const body = await req.json();
-        const result = await authenticatedFetch("products/", {
+        const { debt_id, amount } = await body
+        
+        const result = await authenticatedFetch(`debts/${debt_id}/pay/`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(body),
+            body: JSON.stringify({ amount }),
         });
 
         if (!result || result.response.status == 401) {

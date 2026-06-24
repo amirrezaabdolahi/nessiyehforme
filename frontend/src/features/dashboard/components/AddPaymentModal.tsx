@@ -179,14 +179,14 @@ const AddPaymentModal = () => {
                                     id="category-select"
                                     options={debts}
                                     getOptionLabel={(option) =>
-                                        `${option.id} - ${option.amount} - ${option.created_at}`
+                                        `${option.id} - ${option.remaining} - ${option.created_at}`
                                     }
                                     value={selectedDebt}
                                     renderOption={(props, option) => {
                                         return (
                                             <li {...props} key={option.id}>
                                                 <span>{option.id}</span>-
-                                                <span>{option.amount}</span>-
+                                                <span>{option.remaining}</span>-
                                                 <span>{option.created_at}</span>
                                             </li>
                                         );
