@@ -8,6 +8,7 @@ import { ApiProduct } from "@/features/dashboard/childs/products/api/ApiProduct"
 import { ApiCustomer } from "@/features/dashboard/childs/customers/api/ApiCustomer"
 import { ApiSales } from "@/features/dashboard/childs/sales/api/ApiSales"
 import { ApiAccount } from "@/features/account/api/ApiAccount"
+import { ApiPayment } from "@/features/dashboard/childs/payments/api/ApiPayment"
 
 
 
@@ -22,6 +23,7 @@ export const store = configureStore({
         [ApiCustomer.reducerPath]: ApiCustomer.reducer,
         [ApiSales.reducerPath]: ApiSales.reducer,
         [ApiAccount.reducerPath]: ApiAccount.reducer,
+        [ApiPayment.reducerPath]: ApiPayment.reducer,
 
     },
     middleware: (getDefaultMiddleware) =>
@@ -30,6 +32,7 @@ export const store = configureStore({
             ApiCustomer.middleware,
             ApiSales.middleware,
             ApiAccount.middleware,
+            ApiPayment.middleware,
         ),
 })
 

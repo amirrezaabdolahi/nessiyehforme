@@ -20,7 +20,7 @@ export const ApiCustomer = createApi({
             query: (id) => `customers/${id}/`,
             providesTags: ["Customer"]
         }),
-        getCustomerCredits: builder.query<GetCustomerDetailsResponse, string>({
+        getCustomerCredits: builder.query<GetCustomerDetailsResponse, string | number>({
             query: (id) => `customers/${id}/history/`,
             providesTags: ["Credits"]
         }),
@@ -47,6 +47,7 @@ export const {
     useGetCustomersQuery,
     useAddCustomerMutation,
     useGetCustomerCreditsQuery,
+    useLazyGetCustomerCreditsQuery,
     useGetCustomerQuery,
     useVerifyCustomerMutation
 } = ApiCustomer

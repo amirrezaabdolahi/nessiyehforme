@@ -49,7 +49,7 @@ export type ProductType = {
 }
 
 export interface CustomerType {
-    id: number,
+    id: number | string,
     phone_number: string,
     full_name: string
 }

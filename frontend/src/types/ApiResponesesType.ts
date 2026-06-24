@@ -63,3 +63,15 @@ export interface GetShopDetailResponse {
     sales: SaleType[],
     debts: DebtType[]
 }
+
+// payment
+export interface addPaymentResponse {
+    ok: boolean,
+    message: string,
+    error?: string,
+    debt: DebtType
+}
+export interface PostPaymentBody {
+    debt_id: number | string,
+    amount: number
+}

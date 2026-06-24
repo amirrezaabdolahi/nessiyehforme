@@ -16,20 +16,21 @@ import {
     TextField,
     Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ModalContainer from "./ModalContainer";
 import { toast } from "react-toastify";
 import { paymentSliceActions } from "../childs/payments/slices/paymentFormSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
+import {
+    useGetCustomerCreditsQuery,
+    useGetCustomersQuery,
+    useLazyGetCustomerCreditsQuery,
+} from "../childs/customers/api/ApiCustomer";
+import { useAddPaymentMutation } from "../childs/payments/api/ApiPayment";
+import { CustomerType, DebtType } from "@/types/types";
 
 const AddPaymentModal = () => {
     const dispatch = useAppDispatch();
-
-    const [form, setForm] = useState({
-        customer_id: null,
-        debt_id: null,
-        amount : null,
-    });
 
     const [state, setState] = useState({
         customer: null,
@@ -43,28 +44,66 @@ const AddPaymentModal = () => {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const [selectedCustomer, setSelectedCustomer] =
-        useState<CustomersUsernameAndId | null>(null);
+        useState<CustomerType | null>(null);
+    const [selectedDebt, setSelectedDebt] = useState<DebtType | null>(null);
+    const [debts, setDebts] = useState<DebtType[] | []>([]);
+    const [customers, setCustomers] = useState<CustomerType[] | []>([]);
+    const [amount, setAmount] = useState<number>(0);
 
-    const [debts, setDebts] = useState<Payment[] | null>(null);
+    // RTKQuery
+    const {
+        data: customersData,
+        isLoading: CustomersLoading,
+        error: CustomersError,
+        isSuccess: CustomersSuccess,
+    } = useGetCustomersQuery();
+    const [
+        getCustomerCredits,
+        {
+            data: Credits,
+            isLoading: isCreditsLoading,
+            error: CreditsError,
+            isSuccess: CreditsSuccess,
+        },
+    ] = useLazyGetCustomerCreditsQuery();
+    const [
+        addPayment,
+        {
+            data: paymentData,
+            isLoading: addPaymentLoading,
+            error: addPaymentError,
+            isSuccess: addPaymentSuccess,
+        },
+    ] = useAddPaymentMutation();
+
+    useEffect(() => {
+        if (CustomersSuccess) {
+            setCustomers(customersData.customers);
+        }
+    }, [CustomersSuccess, customersData]);
+    useEffect(() => {
+        if (CreditsSuccess) {
+            setDebts(Credits.debts);
+        }
+    }, [CreditsSuccess, Credits]);
 
     async function handleSubmitPayment() {
-        // Define the promise
-        const myPromise = new Promise((resolve, reject) => {
-            setTimeout(() => {
-                // Simulate success or error
-                const success = true;
-                if (success) resolve("Data sent successfully!");
-                else reject("Something went wrong!");
-                dispatch(paymentSliceActions.resetForm());
-            }, 2000);
-        });
+        if (!selectedDebt) {
+            return;
+        }
 
-        // Pass the promise to toast
-        toast.promise(myPromise, {
-            pending: "درحال ثبت پرداخت...",
-            success: "پرداخت ثبت شد",
-            error: "اوهو ارور داریم !",
-        });
+        try {
+            const result = await addPayment({
+                debt_id: selectedDebt.id,
+                amount,
+            }).unwrap();
+
+            if (result.ok) {
+                toast.success(result.message || "پرداخت با موفقیت انجام شد");
+            } else {
+                toast.error(result.error);
+            }
+        } catch {}
     }
 
     return (
@@ -100,24 +139,24 @@ const AddPaymentModal = () => {
                                 <Autocomplete
                                     disablePortal
                                     id="category-select"
-                                    options={CustomersDataAutoComplete}
-                                    getOptionLabel={(option) => option.username}
-                                    // value={}
+                                    options={customers}
+                                    getOptionLabel={(option) =>
+                                        option.full_name
+                                    }
+                                    value={selectedCustomer}
                                     renderOption={(props, option) => {
                                         return (
                                             <li {...props} key={option.id}>
-                                                {option.username}
+                                                {option.full_name}
                                             </li>
                                         );
                                     }}
                                     onChange={(event, newValue) => {
                                         setSelectedCustomer(newValue);
-                                        dispatch(
-                                            paymentSliceActions.updateForm({
-                                                field: "customer",
-                                                value: newValue,
-                                            }),
-                                        );
+                                        setSelectedDebt(null);
+                                        if (newValue) {
+                                            getCustomerCredits(newValue.id);
+                                        }
                                     }}
                                     renderInput={(params) => (
                                         <TextField
@@ -134,24 +173,22 @@ const AddPaymentModal = () => {
                                 <Autocomplete
                                     disablePortal
                                     id="category-select"
-                                    options={CustomersDataAutoComplete}
-                                    getOptionLabel={(option) => option.username}
-                                    // value={}
+                                    options={debts}
+                                    getOptionLabel={(option) =>
+                                        `${option.id} - ${option.amount} - ${option.created_at}`
+                                    }
+                                    value={selectedDebt}
                                     renderOption={(props, option) => {
                                         return (
                                             <li {...props} key={option.id}>
-                                                {option.username}
+                                                <span>{option.id}</span>-
+                                                <span>{option.amount}</span>-
+                                                <span>{option.created_at}</span>
                                             </li>
                                         );
                                     }}
-                                    disabled={!selectedCustomer && !debts}
                                     onChange={(event, newValue) => {
-                                        dispatch(
-                                            paymentSliceActions.updateForm({
-                                                field: "debts",
-                                                value: newValue,
-                                            }),
-                                        );
+                                        setSelectedDebt(newValue);
                                     }}
                                     renderInput={(params) => (
                                         <TextField
@@ -159,6 +196,9 @@ const AddPaymentModal = () => {
                                             placeholder="انتخاب کنید..."
                                         />
                                     )}
+                                    disabled={
+                                        !selectedCustomer || debts.length === 0
+                                    }
                                     size="small"
                                     fullWidth
                                 />
@@ -166,20 +206,15 @@ const AddPaymentModal = () => {
                             <div className="flex items-center gap-2 w-full">
                                 <div className="w-full">
                                     <Typography variant="body2">
-                                        مبلغ (ریال)
+                                        مبلغ (تومان)
                                     </Typography>
                                     <TextField
-                                        placeholder="مبلغ به ریال"
+                                        placeholder="مبلغ به تومان"
                                         size="small"
                                         fullWidth
-                                        // value={}
+                                        value={amount}
                                         onChange={(e) => {
-                                            dispatch(
-                                                paymentSliceActions.updateForm({
-                                                    field: "price",
-                                                    value: e.target.value,
-                                                }),
-                                            );
+                                            setAmount(Number(e.target.value));
                                         }}
                                     />
                                 </div>
