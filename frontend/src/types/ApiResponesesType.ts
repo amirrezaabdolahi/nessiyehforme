@@ -73,5 +73,6 @@ export interface addPaymentResponse {
 }
 export interface PostPaymentBody {
     debt_id: number | string,
-    amount: number
+    amount: number,
+    full_pay: boolean
 }

@@ -5,12 +5,12 @@ import {
     CustomersUsernameAndId,
     methodsAutocomplete,
 } from "@/data/AutoCompletesData";
-import { Payment } from "@/types/paymentTypes";
 import { AddRounded, CloseRounded } from "@mui/icons-material";
 import {
     Autocomplete,
     Box,
     Button,
+    Checkbox,
     IconButton,
     Modal,
     TextField,
@@ -49,6 +49,7 @@ const AddPaymentModal = () => {
     const [debts, setDebts] = useState<DebtType[] | []>([]);
     const [customers, setCustomers] = useState<CustomerType[] | []>([]);
     const [amount, setAmount] = useState<number>(0);
+    const [check, setCheck] = useState<boolean>(false);
 
     // RTKQuery
     const {
@@ -96,6 +97,7 @@ const AddPaymentModal = () => {
             const result = await addPayment({
                 debt_id: selectedDebt.id,
                 amount,
+                full_pay: check,
             }).unwrap();
 
             if (result.ok) {
@@ -222,61 +224,10 @@ const AddPaymentModal = () => {
                                         }}
                                     />
                                 </div>
-                                <div className="w-full">
-                                    <Typography variant="body2">روش</Typography>
-                                    <Autocomplete
-                                        disablePortal
-                                        id="category-select"
-                                        options={methodsAutocomplete}
-                                        getOptionLabel={(option) => option.name}
-                                        renderOption={(props, option) => {
-                                            return (
-                                                <li {...props} key={option.id}>
-                                                    {option.name}
-                                                </li>
-                                            );
-                                        }}
-                                        // value={}
-                                        onChange={(event, newValue) => {
-                                            dispatch(
-                                                paymentSliceActions.updateForm({
-                                                    field: "method",
-                                                    value: newValue,
-                                                }),
-                                            );
-                                        }}
-                                        disabled={!selectedCustomer && !debts}
-                                        renderInput={(params) => (
-                                            <TextField
-                                                {...params}
-                                                placeholder="انتخاب کنید..."
-                                            />
-                                        )}
-                                        size="small"
-                                        fullWidth
-                                    />
-                                </div>
-                            </div>
-                            <div className="flex items-center gap-2 w-full">
-                                <div className="w-full">
-                                    <Typography variant="body2">
-                                        تاریخ
-                                    </Typography>
-                                    <TextField
-                                        placeholder="مبلغ به ریال"
-                                        size="small"
-                                        fullWidth
-                                        // value={}
-                                        onChange={(e) => {
-                                            dispatch(
-                                                paymentSliceActions.updateForm({
-                                                    field: "date",
-                                                    value: e.target.value,
-                                                }),
-                                            );
-                                        }}
-                                    />
-                                </div>
+                                <Checkbox
+                                    checked={check}
+                                    onChange={(e) => setCheck(e.target.checked)}
+                                />
                             </div>
                             <TextField
                                 multiline
