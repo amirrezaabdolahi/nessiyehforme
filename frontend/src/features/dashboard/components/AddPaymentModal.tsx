@@ -103,7 +103,11 @@ const AddPaymentModal = () => {
             } else {
                 toast.error(result.error);
             }
-        } catch {}
+        } catch (error) {
+            console.error("Error adding payment:", error);
+            toast.error("خطا در ثبت پرداخت");
+            return;
+        }
     }
 
     return (
