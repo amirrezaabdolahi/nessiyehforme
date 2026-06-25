@@ -1,5 +1,10 @@
 "use client";
-import { AddRounded, CloseRounded, RemoveRounded } from "@mui/icons-material";
+import {
+    AddRounded,
+    CloseRounded,
+    QrCodeScannerRounded,
+    RemoveRounded,
+} from "@mui/icons-material";
 import {
     Autocomplete,
     Box,
@@ -20,6 +25,7 @@ import { useGetProductsQuery } from "../childs/products/api/ApiProduct";
 import { useAddSalesMutation } from "../childs/sales/api/ApiSales";
 import { toast } from "react-toastify";
 import { ProductType } from "@/types/types";
+import AddProductScannerDilog from "../childs/products/components/AddProductScannerDilog";
 
 const AddDebtModal = () => {
     const dispatch = useAppDispatch();
@@ -35,6 +41,7 @@ const AddDebtModal = () => {
     });
 
     const [open, setOpen] = useState(false);
+    const [scannerOpen, setScannerOpen] = useState(false);
 
     const [selectedCustomer, setSelectedCustomer] = useState<{
         id: number;
@@ -116,6 +123,36 @@ const AddDebtModal = () => {
                     : item,
             ),
         }));
+    };
+
+    const handleBarcodeScan = (barcode: string) => {
+        const product = products.find((p) => p.barcode === barcode);
+
+        if (!product) {
+            toast.error("محصول پیدا نشد");
+            return;
+        }
+
+        const exists = form.items.find((i) => i.product_id === product.id);
+
+        if (exists) {
+            increaseQuantity(product.id);
+        } else {
+            setSelectedProducts((prev) => [...prev, product]);
+            setForm((prev) => ({
+                ...prev,
+                items: [
+                    ...prev.items,
+                    {
+                        product_id: product.id,
+                        quantity: 1,
+                    },
+                ],
+            }));
+            toast.success(`${product.name} اضافه شد`);
+        }
+
+        setScannerOpen(false)
     };
 
     async function handleAddSale() {
@@ -245,6 +282,17 @@ const AddDebtModal = () => {
                                     fullWidth
                                 />
                             </div>
+                            <Button
+                                variant="outlined"
+                                onClick={() => setScannerOpen(true)}
+                            >
+                                اضافه کردن با اسکنر
+                            </Button>
+                            <AddProductScannerDilog
+                                open={scannerOpen}
+                                onClose={() => setScannerOpen(false)}
+                                onScan={handleBarcodeScan}
+                            />
                             <div className="flex flex-col gap-2">
                                 {selectedProducts.map((product) => {
                                     const item = form.items.find(
