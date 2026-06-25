@@ -1,9 +1,10 @@
 "use client";
-import { AddRounded, CloseRounded } from "@mui/icons-material";
+import { AddRounded, CloseRounded, RemoveRounded } from "@mui/icons-material";
 import {
     Autocomplete,
     Box,
     Button,
+    Card,
     IconButton,
     Modal,
     TextField,
@@ -92,6 +93,31 @@ const AddDebtModal = () => {
         handleCost();
     }, [selectedProducts]);
 
+    const increaseQuantity = (productId: number) => {
+        setForm((prev) => ({
+            ...prev,
+            items: prev.items.map((item) =>
+                item.product_id === productId
+                    ? { ...item, quantity: item.quantity + 1 }
+                    : item,
+            ),
+        }));
+    };
+
+    const decreaseQuantity = (productId: number) => {
+        setForm((prev) => ({
+            ...prev,
+            items: prev.items.map((item) =>
+                item.product_id === productId
+                    ? {
+                          ...item,
+                          quantity: Math.max(1, item.quantity - 1),
+                      }
+                    : item,
+            ),
+        }));
+    };
+
     async function handleAddSale() {
         try {
             const result = await addSale(form).unwrap();
@@ -112,7 +138,7 @@ const AddDebtModal = () => {
             return;
         } catch (error) {
             console.log(error);
-            toast.error("error");
+            toast.error(error.data.error || "error");
         }
     }
 
@@ -219,6 +245,51 @@ const AddDebtModal = () => {
                                     fullWidth
                                 />
                             </div>
+                            <div className="flex flex-col gap-2">
+                                {selectedProducts.map((product) => {
+                                    const item = form.items.find(
+                                        (item) =>
+                                            item.product_id === product.id,
+                                    );
+
+                                    return (
+                                        <Card
+                                            key={product.id}
+                                            className="flex items-center justify-between p-2"
+                                        >
+                                            {product.name}
+
+                                            <div className="flex items-center gap-2">
+                                                <IconButton
+                                                    color="primary"
+                                                    onClick={() =>
+                                                        increaseQuantity(
+                                                            product.id,
+                                                        )
+                                                    }
+                                                >
+                                                    <AddRounded />
+                                                </IconButton>
+
+                                                <Typography variant="caption">
+                                                    {item?.quantity ?? 1}
+                                                </Typography>
+
+                                                <IconButton
+                                                    color="error"
+                                                    onClick={() =>
+                                                        decreaseQuantity(
+                                                            product.id,
+                                                        )
+                                                    }
+                                                >
+                                                    <RemoveRounded />
+                                                </IconButton>
+                                            </div>
+                                        </Card>
+                                    );
+                                })}
+                            </div>
                             <div className="flex items-center gap-2 w-full">
                                 <div className="w-full">
                                     <Typography variant="body2">
@@ -235,7 +306,11 @@ const AddDebtModal = () => {
                         </form>
                     </Box>
                     <div className="flex gap-2 border-t border-gray-300 pt-4 ">
-                        <Button onClick={handleAddSale} variant="contained">
+                        <Button
+                            onClick={handleAddSale}
+                            disabled={addSaleLoading}
+                            variant="contained"
+                        >
                             ثبت نسیه
                         </Button>
                         <Button
