@@ -22,6 +22,7 @@ import { toast } from "react-toastify";
 import { paymentSliceActions } from "../childs/payments/slices/paymentFormSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import {
+    ApiCustomer,
     useGetCustomerCreditsQuery,
     useGetCustomersQuery,
     useLazyGetCustomerCreditsQuery,
@@ -97,11 +98,12 @@ const AddPaymentModal = () => {
             const result = await addPayment({
                 debt_id: selectedDebt.id,
                 amount,
-                full_pay: check,
+                pay_full: check,
             }).unwrap();
 
             if (result.ok) {
                 toast.success(result.message || "پرداخت با موفقیت انجام شد");
+                dispatch(ApiCustomer.util.invalidateTags(["Credits"]));
             } else {
                 toast.error(result.error);
             }

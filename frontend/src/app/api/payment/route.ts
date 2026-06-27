@@ -5,14 +5,14 @@ export async function POST(req: Request) {
     try {
 
         const body = await req.json();
-        const { debt_id, amount } = await body
-        
+        const { debt_id, amount, pay_full } = await body
+
         const result = await authenticatedFetch(`debts/${debt_id}/pay/`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ amount }),
+            body: JSON.stringify({ amount, pay_full }),
         });
 
         if (!result || result.response.status == 401) {

@@ -36,7 +36,7 @@ export interface SaleType {
 }
 
 export type ProductType = {
-    id: string;
+    id: number;
     name: string;
     barcode?: string;
     buy_price: number;
