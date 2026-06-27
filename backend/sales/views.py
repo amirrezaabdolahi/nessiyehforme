@@ -55,7 +55,7 @@ class SaleListCreateView(APIView):
 
         for item in serializer.validated_data:
             try:
-                product = Product.objects.get(id=item['product_id'], shop=request.user)
+                product = Product.objects.select_for_update().get(id=item['product_id'], shop=request.user)
             except Product.DoesNotExist:
                 return Response({'ok': False, 'error': f"محصول {item['product_id']} یافت نشد"}, status=status.HTTP_404_NOT_FOUND)
 
