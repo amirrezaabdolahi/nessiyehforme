@@ -138,3 +138,25 @@ uploads/
 # Backup files
 *.bak
 *.swp
+
+# Docker
+.docker/
+docker-data/
+docker-volumes/
+
+# Docker Compose override
+docker-compose.override.yml
+compose.override.yml
+# Docker logs
+*.log
+
+# Docker PID files
+*.pid
+
+# Local database volumes
+postgres-data/
+mysql-data/
+redis-data/
+
+# Docker Desktop
+.dockerignore.local
