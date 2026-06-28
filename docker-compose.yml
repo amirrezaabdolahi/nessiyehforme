@@ -1,48 +1,21 @@
 services:
-  db:
-    image: ghcr.io/amirrezaabdolahi/postgres:17
+  postgres:
+    image: postgres:17
+
     container_name: nessiye-db
 
     restart: unless-stopped
-
-    env_file:
-      - ./backend/.env
 
     environment:
       POSTGRES_DB: nessiye
       POSTGRES_USER: amir
       POSTGRES_PASSWORD: amirkunie1234
 
+    ports:
+      - "5432:5432"
+
     volumes:
       - postgres_data:/var/lib/postgresql/data
-
-  backend:
-    image: ghcr.io/amirrezaabdolahi/backend:latest
-    container_name: nessiye-backend
-
-    env_file:
-      - ./backend/.env
-
-    command: python manage.py runserver 0.0.0.0:8000
-
-    ports:
-      - "8080:8000"
-
-    depends_on:
-      - db
-
-  frontend:
-    image: ghcr.io/amirrezaabdolahi/frontend:latest
-    container_name: nessiye-frontend
-
-    env_file:
-      - ./frontend/.env.production
-
-    ports:
-      - "3000:3000"
-
-    depends_on:
-      - backend
 
 volumes:
   postgres_data:
