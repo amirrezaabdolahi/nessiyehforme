@@ -1,1 +1,22 @@
 
+services:
+  postgres:
+    image: postgres:17
+
+    container_name: nessiye-db
+
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: nessiye
+      POSTGRES_USER: amir
+      POSTGRES_PASSWORD: amirkunie1234
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
