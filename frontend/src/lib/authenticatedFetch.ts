@@ -23,8 +23,6 @@ export async function authenticatedFetch(
         },
     });
 
-    console.log(env.API_BASE_URL)
-
     if (response.ok) {
         return { response };
     }

@@ -54,8 +54,48 @@ export interface CustomerType {
     full_name: string
 }
 
+export interface CustomersListType {
+    id: number | string,
+    phone_number: string,
+    full_name: string,
+    paid_amount: number,
+    remaining_amount: number,
+    total_debts: number
+}
+
 export interface ShopType {
-    shop_id : number,
-    shop_name : string,
-    shop_address : string
+    shop_id: number,
+    shop_name: string,
+    shop_address: string,
+    total_amount: number,
+    number_of_debts: number
+}
+
+export interface ModalCustomersType {
+    id: number,
+    full_name: string,
+    phone_number: string,
+}
+
+export interface ModalProductsType {
+    id: number,
+    name: string,
+    barcode?: string,
+    sell_price: number,
+}
+
+export interface ModalDebtsType {
+    id: number,
+    remaining: number,
+    created_at: string,
+    is_paid: boolean,
+}
+
+
+// products search params
+export interface GetProductsParams {
+    search?: string;
+    category?: string;
+    // page?: number;
+    // ordering?: string;
 }

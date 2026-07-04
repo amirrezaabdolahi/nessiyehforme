@@ -4,9 +4,8 @@ import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { Button, TextField, Typography, Box } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
-
 
 const LoginCode = () => {
     const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
@@ -26,8 +25,6 @@ const LoginCode = () => {
             inputRef.current[index + 1]?.focus();
         }
     };
-
-    console.log(otp);
 
     const handleKeyDown = (
         e: React.KeyboardEvent<HTMLInputElement>,
@@ -81,6 +78,35 @@ const LoginCode = () => {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        const handlePaste = (e: ClipboardEvent) => {
+            const pasted = e.clipboardData?.getData("text") ?? "";
+
+            const digits = pasted
+                .replace(/\D/g, "")
+                .slice(0, otp.length)
+                .split("");
+
+            setOtp((prev) => {
+                const newOtp = [...prev];
+
+                digits.forEach((digit, i) => {
+                    newOtp[i] = digit;
+                });
+
+                return newOtp;
+            });
+
+            inputRef.current[Math.min(digits.length, otp.length - 1)]?.focus();
+        };
+
+        window.addEventListener("paste", handlePaste);
+
+        return () => {
+            window.removeEventListener("paste", handlePaste);
+        };
+    }, []);
 
     return (
         <>

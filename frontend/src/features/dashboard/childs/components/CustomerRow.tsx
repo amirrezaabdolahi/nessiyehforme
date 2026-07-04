@@ -1,9 +1,10 @@
 "use client";
 import { CustomerType } from "@/types/customerType";
+import { CustomersListType } from "@/types/types";
 import { Avatar, Box, Button, Typography } from "@mui/material";
 
 interface CustomerRowProps {
-    customer: CustomerType;
+    customer: CustomersListType;
 }
 
 const CustomerRow = ({ customer }: CustomerRowProps) => {
@@ -17,7 +18,7 @@ const CustomerRow = ({ customer }: CustomerRowProps) => {
                                   sticky top-0
                                   z-50
                                   grid 
-                                  grid-cols-8
+                                  grid-cols-6
                                   items-center
                                   justify-between
                                   p-4
@@ -28,48 +29,25 @@ const CustomerRow = ({ customer }: CustomerRowProps) => {
                                   cursor-pointer
                                "
         >
-            <Box className="flex items-center gap-2">
-                <Avatar alt={customer.full_name}>{customer?.full_name[0]}</Avatar>
+            <Box className="flex items-center justify-start gap-2">
+                <Avatar alt={customer.full_name}>
+                    {customer?.full_name[0]}
+                </Avatar>
                 <Typography variant="body2" className="text-start">
                     {customer.full_name}
                 </Typography>
             </Box>
-            <Typography variant="body2" className="text-start">
+            <Typography variant="body2" className="text-center">
                 {customer.phone_number}
             </Typography>
-            <Typography variant="body2" className="text-start">
-                {customer?.totalCredit} ریال
+            <Typography variant="body2" className="text-center" color="primary">
+                {customer?.total_debts.toLocaleString("fa-IR")} تومان
             </Typography>
-            <Typography variant="body2" className="text-start">
-                {customer?.paid} ریال
+            <Typography variant="body2" className="text-center" color="success">
+                {customer?.paid_amount.toLocaleString("fa-IR")} تومان
             </Typography>
-            <Typography variant="body2" className="text-start">
-                {customer?.totalCredit - customer?.paid} ریال
-            </Typography>
-            {customer?.status === "active" ? (
-                <Typography
-                    className="bg-blue-400/10 text-blue-500 rounded-full  text-center w-max px-3"
-                    variant="body2"
-                >
-                    باز
-                </Typography>
-            ) : customer.status === "overdue" ? (
-                <Typography
-                    className="bg-red-400/10 text-red-500 rounded-full  text-center w-max px-3"
-                    variant="body2"
-                >
-                    نشده
-                </Typography>
-            ) : (
-                <Typography
-                    className="bg-green-400/10 text-green-500 rounded-full  text-center w-max px-3"
-                    variant="body2"
-                >
-                    بسته
-                </Typography>
-            )}
-            <Typography variant="body2" className="text-start">
-                {customer?.lastPayment}
+            <Typography variant="body2" className="text-center" color="error">
+                {customer?.remaining_amount.toLocaleString("fa-IR")} تومان
             </Typography>
             <Button variant="text">پرداخت</Button>
         </Box>

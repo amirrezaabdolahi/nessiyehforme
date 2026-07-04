@@ -1,13 +1,11 @@
 "use client";
 
-import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
+import { useAppSelector } from "@/lib/redux/hooks";
 import { Button, TextField, Typography, Box } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
-import { userInfoActions } from "../slices/userInformationsSlice";
-import { setCookie } from "@/utils/auth/SetCookie";
 
 const RegisterCode = () => {
     const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
@@ -15,7 +13,6 @@ const RegisterCode = () => {
     const [loading, setLoading] = useState<boolean>(false);
 
     const user = useAppSelector((s) => s.userInfo);
-    const dispatch = useAppDispatch();
     const router = useRouter();
 
     const handleChange = (value: string, index: number) => {
@@ -71,7 +68,9 @@ const RegisterCode = () => {
 
             if (data.ok) {
                 toast.success("ثبت نام با موفقیت کامل شد");
-                user.is_shop ? router.replace("/dashboard") : router.replace("/main");
+                user.is_shop
+                    ? router.replace("/dashboard")
+                    : router.replace("/main");
                 return;
             }
             toast.error(data.error, { draggable: true, closeOnClick: true });
@@ -82,6 +81,35 @@ const RegisterCode = () => {
             setLoading(false);
         }
     };
+
+   useEffect(() => {
+           const handlePaste = (e: ClipboardEvent) => {
+               const pasted = e.clipboardData?.getData("text") ?? "";
+   
+               const digits = pasted
+                   .replace(/\D/g, "")
+                   .slice(0, otp.length)
+                   .split("");
+   
+               setOtp((prev) => {
+                   const newOtp = [...prev];
+   
+                   digits.forEach((digit, i) => {
+                       newOtp[i] = digit;
+                   });
+   
+                   return newOtp;
+               });
+   
+               inputRef.current[Math.min(digits.length, otp.length - 1)]?.focus();
+           };
+   
+           window.addEventListener("paste", handlePaste);
+   
+           return () => {
+               window.removeEventListener("paste", handlePaste);
+           };
+       }, []);
 
     return (
         <>
