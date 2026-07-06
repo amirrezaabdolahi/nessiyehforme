@@ -9,17 +9,17 @@ export default async function MainLayout({
 }) {
     const user = await getCurrentUser();
 
-    if (!user) {
-        redirect("/auth?mode=login");
-    }
+    // if (!user) {
+    //     redirect("/auth?mode=login");
+    // }
 
-    if (user.is_shop) {
-        redirect("/dashboard");
-    }
+    // if (user.is_shop) {
+    //     redirect("/dashboard");
+    // }
 
     return (
         <div className="">
-            <MainNavbar />
+            {/* <MainNavbar /> */}
             {children}
         </div>
     );

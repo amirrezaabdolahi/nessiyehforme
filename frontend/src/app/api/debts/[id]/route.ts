@@ -1,19 +1,14 @@
 import { authenticatedFetch } from "@/lib/authenticatedFetch";
 import { NextResponse } from "next/server";
 
-export async function POST(req: Request) {
+
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
+
     try {
 
-        const body = await req.json();
-        const { debt_id, amount, pay_full } = await body
+        const { id } = await params
 
-        const result = await authenticatedFetch(`debts/${debt_id}/pay/`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ amount, pay_full }),
-        });
+        const result = await authenticatedFetch(`debts/${id}/`)
 
         if (!result || result.response.status == 401) {
             return NextResponse.json(
@@ -39,11 +34,13 @@ export async function POST(req: Request) {
                 sameSite: "lax",
                 path: "/",
             });
+
+
         }
         return response;
 
     } catch (error) {
-        console.error("Error adding product:", error);
+        console.error("Error fetching products:", error);
         return NextResponse.json(
             { error: "Internal server error" },
             { status: 500 }

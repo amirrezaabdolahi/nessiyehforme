@@ -17,6 +17,7 @@ export interface DebtType {
     }[];
     description: string,
     created_at: string,
+    payments?: PaymentType[]
     status: "active" | "overdue" | "settled"
 }
 
@@ -98,4 +99,13 @@ export interface GetProductsParams {
     category?: string;
     // page?: number;
     // ordering?: string;
+}
+
+export interface PaymentType {
+    id: number,
+    customer_name: string,
+    customer_phone: string,
+    amount: number,
+    created_at: string,
+    debt_id: number
 }

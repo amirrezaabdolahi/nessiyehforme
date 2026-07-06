@@ -1,4 +1,4 @@
-import { CustomersListType, CustomerType, DebtType, ModalCustomersType, ModalProductsType, ProductType, SaleType, ShopType } from "./types"
+import { CustomersListType, CustomerType, DebtType, ModalCustomersType, ModalProductsType, PaymentType, ProductType, SaleType, ShopType } from "./types"
 
 
 
@@ -18,6 +18,10 @@ export interface PostSalesType {
 export interface GetDebtsResponeseType {
     ok: boolean,
     debts: DebtType[]
+}
+export interface GetDebtByIdResponeseType {
+    ok: boolean,
+    debt: DebtType
 }
 
 
@@ -56,9 +60,9 @@ export interface GetCustomerDetailsResponse {
 // account
 export interface GetMeResponse {
     ok: boolean,
-    total_amount : number,
+    total_amount: number,
     number_of_debts: number,
-    
+
     shops: ShopType[]
 }
 export interface GetShopDetailResponse {
@@ -68,6 +72,12 @@ export interface GetShopDetailResponse {
 }
 
 // payment
+
+export interface GetPaymentsResponse {
+    ok: boolean,
+    payments: PaymentType[]
+}
+
 export interface addPaymentResponse {
     ok: boolean,
     message: string,
