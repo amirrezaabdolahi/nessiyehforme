@@ -1,4 +1,4 @@
-
+"use client";
 import Container from "@/components/dash/Container";
 import DashboardsPageHeader from "@/components/dash/DashboardsPageHeader";
 import { Customers, CustomersBranchName } from "@/data/DashboardCustomers";
