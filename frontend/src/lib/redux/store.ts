@@ -10,6 +10,8 @@ import { ApiSales } from "@/features/dashboard/childs/sales/api/ApiSales"
 import { ApiAccount } from "@/features/account/api/ApiAccount"
 import { ApiPayment } from "@/features/dashboard/childs/payments/api/ApiPayment"
 import { ApiModalsData } from "@/features/dashboard/api/ApiModalsData"
+import { ApiDashboard } from "@/features/dashboard/childs/dashboard/api/ApiDashboard"
+import { themeSliceReducer } from "@/features/theme/themeSlice"
 
 
 
@@ -20,12 +22,14 @@ export const store = configureStore({
         paymentsForm: paymentSliceReducer,
         customersForm: customerSliceReducer,
         productsForm: productFormReducers,
+        theme: themeSliceReducer,
         [ApiProduct.reducerPath]: ApiProduct.reducer,
         [ApiCustomer.reducerPath]: ApiCustomer.reducer,
         [ApiSales.reducerPath]: ApiSales.reducer,
         [ApiAccount.reducerPath]: ApiAccount.reducer,
         [ApiPayment.reducerPath]: ApiPayment.reducer,
         [ApiModalsData.reducerPath]: ApiModalsData.reducer,
+        [ApiDashboard.reducerPath]: ApiDashboard.reducer,
 
     },
     middleware: (getDefaultMiddleware) =>
@@ -35,7 +39,8 @@ export const store = configureStore({
             ApiSales.middleware,
             ApiAccount.middleware,
             ApiPayment.middleware,
-            ApiModalsData.middleware
+            ApiModalsData.middleware,
+            ApiDashboard.middleware
         ),
 })
 
