@@ -5,8 +5,16 @@ import { NextResponse } from "next/server";
 export async function GET(req: Request) {
 
     try {
+        const { searchParams } = new URL(req.url);
 
-        const result = await authenticatedFetch("customers/")
+        const queryString = searchParams.toString();
+
+        const endpoint = queryString
+            ? `customers/?${queryString}`
+            : "customers/";
+
+        console.log(endpoint)
+        const result = await authenticatedFetch(endpoint)
 
         if (!result || result.response.status == 401) {
             return NextResponse.json(
