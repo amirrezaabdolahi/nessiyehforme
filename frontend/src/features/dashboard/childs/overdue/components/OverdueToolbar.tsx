@@ -22,7 +22,7 @@ import {
   Search,
 } from "@mui/icons-material";
 
-export default function DebtsPageToolbar() {
+export default function OverdueToolbar() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -52,13 +52,7 @@ export default function DebtsPageToolbar() {
   const updateParam = (key: string, value: string) => {
     const params = new URLSearchParams(searchParams.toString());
 
-    if (key == "ordering" && value == "-created_at") {
-      params.delete(key);
-    } else {
-      params.set(key, value);
-    }
-    
-    if (key === "period" && value === "all") {
+    if (key === "status" && value === "all") {
       params.delete(key);
     } else {
       params.set(key, value);
@@ -158,7 +152,7 @@ export default function DebtsPageToolbar() {
           label="همه"
           color={status === "all" ? "primary" : "default"}
           variant={status === "all" ? "filled" : "outlined"}
-          onClick={() => updateParam("period", "all")}
+          onClick={() => updateParam("status", "all")}
         />
 
         {/* Period */}
