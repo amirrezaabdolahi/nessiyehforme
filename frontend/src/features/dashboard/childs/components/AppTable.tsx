@@ -17,21 +17,29 @@ interface AppTableProps<T> {
   headers: string[];
   data: T[];
   renderRow: (item: T) => ReactNode;
+  pagination?: {
+    page: number;
+    totalPages: number;
+    totalItems: number;
+    pageSize: number;
+    onChange: (page: number) => void;
+  };
 }
 
 export default function AppTable<T>({
   headers,
   data,
   renderRow,
+  pagination,
 }: AppTableProps<T>) {
-  const mode = useAppSelector((s) => s.theme);
+  const mode = useAppSelector((s) => s.theme.mode);
 
   return (
     <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 800 }}>
+      <Table sx={{ minWidth: 800 }} className="rounded-xl! overflow-hidden">
         <TableHead>
           <TableRow
-            className={mode.mode === "light" ? "bg-gray-200" : "bg-blue-700"}
+            className={mode === "light" ? "bg-gray-200" : "bg-blue-700"}
           >
             {headers.map((header) => (
               <TableCell key={header} align="center">
@@ -43,13 +51,7 @@ export default function AppTable<T>({
 
         <TableBody>{data.map(renderRow)}</TableBody>
       </Table>
-      <AppTablePagination
-        page={1}
-        totalPages={10}
-        totalItems={100}
-        pageSize={10}
-        onChange={() => {}}
-      />
+      {pagination && <AppTablePagination {...pagination} />}
     </TableContainer>
   );
 }
