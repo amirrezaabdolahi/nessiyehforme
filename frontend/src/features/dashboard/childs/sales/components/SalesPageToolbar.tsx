@@ -30,7 +30,7 @@ export default function SalesToolbar() {
 
   const status = searchParams.get("status") ?? "all";
   const ordering = searchParams.get("ordering") ?? "-created_at";
-  const period = searchParams.get("period") ?? "month";
+  const period = searchParams.get("period") ?? "all";
 
   // Search debounce
   useEffect(() => {
@@ -52,7 +52,10 @@ export default function SalesToolbar() {
   const updateParam = (key: string, value: string) => {
     const params = new URLSearchParams(searchParams.toString());
 
-    if (key === "status" && value === "all") {
+    if (
+      (key === "status" && value === "all") ||
+      (key === "period" && value === "all")
+    ) {
       params.delete(key);
     } else {
       params.set(key, value);
@@ -82,30 +85,6 @@ export default function SalesToolbar() {
           },
         }}
       >
-        {/* Export */}
-        <IconButton
-          sx={{
-            border: "1px solid",
-            borderColor: "divider",
-            width: 42,
-            height: 42,
-          }}
-        >
-          <DownloadOutlined />
-        </IconButton>
-
-        {/* Filter */}
-        <IconButton
-          sx={{
-            border: "1px solid",
-            borderColor: "divider",
-            width: 42,
-            height: 42,
-          }}
-        >
-          <FilterAltOutlined />
-        </IconButton>
-
         {/* Sorting */}
         <FormControl
           size="small"
@@ -121,9 +100,9 @@ export default function SalesToolbar() {
 
             <MenuItem value="created_at">قدیمی‌ترین</MenuItem>
 
-            <MenuItem value="-total_amount">بیشترین مبلغ</MenuItem>
+            <MenuItem value="-amount">بیشترین مبلغ</MenuItem>
 
-            <MenuItem value="total_amount">کمترین مبلغ</MenuItem>
+            <MenuItem value="amount">کمترین مبلغ</MenuItem>
           </Select>
         </FormControl>
 
@@ -147,13 +126,6 @@ export default function SalesToolbar() {
         />
 
         {/* Status */}
-        <Chip
-          clickable
-          label="همه"
-          color={status === "all" ? "primary" : "default"}
-          variant={status === "all" ? "filled" : "outlined"}
-          onClick={() => updateParam("status", "all")}
-        />
 
         {/* Period */}
         <ToggleButtonGroup
@@ -172,10 +144,9 @@ export default function SalesToolbar() {
             },
           }}
         >
+          <ToggleButton value="all">همه</ToggleButton>
           <ToggleButton value="today">امروز</ToggleButton>
-
           <ToggleButton value="week">هفته</ToggleButton>
-
           <ToggleButton value="month">ماه</ToggleButton>
         </ToggleButtonGroup>
       </Box>

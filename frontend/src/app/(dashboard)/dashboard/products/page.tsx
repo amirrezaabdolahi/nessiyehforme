@@ -11,6 +11,7 @@ interface Props {
     category?: string;
     page?: string;
     ordering?: string;
+    status?: string;
   }>;
 }
 const Products = async ({ searchParams }: Props) => {
@@ -24,7 +25,13 @@ const Products = async ({ searchParams }: Props) => {
       <ProductsPageCards />
       <ProductsPageToolbar />
       <div className="">
-        <ProductsList search={params.search} category={params.category} />
+        <ProductsList
+          search={params.search}
+          category={params.category}
+          ordering={params.ordering}
+          status={params.status}
+          page={params.page}
+        />
       </div>
     </Container>
   );

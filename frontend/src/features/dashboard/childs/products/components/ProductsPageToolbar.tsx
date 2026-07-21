@@ -13,11 +13,8 @@ import {
   Select,
   ToggleButton,
   ToggleButtonGroup,
-  Tooltip,
 } from "@mui/material";
 import {
-  DownloadOutlined,
-  FilterAltOutlined,
   Search,
 } from "@mui/icons-material";
 
@@ -31,7 +28,7 @@ export default function ProductsPageToolbar() {
 
   const ordering = searchParams.get("ordering") ?? "-created_at";
 
-  const stockStatus = searchParams.get("stock_status") ?? "all";
+  const stockStatus = searchParams.get("status") ?? "all";
 
   // Keep input synced with URL (Back/Forward navigation)
   useEffect(() => {
@@ -42,7 +39,11 @@ export default function ProductsPageToolbar() {
     (key: string, value: string) => {
       const params = new URLSearchParams(searchParamsString);
 
-      if (!value || value === "all") {
+      if (
+        !value ||
+        value === "all" ||
+        (key === "ordering" && value === "-created_at")
+      ) {
         params.delete(key);
       } else {
         params.set(key, value);
@@ -96,38 +97,6 @@ export default function ProductsPageToolbar() {
           },
         }}
       >
-        <Tooltip title="Export">
-          <span>
-            <IconButton
-              disabled
-              sx={{
-                width: 42,
-                height: 42,
-                border: "1px solid",
-                borderColor: "divider",
-              }}
-            >
-              <DownloadOutlined />
-            </IconButton>
-          </span>
-        </Tooltip>
-
-        <Tooltip title="Advanced Filters">
-          <span>
-            <IconButton
-              disabled
-              sx={{
-                width: 42,
-                height: 42,
-                border: "1px solid",
-                borderColor: "divider",
-              }}
-            >
-              <FilterAltOutlined />
-            </IconButton>
-          </span>
-        </Tooltip>
-
         <FormControl
           size="small"
           sx={{
@@ -146,9 +115,9 @@ export default function ProductsPageToolbar() {
 
             <MenuItem value="created_at">قدیمی‌ترین</MenuItem>
 
-            <MenuItem value="-price">بیشترین قیمت</MenuItem>
+            <MenuItem value="-amount">بیشترین قیمت</MenuItem>
 
-            <MenuItem value="price">کمترین قیمت</MenuItem>
+            <MenuItem value="amount">کمترین قیمت</MenuItem>
 
             <MenuItem value="name">نام (A-Z)</MenuItem>
 
@@ -181,7 +150,7 @@ export default function ProductsPageToolbar() {
           value={stockStatus}
           onChange={(_, value) => {
             if (value !== null) {
-              updateParam("stock_status", value);
+              updateParam("status", value);
             }
           }}
           sx={{
@@ -198,11 +167,11 @@ export default function ProductsPageToolbar() {
         >
           <ToggleButton value="all">همه</ToggleButton>
 
-          <ToggleButton value="stock">موجود</ToggleButton>
+          <ToggleButton value="stocked">موجود</ToggleButton>
 
           <ToggleButton value="low_stock">کم موجود</ToggleButton>
 
-          <ToggleButton value="non_stock">ناموجود</ToggleButton>
+          <ToggleButton value="out_of_stock">ناموجود</ToggleButton>
         </ToggleButtonGroup>
       </Box>
     </Card>

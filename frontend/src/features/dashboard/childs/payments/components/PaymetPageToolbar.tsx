@@ -30,7 +30,7 @@ export default function PaymentsPageToolbar() {
 
   const status = searchParams.get("status") ?? "all";
   const ordering = searchParams.get("ordering") ?? "-created_at";
-  const period = searchParams.get("period") ?? "month";
+  const period = searchParams.get("period") ?? "all";
 
   // Search debounce
   useEffect(() => {
@@ -47,12 +47,16 @@ export default function PaymentsPageToolbar() {
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [search, router, searchParams]);
+  }, [search, router]);
 
   const updateParam = (key: string, value: string) => {
     const params = new URLSearchParams(searchParams.toString());
 
-    if (key === "status" && value === "all") {
+    if (
+      (key === "status" && value === "all") ||
+      (key === "period" && value === "all") ||
+      (key === "ordering" && value === "-created_at")
+    ) {
       params.delete(key);
     } else {
       params.set(key, value);
@@ -82,30 +86,6 @@ export default function PaymentsPageToolbar() {
           },
         }}
       >
-        {/* Export */}
-        <IconButton
-          sx={{
-            border: "1px solid",
-            borderColor: "divider",
-            width: 42,
-            height: 42,
-          }}
-        >
-          <DownloadOutlined />
-        </IconButton>
-
-        {/* Filter */}
-        <IconButton
-          sx={{
-            border: "1px solid",
-            borderColor: "divider",
-            width: 42,
-            height: 42,
-          }}
-        >
-          <FilterAltOutlined />
-        </IconButton>
-
         {/* Sorting */}
         <FormControl
           size="small"
@@ -121,9 +101,9 @@ export default function PaymentsPageToolbar() {
 
             <MenuItem value="created_at">قدیمی‌ترین</MenuItem>
 
-            <MenuItem value="-total_amount">بیشترین مبلغ</MenuItem>
+            <MenuItem value="-amount">بیشترین مبلغ</MenuItem>
 
-            <MenuItem value="total_amount">کمترین مبلغ</MenuItem>
+            <MenuItem value="amount">کمترین مبلغ</MenuItem>
           </Select>
         </FormControl>
 
@@ -146,15 +126,6 @@ export default function PaymentsPageToolbar() {
           }}
         />
 
-        {/* Status */}
-        <Chip
-          clickable
-          label="همه"
-          color={status === "all" ? "primary" : "default"}
-          variant={status === "all" ? "filled" : "outlined"}
-          onClick={() => updateParam("status", "all")}
-        />
-
         {/* Period */}
         <ToggleButtonGroup
           exclusive
@@ -172,11 +143,12 @@ export default function PaymentsPageToolbar() {
             },
           }}
         >
+          <ToggleButton value="all">همه</ToggleButton>
           <ToggleButton value="today">امروز</ToggleButton>
 
-          <ToggleButton value="week">هفته</ToggleButton>
+          <ToggleButton value="this_week">هفته</ToggleButton>
 
-          <ToggleButton value="month">ماه</ToggleButton>
+          <ToggleButton value="this_month">ماه</ToggleButton>
         </ToggleButtonGroup>
       </Box>
     </Card>
