@@ -1,9 +1,19 @@
 import { authenticatedFetch } from "@/lib/authenticatedFetch";
 import { NextResponse } from "next/server";
 
-export async function GET(req: Request) {
+export async function GET(
+  req: Request,
+  { params }: { params: Promise<{ id: string; paymentId: string }> },
+) {
   try {
-    const result = await authenticatedFetch("accounts/me/");
+    const { id, paymentId } = await params;
+
+    console.log("shop id from route handler : ", id);
+    console.log("payment id from route handler : ", paymentId);
+
+    const result = await authenticatedFetch(
+      `accounts/me/shops/${id}/payments/${paymentId}`,
+    );
 
     if (!result || result.response.status == 401) {
       return NextResponse.json(

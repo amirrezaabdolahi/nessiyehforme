@@ -8,10 +8,12 @@ import {
   ModalCustomersType,
   ModalProductsType,
   PaymentsListType,
+  PaymentType,
   ProductsListType,
   ProductType,
   SalesListType,
   SaleType,
+  ShopDetailType,
   ShopType,
 } from "./types";
 
@@ -23,6 +25,11 @@ export interface GetSalesResponesType {
   page_size: number;
   total_pages: number;
   results: SalesListType[];
+}
+
+export interface GetSaleByIdResponeseType {
+  ok: boolean;
+  sale: SaleType;
 }
 
 export interface PostSalesType {
@@ -96,22 +103,28 @@ export interface GetCustomerDetailsResponse {
 // account
 export interface GetMeResponse {
   ok: boolean;
-  total_amount: number;
-  number_of_debts: number;
-
+  full_name: string;
   shops: ShopType[];
+  summary: {
+    total_paid: number;
+    total_remaining: number;
+    open_debts_count: number;
+    number_of_shops: number;
+  };
 }
 export interface GetShopDetailResponse {
   ok: boolean;
-  sales: SaleType[];
-  debts: DebtType[];
+  shop: ShopDetailType;
 }
 
 // payment
 
 export interface GetPaymentsResponse {
   ok: boolean;
-  counts: number;
+  count: number;
+  page: number;
+  page_size: number;
+  total_pages: number;
   results: PaymentsListType[];
 }
 
@@ -126,6 +139,12 @@ export interface PostPaymentBody {
   amount: number;
   pay_full: boolean;
 }
+
+export interface GetPaymentByIdResponeseType {
+  ok: boolean;
+  payment: PaymentType;
+}
+
 
 // modal customers
 export interface GetModalsCustomersResponse {

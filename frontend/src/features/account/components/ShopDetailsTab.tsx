@@ -6,6 +6,9 @@ import Box from "@mui/material/Box";
 import ShopDetailsDebtCard from "./ShopDetailsDebtCard";
 import ShopDetailsSaleCard from "./ShopDetailsSaleCard";
 import ShopDetailsPaymentCard from "./ShopDetailsPaymentCard";
+import ShopDetailsDebtTab from "./ShopDetailsDebtTab";
+import ShopDetailsSaleTab from "./ShopDetailsSaleTab";
+import ShopDetailsPaymentTab from "./ShopDetailsPaymentTab";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -24,7 +27,7 @@ function CustomTabPanel(props: TabPanelProps) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+      {value === index && <Box className="pt-2">{children}</Box>}
     </div>
   );
 }
@@ -36,12 +39,42 @@ function a11yProps(index: number) {
   };
 }
 
-export default function ShopDetailsTab() {
+interface ShopDetailsProps {
+  shopId: number;
+}
+
+export default function ShopDetailsTab({ shopId }: ShopDetailsProps) {
   const [value, setValue] = React.useState(0);
+
+  // const {
+  //   data: debts,
+  //   isLoading: loadingDebts,
+  //   error: errorDebts,
+  // } = useGetShopDebtsQuery(shopId, {
+  //   skip: value !== 0,
+  // });
+  // const {
+  //   data: sales,
+  //   isLoading: loadingSales,
+  //   error: errorSales,
+  // } = useGetShopSalesQuery(shopId, {
+  //   skip: value !== 1,
+  // });
+  // const {
+  //   data: payments,
+  //   isLoading: loadingPayments,
+  //   error: errorPayments,
+  // } = useGetShopPaymentsQuery(shopId, {
+  //   skip: value !== 2,
+  // });
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+
+  // console.log("this is customers debts : ", debts);
+  // console.log("this is customers sales : ", sales);
+  // console.log("this is customers payments : ", payments);
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -57,70 +90,13 @@ export default function ShopDetailsTab() {
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
-        <div className="flex flex-col gap-4">
-          <ShopDetailsDebtCard
-            id="8842"
-            status="overdue"
-            total={2000000}
-            paid={500000}
-            remaining={1500000}
-            createdAt="۱۴۰۳/۰۲/۱۵"
-          />
-          <ShopDetailsDebtCard
-            id="8842"
-            status="overdue"
-            total={2000000}
-            paid={500000}
-            remaining={1500000}
-            createdAt="۱۴۰۳/۰۲/۱۵"
-          />
-          <ShopDetailsDebtCard
-            id="8842"
-            status="overdue"
-            total={2000000}
-            paid={500000}
-            remaining={1500000}
-            createdAt="۱۴۰۳/۰۲/۱۵"
-          />
-          <ShopDetailsDebtCard
-            id="8842"
-            status="overdue"
-            total={2000000}
-            paid={500000}
-            remaining={1500000}
-            createdAt="۱۴۰۳/۰۲/۱۵"
-          />
-        </div>
+        <ShopDetailsDebtTab shopId={shopId} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <div className="flex flex-col gap-4">
-          <ShopDetailsSaleCard
-            id="8842"
-            createdAt="۱۴۰۳/۰۲/۱۵"
-            total={2000000}
-            itemsCount={10}
-          />
-          <ShopDetailsSaleCard
-            id="8842"
-            createdAt="۱۴۰۳/۰۲/۱۵"
-            total={2000000}
-            itemsCount={10}
-          />
-        </div>
+        <ShopDetailsSaleTab shopId={shopId} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
-        <div className="flex flex-col gap-4">
-          <ShopDetailsPaymentCard
-            id="8842"
-            amount={2000000}
-            createdAt="۱۴۰۳/۰۲/۱۵"
-          />
-          <ShopDetailsPaymentCard
-            id="8842"
-            amount={2000000}
-            createdAt="۱۴۰۳/۰۲/۱۵"
-          />
-        </div>
+        <ShopDetailsPaymentTab shopId={shopId} />
       </CustomTabPanel>
     </Box>
   );
