@@ -5,6 +5,7 @@ import ThemeRegistry from "@/providers/ThemeRegistry";
 import { ToastContainer } from "react-toastify";
 import StoreProvider from "@/providers/ReduxProvider";
 import NextTopLoader from "nextjs-toploader";
+import Script from "next/script";
 
 const vazirmatn = localFont({
   src: [
@@ -32,11 +33,19 @@ export default async function RootLayout({
 }>) {
   return (
     <html lang="fa" dir="rtl">
+      <head>
+        {/*<Script
+          src="//unpkg.com/react-scan/dist/auto.global.js"
+          crossOrigin="anonymous"
+          strategy="beforeInteractive"
+        />*/}
+      </head>
       <body className={`${vazirmatn.variable}`}>
         <ToastContainer position="bottom-center" autoClose={1500} />
         <StoreProvider>
           <ThemeRegistry>
-            <NextTopLoader color="#1976d2" height={3} showSpinner={true} />
+            {/*<NextTopLoader color="#1976d2" height={3} showSpinner={true} />*/}
+            <NextTopLoader color="#ff9800" height={3} showSpinner={true} />
             {children}
           </ThemeRegistry>
         </StoreProvider>
