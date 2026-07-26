@@ -36,6 +36,10 @@ export const ApiSales = createApi({
       }),
       providesTags: ["Sales"],
     }),
+    getSalesCards: builder.query<GetSalesResponesType, void>({
+      query: () => "sales/",
+      providesTags: ["Sales"],
+    }),
     addSales: builder.mutation<GetSalesResponesType, PostSalesType>({
       query: (data) => ({
         url: "sales/",
@@ -66,6 +70,10 @@ export const ApiSales = createApi({
       }),
       providesTags: ["Debts"],
     }),
+    getDebtsCards: builder.query<GetDebtsResponeseType, void>({
+      query: () => "debts/",
+      providesTags: ["Debts"],
+    }),
     getDebtById: builder.query<GetDebtByIdResponeseType, number>({
       query: (id) => `debts/${id}`,
     }),
@@ -74,7 +82,9 @@ export const ApiSales = createApi({
 
 export const {
   useGetSalesQuery,
+  useGetSalesCardsQuery,
   useAddSalesMutation,
   useGetDebtsQuery,
+  useGetDebtsCardsQuery,
   useGetDebtByIdQuery,
 } = ApiSales;

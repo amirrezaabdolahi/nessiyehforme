@@ -25,6 +25,14 @@ export interface GetSalesResponesType {
   page_size: number;
   total_pages: number;
   results: SalesListType[];
+  summary: {
+    total_count: number;
+    total_amount: number;
+    today_count: number;
+    today_total: number;
+    this_month_cash: number;
+    this_month_debt: number;
+  };
 }
 
 export interface GetSaleByIdResponeseType {
@@ -45,6 +53,13 @@ export interface GetDebtsResponeseType {
   page_size: number;
   total_pages: number;
   results: DebtsListType[];
+  summary: {
+    total: number;
+    total_amount: number;
+    settled: number;
+    partial: number;
+    overdue: number;
+  };
 }
 export interface GetDebtByIdResponeseType {
   ok: boolean;
@@ -82,7 +97,18 @@ export interface PostProductsType {
 // customers
 export interface GetCustomersResponse {
   ok: boolean;
-  customers: CustomersListType[];
+  count: number;
+  page: number;
+  page_size: number;
+  total_pages: number;
+  results: CustomersListType[];
+  summary: {
+    total: number;
+    new_this_month: number;
+    active: number;
+    settled: number;
+    overdue: number;
+  };
 }
 export interface GetCustomerResponse {
   ok: boolean;
@@ -144,7 +170,6 @@ export interface GetPaymentByIdResponeseType {
   ok: boolean;
   payment: PaymentType;
 }
-
 
 // modal customers
 export interface GetModalsCustomersResponse {
