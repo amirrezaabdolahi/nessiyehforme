@@ -10,8 +10,10 @@ import ReportMonthlyRevenueChart from "./charts/ReportMonthlyRevChart";
 
 export default function ReportsCharts({
   charts,
+  isLoading,
 }: {
   charts: ReportsChartsType;
+  isLoading: boolean;
 }) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
