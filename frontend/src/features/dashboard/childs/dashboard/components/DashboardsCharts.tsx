@@ -1,5 +1,5 @@
 "use client";
-import { Box, Card, Typography } from "@mui/material";
+import { Box, Card, CircularProgress, Typography } from "@mui/material";
 import React, { useEffect } from "react";
 import SaleVsPaymentChart from "./SaleVsPaymentChart";
 import DebtsStatusChart from "./DebtsStatusChart";
@@ -34,7 +34,19 @@ const DashboardsCharts = () => {
           caption="نمایش مقدار بدهی داده شده در برابر مبلغ تسویه شده"
           icon={<TrendingUpRounded color="success" />}
         >
-          <SalesChart data={dashboardCharts?.sales_trend} />
+          {
+            isLoading ? (
+              <div className="flex items-center justify-center h-80">
+                <CircularProgress />
+              </div>
+            ) : dashboardCharts?.sales_trend.length === 0 ? (
+              <div className="flex items-center justify-center h-80">
+                <Typography variant="body1">هیچ داده ای یافت نشد.</Typography>
+              </div>
+            ) : (
+              <SalesChart data={dashboardCharts?.sales_trend} />
+            )
+          }
         </ChartCard>
       </div>
       <div className="col-span-full lg:col-span-2 h-full">
@@ -43,32 +55,36 @@ const DashboardsCharts = () => {
           caption="نمایش مقدار کل بدهی هفته در براره پرداخت"
           icon={<PieChartRounded color="secondary" />}
         >
-          <PaymentDistributionChart
-            data={[
-              {
-                name: "نقدی",
-                value: 10000000,
-              },
-              {
-                name: "نسیه",
-                value: 3000000,
-              },
-            ]}
-          />
-          <ChartLegend
-            items={[
-              {
-                color: "#FF9800",
-                label: "نقدی",
-                value: 10000000,
-              },
-              {
-                color: "#42A5F5",
-                label: "نسیه",
-                value: 3000000,
-              },
-            ]}
-          />
+          {
+            isLoading ? (
+              <div className="flex items-center justify-center h-80">
+                <CircularProgress />
+              </div>
+            ) : dashboardCharts?.debt_distribution ? (
+              <>
+                  <PaymentDistributionChart data={dashboardCharts?.debt_distribution} />
+                  <ChartLegend
+                    items={[
+                      {
+                        color: "#4CAF50",
+                        label: "پرداخت شده",
+                        value: dashboardCharts?.debt_distribution.total_paid,
+                      },
+                      {
+                        color: "#FF9800",
+                        label: "باقی مانده",
+                        value: dashboardCharts?.debt_distribution.remaining,
+                      },
+                    ]}
+                    />
+              </>
+            ) : (
+              <div className="flex items-center justify-center h-80">
+                <Typography variant="body1">هیچ داده ای یافت نشد.</Typography>
+              </div>
+            )
+          }
+
         </ChartCard>
       </div>
       <div className="col-span-full ">
@@ -77,17 +93,19 @@ const DashboardsCharts = () => {
           caption="جمع تمام مبالغ فروش و بدهی "
           icon={<AttachMoneyRounded color="success" />}
         >
-          <RevenueChart
-            data={[
-              { date: "شنبه", total: 4200000 },
-              { date: "یکشنبه", total: 5800000 },
-              { date: "دوشنبه", total: 3500000 },
-              { date: "سه‌شنبه", total: 7100000 },
-              { date: "چهارشنبه", total: 9200000 },
-              { date: "پنجشنبه", total: 6800000 },
-              { date: "جمعه", total: 10500000 },
-            ]}
-          />
+          {
+            isLoading ? (
+              <div className="flex items-center justify-center h-80">
+                <CircularProgress />
+              </div>
+            ) : dashboardCharts?.payments_trend.length === 0 ? (
+              <div className="flex items-center justify-center h-80">
+                <Typography variant="body1">هیچ داده ای یافت نشد.</Typography>
+              </div>
+            ) : (
+              <RevenueChart data={dashboardCharts?.payments_trend} />
+            )
+          }
         </ChartCard>
       </div>
     </>
