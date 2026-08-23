@@ -20,7 +20,11 @@ import SelectProductDialog from "./SelectProductDialog";
 import SelectedProductsList from "./SelectedProductsList";
 import { formatPrice } from "@/utils/formatters";
 
-export default function CreateDebtForm() {
+interface CreateDebtFormProps {
+  customerId?: string;
+}
+
+export default function CreateDebtForm({ customerId }: CreateDebtFormProps) {
   const [scannerOpen, setScannerOpen] = useState(false);
 
   const [selectedCustomer, setSelectedCustomer] = useState<{
@@ -55,6 +59,7 @@ export default function CreateDebtForm() {
     data: customersData,
     isLoading: isCustomerLoading,
     error: isCustomerError,
+    isSuccess: isCustomerSuccess,
   } = useGetModalDataQuery({ type: "customers" });
   const {
     data: productsData,
@@ -68,6 +73,33 @@ export default function CreateDebtForm() {
   const customers = customersData?.customers ?? [];
   const products = productsData?.products ?? [];
 
+  // initialize selectedCustomer based on customerId
+  useEffect(() => {
+    if (!customerId || !isCustomerSuccess || customers.length === 0) return;
+
+    const customerIdNumber = Number(customerId);
+
+    if (!Number.isInteger(customerIdNumber)) {
+      toast.error("شناسه مشتری نامعتبر است");
+      return;
+    }
+
+    const customer = customers.find(
+      (customer) => customer.id === customerIdNumber,
+    );
+
+    if (!customer) {
+      toast.error("مشتری موردنظر پیدا نشد");
+      return;
+    }
+
+    setSelectedCustomer({
+      id: customer.id,
+      phone_number: customer.phone_number,
+      full_name: customer.full_name,
+    });
+  }, [customerId, isCustomerSuccess, customers]);
+
   async function handleAddSale() {
     const body = {
       customer_id: selectedCustomer?.id,
@@ -78,21 +110,38 @@ export default function CreateDebtForm() {
       })),
     };
 
+    const toastId = toast.loading("در حال ثبت بدهی...");
+
     try {
       const result = await addSale(body).unwrap();
 
       if (!result.ok) {
-        toast.error("خطا در ایجاد نسیه");
+        toast.update(toastId, {
+          type: "error",
+          render: "خطا در ایجاد بدهی",
+          autoClose: 2000,
+          isLoading: false,
+        });
         return;
       }
 
-      toast.success("نسیه ثبت شد");
+      toast.update(toastId, {
+        type: "success",
+        render: "بدهی ثبت شد",
+        autoClose: 2000,
+        isLoading: false,
+      });
       setSelectedCustomer(null);
       setSelectedProducts([]);
-      return;
     } catch (error) {
       console.log(error);
-      toast.error(error.data.error || "error");
+      const message = (error as { data?: { error?: string } })?.data?.error;
+      toast.update(toastId, {
+        type: "error",
+        render: `خطا از سمت سرور: ${message ?? "خطا"}`,
+        autoClose: 2000,
+        isLoading: false,
+      });
     }
   }
   const handleIncrease = (productId: number) => {
@@ -170,7 +219,16 @@ export default function CreateDebtForm() {
               {formatPrice(totalCost)} تومان
             </Typography>
           </span>
-          <Button variant={"contained"} color="primary" onClick={handleAddSale}>
+          <Button
+            variant={"contained"}
+            color="primary"
+            onClick={handleAddSale}
+            disabled={
+              addSaleLoading ||
+              !selectedCustomer ||
+              selectedProducts.length === 0
+            }
+          >
             ثبت بدهی
           </Button>
           <Button

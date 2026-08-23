@@ -1,6 +1,6 @@
 "use client";
 import { useGetModalDataQuery } from "@/features/dashboard/api/ApiModalsData";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import SelectCustomerDialog from "../../debts/components/SelectCustomerDialog";
 import {
   ApiCustomer,
@@ -24,13 +24,22 @@ import {
 import { formatDate, formatPrice } from "@/utils/formatters";
 import { toast } from "react-toastify";
 import { useAppDispatch } from "@/lib/redux/hooks";
+import { number } from "framer-motion";
 
-export default function CreatePaymentForm() {
+export default function CreatePaymentForm({
+  customerId,
+  debtId,
+}: {
+  customerId?: string;
+  debtId?: string;
+}) {
   const [selectedCustomer, setSelectedCustomer] = useState<{
     id: number;
     phone_number: string;
     full_name: string;
   } | null>(null);
+
+  console.log("search params : ", customerId, debtId);
 
   const dispatch = useAppDispatch();
 
@@ -65,28 +74,36 @@ export default function CreatePaymentForm() {
     },
   ] = useAddPaymentMutation();
 
+  console.log(customers);
+
+  // intialize the customers
   useEffect(() => {
     if (CustomersSuccess) {
       setCustomers(customersData.customers);
     }
   }, [CustomersSuccess, customersData]);
+
+  // intialize customers debts
   useEffect(() => {
     if (CreditsSuccess) {
       setDebts(Credits.debts);
     }
   }, [CreditsSuccess, Credits]);
-  useEffect(() => {
-    setSelectedDebt(null);
 
-    if (selectedCustomer) {
-      getCustomerCredits(selectedCustomer.id);
-    } else {
+  useEffect(() => {
+    if (!selectedCustomer) {
       setDebts([]);
+      setSelectedDebt(null);
+      return;
     }
+
+    getCustomerCredits(selectedCustomer.id);
   }, [selectedCustomer, getCustomerCredits]);
 
+  // price initialization
   useEffect(() => {
     if (check && selectedDebt) {
+      console.log(selectedDebt);
       setAmount(String(selectedDebt.remaining));
     }
     if (!check) {
@@ -94,11 +111,51 @@ export default function CreatePaymentForm() {
     }
   }, [check, selectedDebt]);
 
+  // intialize selectedCustomer based on customerId
+  useEffect(() => {
+    if (!customerId || !CustomersSuccess || customers.length === 0) return;
+
+    const customerIdNumber = Number(customerId);
+
+    if (!Number.isInteger(customerIdNumber)) {
+      toast.error("شناسه مشتری نامعتبر است");
+      return;
+    }
+
+    const customer = customers.find(
+      (customer) => customer.id === customerIdNumber,
+    );
+
+    if (!customer) {
+      toast.error("مشتری موردنظر پیدا نشد");
+      return;
+    }
+
+    setSelectedCustomer({
+      id: customer.id,
+      phone_number: customer.phone_number,
+      full_name: customer.full_name,
+    });
+  }, [customerId, CustomersSuccess, customers]);
+
+  // intialize debt based on debtId
+  useEffect(() => {
+    if (!debtId || !CreditsSuccess || debts.length === 0) return;
+
+    const debt = debts.find((debt) => debt.id === Number(debtId));
+    if (!debt) {
+      toast.error("بدهی موردنظر پیدا نشد");
+      return;
+    }
+
+    setSelectedDebt(debt);
+  }, [debtId, CreditsSuccess, debts]);
+
   const resetForm = () => {
     setSelectedCustomer(null);
     setSelectedDebt(null);
     setDebts([]);
-    setAmount(0);
+    setAmount("");
     setCheck(false);
   };
 
@@ -134,7 +191,7 @@ export default function CreatePaymentForm() {
 
       resetForm();
     } catch (error: any) {
-      console.log(error)
+      console.log(error);
       toast.error(error?.data?.error || "خطایی در ثبت پرداخت رخ داد");
     }
   }
@@ -146,6 +203,7 @@ export default function CreatePaymentForm() {
           selectedCustomer={selectedCustomer}
           customers={customers}
           setSelectedCustomer={setSelectedCustomer}
+          isLoading={isCustomerLoading}
         />
 
         {/* Select Debt for payment */}
@@ -155,6 +213,7 @@ export default function CreatePaymentForm() {
           debts={debts}
           selectedDebt={selectedDebt}
           setSelectedDebt={setSelectedDebt}
+          isLoading={isCreditsLoading}
         />
 
         {/* Selected Debt */}

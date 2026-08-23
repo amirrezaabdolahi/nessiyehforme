@@ -3,6 +3,7 @@ import {
   CatergoyType,
   CustomersListType,
   CustomerType,
+  DebtDetailType,
   DebtsListType,
   DebtType,
   ModalCustomersType,
@@ -66,7 +67,7 @@ export interface GetDebtsResponeseType {
 }
 export interface GetDebtByIdResponeseType {
   ok: boolean;
-  debt: DebtType;
+  debt: DebtDetailType;
 }
 
 // products
@@ -247,6 +248,20 @@ export interface GetDashboardCardsResponse {
 // reports
 
 export type GetReportsChartsResponse = {
+  ok: boolean;
+  charts: ReportsChartsType;
+};
+export type GetReportsTopCustomersResponse = {
+  ok: boolean;
+  top_customers: {
+    customer_name: string;
+    phone_number: string;
+    total: number;
+    total_paid: number;
+    remaining: number;
+    }[];
+};
+export type GetReportsTopsResponse = {
   ok: boolean;
   charts: ReportsChartsType;
 };
