@@ -1,7 +1,5 @@
 // debts
 
-import { PublicTurborepoAccessTraceResult } from "next/dist/build/turborepo-access-trace/types";
-
 export interface DebtType {
   id: number;
   debt_id: string;
@@ -90,6 +88,18 @@ export interface SalesListType {
   total: number;
   created_at: string;
 }
+
+// overdue
+
+export type OverduesListType = {
+  id: number;
+  debt_id: string;
+  customer_name: string;
+  total_amount: number;
+  paid_amount: number;
+  remaining_amount: number;
+  created_at: string;
+};
 
 // products
 export type ProductType = {
@@ -281,4 +291,19 @@ export type ReportCardsType = {
   open_debts: number;
   urgent_debts: number;
   avg_per_invoice: number;
+};
+
+// Notification
+
+export type NotificationType = {
+  id: number;
+  entity: "customers" | "debts" | "payments" | "products";
+  entity_id: number;
+  action:
+    "created" | "updated" | "deleted" | "paid" | "low_stock" | "out_of_stock";
+  title: string;
+  message: string;
+  is_read: boolean;
+  read_at: string | null;
+  created_at: string;
 };

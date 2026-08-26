@@ -28,6 +28,9 @@ export default function CreateSaleForm({
 }) {
   const [scannerOpen, setScannerOpen] = useState(false);
 
+  const [search, setSearch] = useState<string>("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
   const [selectedCustomer, setSelectedCustomer] = useState<{
     id: number;
     phone_number: string;
@@ -51,6 +54,16 @@ export default function CreateSaleForm({
     }) => `${option.full_name} ${option.phone_number}`,
   });
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search.trim());
+    }, 500);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [search]);
+
   // products api RTKQuery
   const [
     addSale,
@@ -66,11 +79,9 @@ export default function CreateSaleForm({
     data: productsData,
     isLoading: isProductLoading,
     error: isProductError,
-  } = useGetModalDataQuery({ type: "products" });
-
-  console.log("this is modals customers : ", customersData);
-  console.log("this is modals products : ", productsData);
-
+  } = useGetModalDataQuery({ type: "products", search: debouncedSearch });
+ 
+ 
   const customers = customersData?.customers ?? [];
   const products = productsData?.products ?? [];
 
@@ -135,7 +146,7 @@ export default function CreateSaleForm({
       setSelectedProducts([]);
       return;
     } catch (error) {
-      console.log(error);
+ 
       toast.update(toastId, {
         type: "error",
         render: "خطا در ثبت فروش",
@@ -190,6 +201,8 @@ export default function CreateSaleForm({
           selectedProducts={selectedProducts}
           setSelectedProducts={setSelectedProducts}
           isLoading={isProductLoading}
+          search={search}
+          setSearch={setSearch}
         />
 
         {/* products List */}

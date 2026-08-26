@@ -8,6 +8,8 @@ import {
   DebtType,
   ModalCustomersType,
   ModalProductsType,
+  NotificationType,
+  OverduesListType,
   PaymentsListType,
   PaymentType,
   ProductsListType,
@@ -68,6 +70,15 @@ export interface GetDebtsResponeseType {
 export interface GetDebtByIdResponeseType {
   ok: boolean;
   debt: DebtDetailType;
+}
+
+export interface GetOverduesResponseType {
+  ok: boolean;
+  count: number;
+  page: number;
+  page_size: number;
+  total_pages: number;
+  results: OverduesListType[];
 }
 
 // products
@@ -269,3 +280,17 @@ export type GetReportsCardsResponse = {
   ok: boolean;
   summary: ReportCardsType;
 };
+
+
+
+// Notification
+
+export interface GetNotificationsResponseType {
+  ok: boolean;
+  count: number;
+  page: number;
+  page_size: number;
+  total_pages: number;
+  results: NotificationType[]
+  unread_count : number
+}

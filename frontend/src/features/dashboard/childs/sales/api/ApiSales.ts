@@ -2,6 +2,7 @@ import { api } from "@/services/api";
 import {
   GetDebtByIdResponeseType,
   GetDebtsResponeseType,
+  GetOverduesResponseType,
   GetSalesResponesType,
   PostSalesType,
 } from "@/types/ApiResponesesType";
@@ -40,7 +41,7 @@ export const ApiSales = api.injectEndpoints({
         method: "POST",
         body: JSON.stringify(data),
       }),
-      invalidatesTags: ["Sales", "Debts", "Dashboard"],
+      invalidatesTags: ["Sales", "Debts", "Dashboard", "Customer" , "Notifications-count"],
     }),
     getDebts: builder.query<
       GetDebtsResponeseType,
@@ -71,6 +72,11 @@ export const ApiSales = api.injectEndpoints({
     getDebtById: builder.query<GetDebtByIdResponeseType, number>({
       query: (id) => `debts/${id}`,
     }),
+    getOverdues: builder.query<GetOverduesResponseType, void>({
+      query: () => ({
+        url: "overdues/",
+      }),
+    }),
   }),
 });
 
@@ -81,4 +87,5 @@ export const {
   useGetDebtsQuery,
   useGetDebtsCardsQuery,
   useGetDebtByIdQuery,
+  useGetOverduesQuery,
 } = ApiSales;
